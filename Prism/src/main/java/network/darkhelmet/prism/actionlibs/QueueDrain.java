@@ -2,8 +2,10 @@ package network.darkhelmet.prism.actionlibs;
 
 import network.darkhelmet.prism.Prism;
 
-public class QueueDrain {
+import java.util.Timer;
+import java.util.TimerTask;
 
+public class QueueDrain {
     private static boolean draining = false;
 
     private final Prism plugin;
@@ -25,7 +27,6 @@ public class QueueDrain {
      * Drain the queue.
      */
     public void forceDrainQueue() {
-
         Prism.log("Forcing recorder queue to run a new batch before shutdown...");
 
         draining = true;
@@ -34,7 +35,7 @@ public class QueueDrain {
         final RecordingTask recorderTask = new RecordingTask(plugin);
 
         // Faster drain
-        RecordingTask.setActionsPerInsert(15000);
+        // RecordingTask.setActionsPerInsert(15000);
         Prism.getInstance().getConfig().set("prism.query.max-failures-before-wait", 10);
         Prism.getInstance().getConfig().set("prism.query.queue-empty-tick-delay", 0);
 
@@ -43,6 +44,15 @@ public class QueueDrain {
 
             Prism.log("Starting drain batch...");
             Prism.log("Current queue size: " + RecordingQueue.getQueue().size());
+
+            Timer timer = new Timer();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    Prism.log("Current queue size: " + RecordingQueue.getQueue().size());
+                }
+            };
+            timer.schedule(task, 5000, 5000);
 
             if (Prism.getPrismDataSource().isPaused()) {
                 Prism.getPrismDataSource().setPaused(false);

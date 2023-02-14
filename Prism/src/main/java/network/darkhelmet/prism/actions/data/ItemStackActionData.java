@@ -58,13 +58,14 @@ public class ItemStackActionData {
     public boolean potionUpgraded;
     public Map<Integer, ItemStackActionData> shulkerBoxInv;
 
-    public static ItemStackActionData createData(ItemStack item, int quantity, short durability, Map<Enchantment, Integer> enchantments) {
-
+    public static ItemStackActionData createData(ItemStack item, int quantity, short durability,
+            Map<Enchantment, Integer> enchantments) {
         ItemStackActionData actionData = new ItemStackActionData();
 
         if (item == null || item.getAmount() <= 0) {
             return null;
         }
+
         actionData.durability = (short) ItemUtils.getItemDamage(item);
 
         if (durability >= 0) {
@@ -75,19 +76,24 @@ public class ItemStackActionData {
         actionData.material = item.getType();
 
         final ItemMeta meta = item.hasItemMeta() ? item.getItemMeta() : null;
+
         if (meta != null) {
             actionData.name = meta.getDisplayName();
         }
+
         if (meta instanceof LeatherArmorMeta) {
             final LeatherArmorMeta lam = (LeatherArmorMeta) meta;
+
             actionData.color = lam.getColor().asRGB();
         } else if (meta instanceof SkullMeta) {
             final SkullMeta skull = (SkullMeta) meta;
+
             if (skull.hasOwner()) {
                 actionData.owner = Objects.requireNonNull(skull.getOwningPlayer()).getUniqueId().toString();
             }
         } else if (meta instanceof PotionMeta) {
             final PotionMeta potion = (PotionMeta) meta;
+
             actionData.potionType = potion.getBasePotionData().getType().toString().toLowerCase();
             actionData.potionExtended = potion.getBasePotionData().isExtended();
             actionData.potionUpgraded = potion.getBasePotionData().isUpgraded();
@@ -96,6 +102,7 @@ public class ItemStackActionData {
         // Written books
         if (meta instanceof BookMeta) {
             final BookMeta bookMeta = (BookMeta) meta;
+
             actionData.by = bookMeta.getAuthor();
             actionData.title = bookMeta.getTitle();
             actionData.content = bookMeta.getPages().toArray(new String[0]);
@@ -109,31 +116,38 @@ public class ItemStackActionData {
         // Enchantments
         if (!enchantments.isEmpty()) {
             final String[] enchs = new String[enchantments.size()];
+
             int i = 0;
             for (final Map.Entry<Enchantment, Integer> ench : enchantments.entrySet()) {
                 // This is silly
                 enchs[i] = ench.getKey().getKey().getKey() + ":" + ench.getValue();
                 i++;
             }
+
             actionData.enchs = enchs;
         } else if (meta instanceof EnchantmentStorageMeta) {
             final EnchantmentStorageMeta bookEnchantments = (EnchantmentStorageMeta) meta;
+
             if (bookEnchantments.hasStoredEnchants()) {
                 if (bookEnchantments.getStoredEnchants().size() > 0) {
                     final String[] enchs = new String[bookEnchantments.getStoredEnchants().size()];
+
                     int i = 0;
                     for (final Map.Entry<Enchantment, Integer> ench : bookEnchantments.getStoredEnchants().entrySet()) {
                         // This is absolutely silly
                         enchs[i] = ench.getKey().getKey().getKey() + ":" + ench.getValue();
                         i++;
                     }
+
                     actionData.enchs = enchs;
                 }
             }
         }
+
         if (meta instanceof FireworkEffectMeta) {
             applyFireWorksMetaToActionData(meta, actionData);
         }
+
         if (meta instanceof BannerMeta) {
             List<Pattern> patterns = ((BannerMeta) meta).getPatterns();
             Map<String, String> stringyPatterns = new HashMap<>();
@@ -141,29 +155,38 @@ public class ItemStackActionData {
                     pattern -> stringyPatterns.put(pattern.getPattern().getIdentifier(), pattern.getColor().name()));
             actionData.bannerMeta = stringyPatterns;
         }
+
         if (meta instanceof BlockStateMeta) {
             BlockState blockState = ((BlockStateMeta) meta).getBlockState();
+
             if (blockState instanceof ShulkerBox) {
                 Inventory inventory = ((ShulkerBox) blockState).getInventory();
                 ItemStack[] contents = inventory.getContents();
+
                 actionData.shulkerBoxInv = new HashMap<>();
+
                 for (int i = 0; i < 27; i++) {
                     ItemStack invItem = contents[i];
+
                     if (invItem == null) {
                         continue;
                     }
-                    actionData.shulkerBoxInv.put(i, createData(invItem, invItem.getAmount(), (short) ItemUtils.getItemDamage(invItem), invItem.getEnchantments()));
+
+                    actionData.shulkerBoxInv.put(i, createData(invItem, invItem.getAmount(),
+                            (short) ItemUtils.getItemDamage(invItem), invItem.getEnchantments()));
                 }
             }
         }
+
         return actionData;
     }
 
-
     private static void applyFireWorksMetaToActionData(ItemMeta meta, ItemStackActionData actionData) {
         final FireworkEffectMeta fireworkMeta = (FireworkEffectMeta) meta;
+
         if (fireworkMeta.hasEffect()) {
             final FireworkEffect effect = fireworkMeta.getEffect();
+
             if (effect != null) {
                 if (!effect.getColors().isEmpty()) {
                     final int[] effectColors = new int[effect.getColors().size()];
@@ -183,9 +206,11 @@ public class ItemStackActionData {
                     }
                     actionData.fadeColors = fadeColors;
                 }
+
                 if (effect.hasFlicker()) {
                     actionData.hasFlicker = true;
                 }
+
                 if (effect.hasTrail()) {
                     actionData.hasTrail = true;
                 }
@@ -194,7 +219,6 @@ public class ItemStackActionData {
     }
 
     public static ItemStack deserializeFireWorksMeta(ItemStack item, ItemMeta meta, ItemStackActionData actionData) {
-
         final FireworkEffectMeta fireworkMeta = (FireworkEffectMeta) meta;
         final FireworkEffect.Builder effect = FireworkEffect.builder();
 
@@ -207,14 +231,18 @@ public class ItemStackActionData {
             for (int i = 0; i < actionData.fadeColors.length; i++) {
                 effect.withFade(Color.fromRGB(actionData.fadeColors[i]));
             }
+
             fireworkMeta.setEffect(effect.build());
         }
+
         if (actionData.hasFlicker) {
             effect.flicker(true);
         }
+
         if (actionData.hasTrail) {
             effect.trail(true);
         }
+
         fireworkMeta.setEffect(effect.build());
         item.setItemMeta(fireworkMeta);
         return item;
@@ -267,11 +295,13 @@ public class ItemStackActionData {
             potionMeta.setBasePotionData(new PotionData(potionType, potionExtended,
                     potionUpgraded));
         }
+
         if (meta instanceof FireworkEffectMeta && effectColors != null
                 && effectColors.length > 0) {
 
             item = ItemStackActionData.deserializeFireWorksMeta(item, meta, this);
         }
+
         if (meta instanceof BannerMeta && bannerMeta != null) {
             Map<String, String> stringStringMap = bannerMeta;
             List<Pattern> patterns = new ArrayList<>();
@@ -285,6 +315,7 @@ public class ItemStackActionData {
             });
             ((BannerMeta) meta).setPatterns(patterns);
         }
+
         if (meta instanceof BlockStateMeta) {
             BlockState blockState = ((BlockStateMeta) meta).getBlockState();
             if (blockState instanceof ShulkerBox
@@ -321,7 +352,7 @@ public class ItemStackActionData {
         if (meta != null) {
             item.setItemMeta(meta);
         }
+
         return item;
     }
-
 }

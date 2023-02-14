@@ -5,6 +5,7 @@ import network.darkhelmet.prism.api.actions.Handler;
 public interface InsertQuery {
     /**
      * Returns the id of the action.
+     * 
      * @param a Handler
      * @return long
      */
@@ -15,5 +16,4 @@ public interface InsertQuery {
     boolean addInsertionToBatch(Handler a) throws Exception;
 
     void processBatch() throws Exception;
-
 }

@@ -12,7 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PrismConfig extends ConfigBase {
-
     /**
      * Constructor.
      *
@@ -279,9 +278,8 @@ public class PrismConfig extends ConfigBase {
         // Copy defaults
         config.options().copyDefaults(true);
         // save the defaults/config
-        super.write("config",config);
+        super.write("config", config);
 
         return config;
-
     }
 }

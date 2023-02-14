@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class RecordingTask implements Runnable {
-
     private final Prism plugin;
     private static int actionsPerInsert;
 
@@ -20,7 +19,6 @@ public class RecordingTask implements Runnable {
     public static int getActionsPerInsert() {
         return actionsPerInsert;
     }
-
 
     /**
      * Create the task.
@@ -57,9 +55,11 @@ public class RecordingTask implements Runnable {
     void insertActionsIntoDatabase() {
         int actionsRecorded = 0;
         int perBatch = actionsPerInsert;
+
         if (perBatch < 1) {
             perBatch = 1000;
         }
+
         if (!RecordingQueue.getQueue().isEmpty()) {
             if (Prism.getPrismDataSource().isPaused()) {
                 Prism.log(
@@ -68,11 +68,10 @@ public class RecordingTask implements Runnable {
                 scheduleNextRecording();
                 return;
             }
+
             long start = System.currentTimeMillis();
             Prism.debug("Beginning batch insert from queue. " + start);
-            try (
-                    Connection conn = Prism.getPrismDataSource().getConnection()
-            ) {
+            try (Connection conn = Prism.getPrismDataSource().getConnection()) {
                 if ((conn == null) || (conn.isClosed())) {
                     if (RecordingManager.failedDbConnectionCount == 0) {
                         Prism.log(
@@ -98,6 +97,7 @@ public class RecordingTask implements Runnable {
                 Prism.getPrismDataSource().handleDataSourceException(e);
                 return;
             }
+
             InsertQuery batchedQuery;
             try {
                 batchedQuery = Prism.getPrismDataSource().getDataInsertionQuery();
@@ -111,6 +111,7 @@ public class RecordingTask implements Runnable {
                 RecordingManager.failedDbConnectionCount++;
                 return;
             }
+
             int i = 0;
             while (!RecordingQueue.getQueue().isEmpty()) {
                 final Handler a = RecordingQueue.getQueue().poll();
@@ -134,18 +135,21 @@ public class RecordingTask implements Runnable {
                 }
                 i++;
             }
+
             long batchDoneTime = System.currentTimeMillis();
             long batchingTime = batchDoneTime - start;
+
             // The main delay is here
             try {
                 batchedQuery.processBatch();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             // Save the current count to the queue for short historical data
             long batchProcessedEnd = System.currentTimeMillis();
             long batchRunTime = batchProcessedEnd - batchDoneTime;
-            plugin.queueStats.addRunInfo(new QueueStats.TaskRunInfo(actionsRecorded,batchingTime,batchRunTime));
+            plugin.queueStats.addRunInfo(new QueueStats.TaskRunInfo(actionsRecorded, batchingTime, batchRunTime));
         }
     }
 
@@ -191,6 +195,7 @@ public class RecordingTask implements Runnable {
                             + " down the server, ignore me.");
             return;
         }
+
         plugin.recordingTask = plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin,
                 this, getTickDelayForNextBatch());
     }

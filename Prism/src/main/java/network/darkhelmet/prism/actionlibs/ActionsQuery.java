@@ -1,6 +1,5 @@
 package network.darkhelmet.prism.actionlibs;
 
-
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actions.PrismProcessAction;
 import network.darkhelmet.prism.api.PrismParameters;
@@ -14,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ActionsQuery {
-
     private final Prism plugin;
     private final SelectQuery qb;
     private boolean shouldPauseDB = false;
@@ -29,7 +27,6 @@ public class ActionsQuery {
      *
      * @param shouldPauseDB boolean.
      */
-    @SuppressWarnings("unused")
     public void setShouldPauseDB(boolean shouldPauseDB) {
         this.shouldPauseDB = shouldPauseDB;
     }
@@ -46,11 +43,11 @@ public class ActionsQuery {
      * @return result.
      */
     public QueryResult lookup(PrismParameters parameters, CommandSender sender) {
-
         Player player = null;
         if (sender instanceof Player) {
             player = (Player) sender;
         }
+
         // If lookup, determine if we need to group
         boolean shouldGroup = false;
         if (parameters.getProcessType().equals(PrismProcessType.LOOKUP)) {
@@ -61,11 +58,14 @@ public class ActionsQuery {
                 shouldGroup = false;
             }
         }
+
         qb.setParameters(parameters);
         qb.setShouldGroup(shouldGroup);
         QueryResult res = qb.executeSelect(plugin.eventTimer);
+
         // Pull results
         res.setPerPage(parameters.getPerPage());
+
         // Cache it if we're doing a lookup. Otherwise we don't
         // need a cache.
         if (parameters.getProcessType().equals(PrismProcessType.LOOKUP)) {
@@ -85,7 +85,6 @@ public class ActionsQuery {
 
         // Return it
         return res;
-
     }
 
     /**
@@ -97,10 +96,13 @@ public class ActionsQuery {
     public long getUsersLastPrismProcessId(String playername) {
         SelectProcessActionQuery q = Prism.getPrismDataSource().createProcessQuery();
         QueryParameters parameters = new QueryParameters();
+
         parameters.setKeyword(playername);
+
         q.setParameters(parameters);
         q.setShouldGroup(false);
         q.isLastProcessID();
+
         return q.getLastProcessIdQuery();
     }
 
@@ -113,9 +115,12 @@ public class ActionsQuery {
     public PrismProcessAction getPrismProcessRecord(long id) {
         SelectProcessActionQuery q = Prism.getPrismDataSource().createProcessQuery();
         QueryParameters parameters = new QueryParameters();
+
         parameters.setId(id);
+
         q.setParameters(parameters);
         q.setShouldGroup(false);
+
         return q.executeProcessQuery();
     }
 
@@ -129,10 +134,13 @@ public class ActionsQuery {
     @Deprecated
     public long getMinIdForQuery(QueryParameters parameters) {
         final SelectIdQuery idQ = Prism.getPrismDataSource().createSelectIdQuery();
-        idQ.setMin();
+
         parameters.setMinPrimaryKey(0);
         parameters.setMaxPrimaryKey(0);
+
+        idQ.setMin();
         idQ.setParameters(parameters);
+
         return idQ.execute()[0];
     }
 
@@ -146,24 +154,31 @@ public class ActionsQuery {
     @Deprecated
     public long getMaxIdForQuery(QueryParameters parameters) {
         final SelectIdQuery idQ = Prism.getPrismDataSource().createSelectIdQuery();
-        idQ.setMax();
+
         parameters.setMinPrimaryKey(0);
         parameters.setMaxPrimaryKey(0);
+
+        idQ.setMax();
         idQ.setParameters(parameters);
+
         return idQ.execute()[0];
     }
 
     /**
      * Get min and max in 1 go.
+     * 
      * @param parameters QueryParams
      * @return array with minID at 0 and maxID at 1
      */
     public long[] getQueryExtents(QueryParameters parameters) {
         final SelectIdQuery idQ = Prism.getPrismDataSource().createSelectIdQuery();
-        idQ.setMinMax();
+
         parameters.setMaxPrimaryKey(0);
         parameters.setMinPrimaryKey(0);
+
+        idQ.setMinMax();
         idQ.setParameters(parameters);
+
         return idQ.execute();
     }
 
@@ -175,9 +190,11 @@ public class ActionsQuery {
      */
     public int delete(QueryParameters parameters) {
         final DeleteQuery dqb = Prism.getPrismDataSource().createDeleteQuery();
+
         dqb.setParameters(parameters);
-        dqb.setShouldGroup(false);//make it clear that we dont want to group for deletes
-        dqb.setShouldPause(shouldPauseDB); //will stop recording queue
+        dqb.setShouldGroup(false); // make it clear that we dont want to group for deletes
+        dqb.setShouldPause(shouldPauseDB); // will stop recording queue
+
         return dqb.execute();
     }
 }

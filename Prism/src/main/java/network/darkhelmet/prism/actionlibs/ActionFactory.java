@@ -39,7 +39,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ActionFactory {
-
     /**
      * BlockAction.
      *
@@ -106,7 +105,7 @@ public class ActionFactory {
      * @param player     Offline Player
      */
     public static Handler createBlockChange(String actionType, Location loc, Material oldMat, BlockData oldData,
-                                            Material newMat, BlockData newData, OfflinePlayer player) {
+            Material newMat, BlockData newData, OfflinePlayer player) {
         final BlockChangeAction a = new BlockChangeAction();
         a.setActionType(actionType);
         a.setMaterial(newMat);
@@ -129,7 +128,7 @@ public class ActionFactory {
      * @return Handler.
      */
     public static Handler createBlockChange(String actionType, Material oldMat, BlockData oldData,
-                                            BlockState newState, OfflinePlayer player) {
+            BlockState newState, OfflinePlayer player) {
         final BlockChangeAction a = new BlockChangeAction();
         a.setActionType(actionType);
         a.setBlock(newState);
@@ -150,7 +149,7 @@ public class ActionFactory {
      * @return Handler.
      */
     public static Handler createBlockChange(String actionType, Material oldMat, BlockData oldData,
-                                            BlockState newState, String nonPlayer) {
+            BlockState newState, String nonPlayer) {
         final Handler a = createBlockChange(actionType, oldMat, oldData, newState, (OfflinePlayer) null);
         a.setSourceName(nonPlayer);
         return a;
@@ -168,7 +167,7 @@ public class ActionFactory {
      * @return Handler.
      */
     public static Handler createBlockChange(String actionType, Location loc, Material oldMat, BlockData oldData,
-                                            Material newMat, BlockData newData, String nonPlayer) {
+            Material newMat, BlockData newData, String nonPlayer) {
         final Handler a = createBlockChange(actionType, loc, oldMat, oldData, newMat, newData, (OfflinePlayer) null);
         a.setSourceName(nonPlayer);
         return a;
@@ -188,14 +187,14 @@ public class ActionFactory {
         return a;
     }
 
-
     /**
      * BlockFallAction.
      *
      * @param actionType the action.
-     * @param from null if block starts to fall.
+     * @param from       null if block starts to fall.
      */
-    public static Handler createBlockFall(String actionType, Material material, Material oldMaterial, Location from, Location to, String nonPlayer) {
+    public static Handler createBlockFall(String actionType, Material material, Material oldMaterial, Location from,
+            Location to, String nonPlayer) {
         final BlockFallAction a = new BlockFallAction();
         a.setActionType(actionType);
         a.setSourceName(nonPlayer);
@@ -272,7 +271,7 @@ public class ActionFactory {
      * @return Handler
      */
     public static Handler createEntityTravel(String actionType, Entity entity, Location from, Location to,
-                                             TeleportCause cause) {
+            TeleportCause cause) {
         final EntityTravelAction a = new EntityTravelAction();
         a.setEntity(entity);
         a.setActionType(actionType);
@@ -316,7 +315,8 @@ public class ActionFactory {
      * @param actionType the action
      * @param player     the player
      */
-    public static Handler createPortal(String actionType, BlockState newBlockState, BlockState oldBlockState, OfflinePlayer player) {
+    public static Handler createPortal(String actionType, BlockState newBlockState, BlockState oldBlockState,
+            OfflinePlayer player) {
         final PortalCreateAction a = new PortalCreateAction();
         a.setActionType(actionType);
         a.setLocation(newBlockState.getLocation());
@@ -329,13 +329,14 @@ public class ActionFactory {
     /**
      * PortalCreateHandler.
      *
-     * @param actionType type
+     * @param actionType    type
      * @param newBlockState new state
      * @param oldBlockState old state
-     * @param nonPlayer  nonplayer
+     * @param nonPlayer     nonplayer
      * @return Handler
      */
-    public static Handler createPortal(String actionType, BlockState newBlockState, BlockState oldBlockState, String nonPlayer) {
+    public static Handler createPortal(String actionType, BlockState newBlockState, BlockState oldBlockState,
+            String nonPlayer) {
         final Handler a = createPortal(actionType, newBlockState, oldBlockState, (OfflinePlayer) null);
         a.setSourceName(nonPlayer);
         return a;
@@ -382,7 +383,7 @@ public class ActionFactory {
      * @return handler
      */
     public static Handler createItemStack(String actionType, ItemStack item, Map<Enchantment, Integer> enchantments,
-                                          Location loc, OfflinePlayer player) {
+            Location loc, OfflinePlayer player) {
         return ActionFactory.createItemStack(actionType, item, 1, -1, enchantments, loc, player);
     }
 
@@ -399,7 +400,7 @@ public class ActionFactory {
      * @return handler
      */
     public static Handler createItemStack(String actionType, ItemStack item, int quantity, int slot,
-                                          Map<Enchantment, Integer> enchantments, Location loc, OfflinePlayer player) {
+            Map<Enchantment, Integer> enchantments, Location loc, OfflinePlayer player) {
         final ItemStackAction a = createItemStack(actionType, item, quantity, enchantments, loc, player);
         a.setSlot(String.valueOf(slot));
 
@@ -419,8 +420,8 @@ public class ActionFactory {
      * @return Handler
      */
     public static Handler createItemStack(String actionType, ItemStack item, int quantity, int slot,
-                                          Map<Enchantment, Integer> enchantments,
-                                          Location loc, String sourceName) {
+            Map<Enchantment, Integer> enchantments,
+            Location loc, String sourceName) {
         final ItemStackAction a = new ItemStackAction();
         a.setActionType(actionType);
         a.setLoc(loc);
@@ -443,7 +444,7 @@ public class ActionFactory {
      * @return handler
      */
     public static Handler createItemStack(String actionType, ItemStack item, int quantity, EquipmentSlot slot,
-                                          Map<Enchantment, Integer> enchantments, Location loc, OfflinePlayer player) {
+            Map<Enchantment, Integer> enchantments, Location loc, OfflinePlayer player) {
         final ItemStackAction a = createItemStack(actionType, item, quantity, enchantments, loc, player);
         a.setSlot(slot.name().toLowerCase(Locale.ENGLISH));
 
@@ -451,8 +452,8 @@ public class ActionFactory {
     }
 
     private static ItemStackAction createItemStack(String actionType, ItemStack item, int quantity,
-                                                   Map<Enchantment, Integer> enchantments,
-                                                   Location loc, OfflinePlayer player) {
+            Map<Enchantment, Integer> enchantments,
+            Location loc, OfflinePlayer player) {
         final ItemStackAction a = new ItemStackAction();
         a.setActionType(actionType);
         a.setLoc(loc);
@@ -474,7 +475,7 @@ public class ActionFactory {
      * @return handler
      */
     public static Handler createItemFrame(String actionType, ItemStack item, int quantity, BlockFace attachedFace,
-                                          Map<Enchantment, Integer> enchantments, Location loc, OfflinePlayer player) {
+            Map<Enchantment, Integer> enchantments, Location loc, OfflinePlayer player) {
         final ItemStackAction a = createItemStack(actionType, item, quantity, enchantments, loc, player);
         a.setSlot(attachedFace.name().toLowerCase(Locale.ENGLISH));
         return a;
@@ -524,7 +525,7 @@ public class ActionFactory {
      * @return Handler
      */
     public static Handler createPrismProcess(String actionType, PrismProcessType processType, Player player,
-                                             String parameters) {
+            String parameters) {
         final PrismProcessAction a = new PrismProcessAction();
         a.setActionType(actionType);
         a.setPlayer(player);
@@ -544,7 +545,7 @@ public class ActionFactory {
      * @return Handler
      */
     public static Handler createPrismRollback(String actionType, BlockState oldBlock, BlockState newBlock,
-                                              OfflinePlayer player, long parentId) {
+            OfflinePlayer player, long parentId) {
         final PrismRollbackAction a = new PrismRollbackAction();
         a.setActionType(actionType);
         a.setPlayer(player);

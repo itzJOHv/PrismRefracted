@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 
 public class HandlerRegistry {
-
     private final Collection<Class<? extends Handler>> registeredHandlers = new HashSet<>();
 
     public HandlerRegistry() {
@@ -42,7 +41,6 @@ public class HandlerRegistry {
      */
     public void registerCustomHandler(Plugin apiPlugin, Class<? extends Handler> handlerClass)
             throws InvalidActionException {
-
         final List<String> allowedPlugins = Prism.config.getStringList("prism.tracking.api.allowed-plugins");
         if (!allowedPlugins.contains(apiPlugin.getName())) {
             throw new InvalidActionException("Registering action type not allowed. Plugin '" + apiPlugin.getName()
@@ -71,7 +69,6 @@ public class HandlerRegistry {
     }
 
     private void registerPrismDefaultHandlers() {
-
         registeredHandlers.add(BlockAction.class);
         registeredHandlers.add(BlockChangeAction.class);
         registeredHandlers.add(BlockShiftAction.class);

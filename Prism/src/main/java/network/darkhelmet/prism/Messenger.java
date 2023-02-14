@@ -13,8 +13,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class Messenger {
-
-
     private final AudienceProvider audienceProvider;
     private final String pluginName;
     private static final TextColor defaultColor = TextColor.color(0xb5bcc7);
@@ -41,10 +39,10 @@ public class Messenger {
      */
     public void sendMessage(CommandSender sender, Component message) {
         if (sender instanceof ConsoleCommandSender) {
-            audienceProvider.console().sendMessage(Identity.nil(),message);
+            audienceProvider.console().sendMessage(Identity.nil(), message);
         } else {
             ((BukkitAudiences) audienceProvider).sender(sender).sendMessage(Identity.nil(),
-                  message.colorIfAbsent(defaultColor));
+                    message.colorIfAbsent(defaultColor));
         }
     }
 
@@ -187,10 +185,10 @@ public class Messenger {
 
     /**
      * Send a message to console.
+     * 
      * @param msg the message.
      */
     public void sendConsoleMessage(Component msg) {
-        audienceProvider.console().sendMessage(Identity.nil(),msg);
+        audienceProvider.console().sendMessage(Identity.nil(), msg);
     }
-
 }

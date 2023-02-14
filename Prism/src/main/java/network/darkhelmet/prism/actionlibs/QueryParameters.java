@@ -26,7 +26,6 @@ import java.util.Set;
  * @author botskonet
  */
 public class QueryParameters implements PrismParameters, Cloneable {
-
     private final List<String> defaultsUsed = new ArrayList<>();
     private final List<Location> specificBlockLocations = new ArrayList<>();
     private final EnumSet<Material> blockFilters = EnumSet.noneOf(Material.class);
@@ -61,6 +60,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get Query Id.
+     * 
      * @return the id
      */
     public long getId() {
@@ -69,6 +69,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the Id.
+     * 
      * @param id the id to set
      */
     public void setId(long id) {
@@ -77,6 +78,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the Min Id.
+     * 
      * @return long
      */
     public long getMinPrimaryKey() {
@@ -85,6 +87,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the minimum primary key.
+     * 
      * @param minId long
      */
     public void setMinPrimaryKey(long minId) {
@@ -93,6 +96,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the Max Id.
+     * 
      * @return long
      */
     public long getMaxPrimaryKey() {
@@ -101,6 +105,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the max primary key.
+     * 
      * @param maxId long
      */
     public void setMaxPrimaryKey(long maxId) {
@@ -109,6 +114,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the Entity Filter.
+     * 
      * @return the entity Map
      */
     public Map<String, MatchRule> getEntities() {
@@ -117,7 +123,8 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Add an entity to filter as an include.
-     * @param entity the entity  name to add
+     * 
+     * @param entity the entity name to add
      */
     @SuppressWarnings("unused")
     public void addEntity(String entity) {
@@ -126,6 +133,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Add an entity to filter.
+     * 
      * @param entity the entity to set
      */
     public void addEntity(String entity, MatchRule match) {
@@ -134,6 +142,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the Set of materials to filter.
+     * 
      * @return the block
      */
     public Set<Material> getBlockFilters() {
@@ -141,7 +150,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
     }
 
     /**
-     * Add  block data to the filter.
+     * Add block data to the filter.
      *
      * @param partialData MaterialState the block to set
      */
@@ -151,6 +160,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the block data filters.
+     * 
      * @return the block
      */
     public Set<MaterialState> getBlockDataFilters() {
@@ -168,6 +178,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get a specific list of block locations.
+     * 
      * @return the List.
      */
     public List<Location> getSpecificBlockLocations() {
@@ -176,6 +187,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set a location to the list - clearing all others.
+     * 
      * @param loc the loc to set
      */
     public void setSpecificBlockLocation(Location loc) {
@@ -185,6 +197,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * add a location to the list.
+     * 
      * @param loc the loc to set
      */
     public void addSpecificBlockLocation(Location loc) {
@@ -193,6 +206,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the player location.
+     * 
      * @return the player_location
      */
     public Location getPlayerLocation() {
@@ -200,7 +214,9 @@ public class QueryParameters implements PrismParameters, Cloneable {
     }
 
     /**
-     * Set Min Max Vectors from a location. Sets the player location ot the supplied variable. Uses the set radius.
+     * Set Min Max Vectors from a location. Sets the player location ot the supplied
+     * variable. Uses the set radius.
+     * 
      * @param loc Location.
      */
     public void setMinMaxVectorsFromPlayerLocation(Location loc) {
@@ -221,6 +237,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Gets min location.
+     * 
      * @return Vector
      */
     public Vector getMinLocation() {
@@ -236,6 +253,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get max location vector.
+     * 
      * @return Vector
      */
     public Vector getMaxLocation() {
@@ -251,6 +269,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the radius.
+     * 
      * @return the radius
      */
     public int getRadius() {
@@ -259,6 +278,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the radius.
+     * 
      * @param radius the radius to set
      */
     public void setRadius(int radius) {
@@ -267,6 +287,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get if no radius is allowed.
+     * 
      * @return the allow_no_radius
      */
     public boolean allowsNoRadius() {
@@ -275,6 +296,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set Allow no radius.
+     * 
      * @param allowNoRadius the allow_no_radius to set
      */
     public void setAllowNoRadius(boolean allowNoRadius) {
@@ -283,6 +305,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * get A set of Player names and match rules.
+     * 
      * @return the player
      */
     public Map<String, MatchRule> getPlayerNames() {
@@ -291,6 +314,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * add a player name to the match set rules with a INCLUDE rule.
+     * 
      * @param player the player to set
      */
     public void addPlayerName(String player) {
@@ -298,7 +322,8 @@ public class QueryParameters implements PrismParameters, Cloneable {
     }
 
     /**
-     *  add a player name to the match set rules.
+     * add a player name to the match set rules.
+     * 
      * @param player the player to set
      * @param match  The rule to match
      */
@@ -308,6 +333,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the World name.
+     * 
      * @return the world
      */
     public String getWorld() {
@@ -316,6 +342,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the world name.
+     * 
      * @param world the world to set
      */
     public void setWorld(String world) {
@@ -324,6 +351,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the keyword.
+     * 
      * @return the keyword
      */
     public String getKeyword() {
@@ -332,6 +360,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the keyword.
+     * 
      * @param keyword the world to set
      */
     public void setKeyword(String keyword) {
@@ -340,6 +369,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get a set of actions to match with a match rules.
+     * 
      * @return the Action Type
      */
     public HashMap<String, MatchRule> getActionTypes() {
@@ -348,6 +378,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get a set of actions to match with a match rules.
+     * 
      * @return the Action Type
      * @deprecated use getActionTypes()
      */
@@ -358,6 +389,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Add action type to the filter with include rule.
+     * 
      * @param actionType the action_type to set
      */
     public void addActionType(String actionType) {
@@ -366,8 +398,9 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Add Action type to match with the rule.
+     * 
      * @param actionType the action_type to set
-     * @param match the rule
+     * @param match      the rule
      */
     public void addActionType(String actionType, MatchRule match) {
         this.actionTypeRules.put(actionType, match);
@@ -376,7 +409,6 @@ public class QueryParameters implements PrismParameters, Cloneable {
     /**
      * Remove an action Type.
      */
-    @SuppressWarnings("unused")
     public void removeActionType(ActionType a) {
         actionTypeRules.remove(a.getName());
     }
@@ -384,13 +416,13 @@ public class QueryParameters implements PrismParameters, Cloneable {
     /**
      * Clear all action matches.
      */
-    @SuppressWarnings("unused")
     public void resetActionTypes() {
         actionTypeRules.clear();
     }
 
     /**
      * Get before time.
+     * 
      * @return the time
      */
     public Long getBeforeTime() {
@@ -399,6 +431,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the before time.
+     * 
      * @param epoch the time to set
      */
     public void setBeforeTime(Long epoch) {
@@ -407,6 +440,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the time since.
+     * 
      * @return the time
      */
     public Long getSinceTime() {
@@ -415,6 +449,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the time since.
+     * 
      * @param epoch the time to set
      */
     public void setSinceTime(Long epoch) {
@@ -423,6 +458,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the limit.
+     * 
      * @return the limit
      */
     public int getLimit() {
@@ -431,6 +467,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the limit.
+     * 
      * @param limit the limit to set
      */
     public void setLimit(int limit) {
@@ -439,6 +476,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the lookup type.
+     * 
      * @return the ProcessType
      */
     public PrismProcessType getProcessType() {
@@ -447,6 +485,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the Lookup Type.
+     * 
      * @param lookupType the lookupType to set
      */
     public void setProcessType(PrismProcessType lookupType) {
@@ -455,6 +494,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the Set of Found arguments.
+     * 
      * @return the foundArgs
      */
     public Set<String> getFoundArgs() {
@@ -463,6 +503,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set the Set of arguements.
+     * 
      * @param foundArgs the foundArgs to set
      */
     public void setFoundArgs(Set<String> foundArgs) {
@@ -471,15 +512,16 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the parent id.
+     * 
      * @return long
      */
-    @SuppressWarnings("unused")
     public long getParentId() {
         return parentId;
     }
 
     /**
      * Set the parent id.
+     * 
      * @param id long.
      */
     public void setParentId(long id) {
@@ -510,6 +552,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Check for a flag.
+     * 
      * @param flag Flag
      * @return bool
      */
@@ -519,6 +562,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get results per page.
+     * 
      * @return int.
      */
     @SuppressWarnings("WeakerAccess")
@@ -528,7 +572,8 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set results per page.
-     * @param perPage  int
+     * 
+     * @param perPage int
      */
     public void setPerPage(int perPage) {
         this.perPage = perPage;
@@ -536,6 +581,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Add default.
+     * 
      * @param d default.
      */
     public void addDefaultUsed(String d) {
@@ -544,6 +590,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get Defaukts.
+     * 
      * @return List
      */
     public List<String> getDefaultsUsed() {
@@ -552,7 +599,8 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Set from raw Args.
-     * @param args String[];
+     * 
+     * @param args  String[];
      * @param start position to start at.
      */
     public void setStringFromRawArgs(String[] args, int start) {
@@ -567,6 +615,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     /**
      * Get the original command.
+     * 
      * @return String.
      */
     public String getOriginalCommand() {
@@ -608,7 +657,6 @@ public class QueryParameters implements PrismParameters, Cloneable {
      *
      * @return bool.
      */
-    @SuppressWarnings("unused")
     public boolean getIgnoreTime() {
         return ignoreTime;
     }

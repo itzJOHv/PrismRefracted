@@ -14,22 +14,28 @@ public class VillagerSerializer extends MerchantSerializer {
     @Override
     protected void serializer(Entity entity) {
         Villager villager = (Villager) entity;
+
         profession = villager.getProfession().name().toLowerCase();
         type = villager.getVillagerType().name().toLowerCase();
         level = villager.getVillagerLevel();
         experience = villager.getVillagerExperience();
+
         super.serializer(entity);
     }
 
     @Override
     protected void deserializer(Entity entity) {
         super.deserializer(entity);
+
         Villager villager = (Villager) entity;
+
         villager.setProfession(MiscUtils.getEnum(profession, Profession.FARMER));
         villager.setVillagerType(MiscUtils.getEnum(type, Villager.Type.PLAINS));
+
         if (level != -1) {
             villager.setVillagerLevel(level);
         }
+
         if (experience != -1) {
             villager.setVillagerExperience(experience);
         }

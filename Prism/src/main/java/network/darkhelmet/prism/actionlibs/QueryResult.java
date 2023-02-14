@@ -7,7 +7,6 @@ import network.darkhelmet.prism.api.actions.Handler;
 import java.util.List;
 
 public class QueryResult implements Result {
-
     protected final PrismParameters parameters;
     private final int totalResults;
     protected int page = 1;
@@ -24,7 +23,6 @@ public class QueryResult implements Result {
      * @param parameters params
      */
     public QueryResult(List<Handler> actions, PrismParameters parameters) {
-
         this.actionResults = actions;
         this.parameters = parameters;
 
@@ -33,7 +31,6 @@ public class QueryResult implements Result {
         // set counts
         totalResults = actionResults.size();
         setPerPage(perPage); // does the total pages calc
-
     }
 
     public void setQueryTime() {
@@ -51,7 +48,6 @@ public class QueryResult implements Result {
      * @return Handler List.
      */
     public List<Handler> getPaginatedActionResults() {
-
         int limit = (page * perPage);
         final int offset = (limit - perPage);
 

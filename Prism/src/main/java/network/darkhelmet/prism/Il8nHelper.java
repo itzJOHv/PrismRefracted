@@ -25,16 +25,18 @@ public class Il8nHelper {
 
     /**
      * Returns a TextComponent un-styled from the give key.
+     * 
      * @param key String
      * @return TextComponent
      */
     public static TextComponent getMessage(@PropertyKey(resourceBundle = "languages.message") String key,
-                                           String extra) {
+            String extra) {
         return Component.text(getRawMessage(key) + extra);
     }
 
     /**
      * Returns a raw string message.
+     * 
      * @param key String
      * @return String
      */
@@ -51,13 +53,15 @@ public class Il8nHelper {
     }
 
     /**
-     * Produces a TexComponent that can accept typical java String.format type replacement before its created.
-     * @param key Il8n key
+     * Produces a TexComponent that can accept typical java String.format type
+     * replacement before its created.
+     * 
+     * @param key  Il8n key
      * @param args Object to insert.
      * @return TextComponent
      */
     public static TextComponent formatMessage(@PropertyKey(resourceBundle = "languages.message") String key,
-                                              Object... args) {
+            Object... args) {
         if (resourceBundle == null) {
             return Component.text(key);
         }

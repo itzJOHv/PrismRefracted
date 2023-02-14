@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class InternalAffairs implements Runnable {
-
     private final Prism plugin;
 
     public InternalAffairs(Prism plugin) {
@@ -18,9 +17,7 @@ public class InternalAffairs implements Runnable {
 
     @Override
     public void run() {
-
         if (plugin.recordingTask != null) {
-
             final int taskId = plugin.recordingTask.getTaskId();
 
             final BukkitScheduler scheduler = Bukkit.getScheduler();

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class ApiHandler {
-
     public enum WEType {
         WORLDEDIT("WorldEdit", EditSession.Stage.BEFORE_REORDER),
         ASYNC_WORLDEDIT("AsyncWorldEdit", EditSession.Stage.BEFORE_REORDER),
@@ -75,7 +74,7 @@ public class ApiHandler {
     static boolean checkDependency(String pluginName) {
         return ApiHandler.enabledPlugins.contains(pluginName);
     }
-    
+
     static boolean disableWorldEditHook() {
         if (worldEditPlugin != null) {
             try {

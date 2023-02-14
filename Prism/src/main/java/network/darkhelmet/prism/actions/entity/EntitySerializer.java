@@ -14,7 +14,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class EntitySerializer {
-    //@todo remove alternates after 2.1.7 release
+    // @todo remove alternates after 2.1.7 release
     protected Boolean isAdult = null;
     protected Boolean sitting = null;
 
@@ -46,6 +46,7 @@ public class EntitySerializer {
 
     /**
      * Serialize entity.
+     * 
      * @param entity Entity.
      */
     public final void serialize(Entity entity) {
@@ -94,6 +95,7 @@ public class EntitySerializer {
 
     /**
      * Deserialize.
+     * 
      * @param entity Entity
      */
     public final void deserialize(Entity entity) {
@@ -105,12 +107,14 @@ public class EntitySerializer {
         // Get animal age
         if (entity instanceof Ageable) {
             final Ageable age = (Ageable) entity;
+
             if (Boolean.FALSE.equals(isAdult)) {
                 age.setBaby();
             } else {
                 age.setAdult();
             }
         }
+
         // Owner
         if (entity instanceof Tameable) {
             ((Tameable) entity).setOwner(EntityUtils.offlineOf(tamingOwner));
@@ -130,10 +134,11 @@ public class EntitySerializer {
     @Override
     public final String toString() {
         StringBuilder sb = new StringBuilder();
+
         int index = 0;
         if (tamingOwner != null) {
-
             OfflinePlayer player = EntityUtils.offlineOf(tamingOwner);
+
             if (player != null) {
                 String str = player.getName() + "'s ";
                 sb.append(str);

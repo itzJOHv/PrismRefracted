@@ -100,7 +100,6 @@ import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
 public class Prism extends JavaPlugin implements PrismApi {
-
     public static final ConcurrentHashMap<String, Wand> playersWithActiveTools = new ConcurrentHashMap<>();
     public static final HashMap<String, Integer> prismWorlds = new HashMap<>();
     public static final HashMap<UUID, PrismPlayer> prismPlayers = new HashMap<>();
@@ -177,6 +176,7 @@ public class Prism extends JavaPlugin implements PrismApi {
      */
     public static void setDebug(boolean debug) {
         Prism.debug = debug;
+
         if (debug && (debugWatcher == null || debugWatcher.isCancelled())) {
             debugWatcher = Bukkit.getScheduler().runTaskTimerAsynchronously(Prism.getInstance(), () -> {
                 for (Player p : Bukkit.getOnlinePlayers()) {
@@ -275,7 +275,8 @@ public class Prism extends JavaPlugin implements PrismApi {
 
     /**
      * Registers a parameter and a handler. Example:
-     * pr l a:block-break. The "a" is an action, and the action handler will process what
+     * pr l a:block-break. The "a" is an action, and the action handler will process
+     * what
      * "block-break" refers to.
      *
      * @param handler PrismParameterHandler.
@@ -392,7 +393,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         messenger = new Messenger(pluginName, Prism.getAudiences());
         log("Initializing Prism " + pluginVersion + ". by viveleroi");
         serverMajorVersion = Byte.parseByte(Bukkit.getServer().getBukkitVersion().split("\\.")[1].split("-")[0]);
-        loadConfig();        // Load configuration, or install if new
+        loadConfig(); // Load configuration, or install if new
         isPaper = PaperLib.isPaper();
         if (isPaper) {
             Prism.log("Optional Paper Events will be enabled.");
@@ -425,7 +426,6 @@ public class Prism extends JavaPlugin implements PrismApi {
         final BukkitTask updating = Bukkit.getScheduler().runTaskTimerAsynchronously(instance, () -> {
             if (!isEnabled()) {
                 warn("Prism is loading and updating the database; logging is NOT enabled");
-
             }
         }, 100, 200);
 
@@ -529,7 +529,7 @@ public class Prism extends JavaPlugin implements PrismApi {
             getServer().getPluginManager().registerEvents(new PrismWorldEvents(), this);
             getServer().getPluginManager().registerEvents(new PrismPlayerEvents(this), this);
             if (isPaper) {
-                //register listeners that only work with paper.
+                // register listeners that only work with paper.
                 getServer().getPluginManager().registerEvents(new PaperListeners(this), this);
             }
             getServer().getPluginManager().registerEvents(new PrismInventoryEvents(this), this);
@@ -775,16 +775,17 @@ public class Prism extends JavaPlugin implements PrismApi {
      *
      * @param player    Player which caused the alert
      * @param msg       Alert message
-     * @param alertPerm Players with this permission (or prism.alerts) will receive the alert
+     * @param alertPerm Players with this permission (or prism.alerts) will receive
+     *                  the alert
      */
     public void alertPlayers(Player player, Component msg, String alertPerm) {
         for (final Player p : getServer().getOnlinePlayers()) {
             if ((!p.equals(player) || getConfig().getBoolean("prism.alerts.alert-player-about-self"))
-                  && (p.hasPermission("prism.alerts") || (alertPerm != null && p.hasPermission(alertPerm)))) {
+                    && (p.hasPermission("prism.alerts") || (alertPerm != null && p.hasPermission(alertPerm)))) {
                 TextComponent prefix = Il8nHelper.getMessage("alert-prefix")
-                            .color(NamedTextColor.RED)
-                            .append(Component.text(" "))
-                            .append(msg);
+                        .color(NamedTextColor.RED)
+                        .append(Component.text(" "))
+                        .append(msg);
                 audiences.player(p).sendMessage(Identity.nil(), prefix);
             }
         }
@@ -862,7 +863,6 @@ public class Prism extends JavaPlugin implements PrismApi {
     }
 
     private static class PrismFileHandler extends FileHandler {
-
         public PrismFileHandler(File file) throws IOException, SecurityException {
             super(file.toString());
             setEncoding("UTF-8");
@@ -870,24 +870,26 @@ public class Prism extends JavaPlugin implements PrismApi {
                 @Override
                 public synchronized String format(LogRecord lr) {
                     boolean mt = Bukkit.isPrimaryThread();
+
                     String thread;
                     if (mt) {
                         thread = "[M]";
                     } else {
-                        thread = "[" + lr.getThreadID() + "]";
+                        thread = "[" + lr.getLongThreadID() + "]";
                     }
+
                     String thrown;
                     if (lr.getThrown() == null) {
                         thrown = "";
                     } else {
                         thrown = lr.getThrown().toString();
                     }
+
                     return String.format("[%1$tF %1$tT] [%2$-7s] " + thread + " %3$s%4$s%n",
                             new Date(lr.getMillis()),
                             lr.getLevel().getLocalizedName(),
                             lr.getMessage(),
-                            thrown
-                    );
+                            thrown);
                 }
             });
         }

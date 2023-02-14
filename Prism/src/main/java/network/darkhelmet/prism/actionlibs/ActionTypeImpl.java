@@ -4,7 +4,6 @@ import network.darkhelmet.prism.api.actions.ActionType;
 import network.darkhelmet.prism.api.actions.Handler;
 
 public class ActionTypeImpl implements ActionType {
-
     private final boolean doesCreateBlock;
     private final boolean canRollback;
     private final boolean canRestore;
@@ -13,13 +12,13 @@ public class ActionTypeImpl implements ActionType {
     private final String name;
 
     /**
-     * Create An ActionType. -  it cant be restored rolled back and doesnt create a block.
+     * Create An ActionType. - it cant be restored rolled back and doesnt create a
+     * block.
      *
      * @param name            Name
      * @param handler         Handler
      * @param niceDescription nice description.
      */
-    @SuppressWarnings("unused")
     public ActionTypeImpl(String name, Class<? extends Handler> handler, String niceDescription) {
         this(name, false, false, false, handler, niceDescription);
     }
@@ -35,7 +34,7 @@ public class ActionTypeImpl implements ActionType {
      * @param niceDescription nice description.
      */
     public ActionTypeImpl(String name, boolean doesCreateBlock, boolean canRollback, boolean canRestore,
-                          Class<? extends Handler> handler, String niceDescription) {
+            Class<? extends Handler> handler, String niceDescription) {
         this.doesCreateBlock = doesCreateBlock;
         this.canRollback = canRollback;
         this.canRestore = canRestore;
@@ -66,7 +65,8 @@ public class ActionTypeImpl implements ActionType {
     }
 
     /**
-     *  Checks if an Action requires a specific handler.
+     * Checks if an Action requires a specific handler.
+     * 
      * @param handler Handler
      * @return boolean
      */
@@ -85,6 +85,7 @@ public class ActionTypeImpl implements ActionType {
 
     /**
      * Get the Class family name.
+     * 
      * @return String
      */
     String getFamilyName() {
@@ -97,6 +98,7 @@ public class ActionTypeImpl implements ActionType {
 
     /**
      * Get the Class Short name.
+     * 
      * @return String
      */
     public String getShortName() {
@@ -106,5 +108,4 @@ public class ActionTypeImpl implements ActionType {
         }
         return name;
     }
-
 }

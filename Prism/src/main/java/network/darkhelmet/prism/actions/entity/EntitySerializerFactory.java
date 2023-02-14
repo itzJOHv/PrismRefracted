@@ -6,8 +6,8 @@ import java.util.EnumMap;
 
 public class EntitySerializerFactory {
     private static EntitySerializerFactory factory = null;
-    private final EnumMap<EntityType, Class<? extends EntitySerializer>> entitySerializers =
-            new EnumMap<>(EntityType.class);
+    private final EnumMap<EntityType, Class<? extends EntitySerializer>> entitySerializers = new EnumMap<>(
+            EntityType.class);
 
     private EntitySerializerFactory() {
         entitySerializers.put(EntityType.HORSE, AbstractHorseSerializer.class);
@@ -45,11 +45,13 @@ public class EntitySerializerFactory {
 
     /**
      * Get a serializer class for entity.
+     * 
      * @param type EntityType
      * @return EntitySerializer
      */
     public static EntitySerializer getSerializer(EntityType type) {
         Class<? extends EntitySerializer> clazz = getSerlializingClass(type);
+
         try {
             return clazz.getConstructor().newInstance();
         } catch (Exception e) {

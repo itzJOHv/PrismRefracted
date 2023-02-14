@@ -9,7 +9,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -50,37 +50,40 @@ public class ActionMessage {
         String format1 = "<prefix> <handlerId> <target> <actor> <extendedInfo><actorNice><count>"
                 + "<timeDiff> <location>";
         ActionType action = handler.getActionType();
-        return PlainComponentSerializer.plain().serialize(getMainMessage(action, format1));
+
+        return PlainTextComponentSerializer.plainText().serialize(getMainMessage(action, format1));
     }
 
     private TextComponent getMainMessage(ActionType action, String format1) {
         final TextColor highlight = NamedTextColor.DARK_AQUA;
+
         TextComponent out = Component.text().content(format1).build();
         Component result = out.replaceFirstText(Pattern.compile("<prefix>"), builder -> getPosNegPrefix())
                 .replaceFirstText(Pattern.compile("<index>"),
-                      builder -> builder.content("[" + index + "]").color(NamedTextColor.GRAY))
+                        builder -> builder.content("[" + index + "]").color(NamedTextColor.GRAY))
                 .replaceFirstText(Pattern.compile("<target>"),
-                      builder -> Component.text().content(handler.getSourceName()).color(highlight))
+                        builder -> Component.text().content(handler.getSourceName()).color(highlight))
                 .replaceFirstText(Pattern.compile("<description>"),
-                      builder -> Component.text().content(getDescription((ActionTypeImpl)action))
-                              .color(NamedTextColor.WHITE))
+                        builder -> Component.text().content(getDescription((ActionTypeImpl) action))
+                                .color(NamedTextColor.WHITE))
                 .replaceFirstText(Pattern.compile("<actorNice>"),
-                        builder -> getActor((ActionTypeImpl)action, highlight))
+                        builder -> getActor((ActionTypeImpl) action, highlight))
                 .replaceFirstText(Pattern.compile("<actor>"),
-                      builder -> Component.text().content(action.getName()))
+                        builder -> Component.text().content(action.getName()))
                 .replaceFirstText(Pattern.compile("<extendedInfo>"),
-                      builder -> Component.text().append(getExtendedInfo()))
+                        builder -> Component.text().append(getExtendedInfo()))
                 .replaceFirstText(Pattern.compile("<timeDiff>"),
-                      builder -> Component.text().append(getTimeDiff()))
+                        builder -> Component.text().append(getTimeDiff()))
                 .replaceFirstText(Pattern.compile("<count>"),
-                      builder -> Component.text().append(getCount()))
+                        builder -> Component.text().append(getCount()))
                 .replaceFirstText(Pattern.compile("<actionType>"),
-                      builder -> Component.text()
-                             .content("(a:" + action.getShortName() + ")")
-                             .color(NamedTextColor.GRAY))
+                        builder -> Component.text()
+                                .content("(a:" + action.getShortName() + ")")
+                                .color(NamedTextColor.GRAY))
                 .replaceFirstText(Pattern.compile("<handlerId>"),
-                      builder -> Component.text(handler.getId()).toBuilder()
+                        builder -> Component.text(handler.getId()).toBuilder()
                                 .color(NamedTextColor.GRAY));
+
         return Component.text()
                 .content("")
                 .append(result)
@@ -88,7 +91,6 @@ public class ActionMessage {
                         .color(NamedTextColor.DARK_AQUA)))
                 .clickEvent(ClickEvent.runCommand("/pr tp " + index))
                 .build();
-
     }
 
     /**
@@ -97,42 +99,47 @@ public class ActionMessage {
      * @return String[]
      */
     public TextComponent getMessage() {
-        String format1 =
-                "<prefix> <index> <target> <description> <actorNice><extendedInfo><count><timeDiff> <actionType>";
+        String format1 = "<prefix> <index> <target> <description> <actorNice><extendedInfo><count><timeDiff> <actionType>";
         String format2 = "-<handlerId>- <dateTime> - <location>";
+
         ActionType action = handler.getActionType();
         TextComponent out = getMainMessage(action, format1);
+
         if (showExtended) {
             out = out.append(Component.newline());
             Component line2 = Component.text().content(format2).build()
                     .replaceFirstText(Pattern.compile("<handlerId>"),
-                          builder -> Component.text(handler.getId()).toBuilder()
+                            builder -> Component.text(handler.getId()).toBuilder()
                                     .color(NamedTextColor.GRAY))
                     .replaceFirstText(Pattern.compile("<dateTime>"),
-                          builder -> Component.text()
+                            builder -> Component.text()
                                     .content(handler.getDisplayDate() + " " + handler.getDisplayTime()))
                     .replaceFirstText(Pattern.compile("<location>"),
-                          builder -> Component.text().content(getFormattedLocation()));
+                            builder -> Component.text().content(getFormattedLocation()));
             out = out.append(line2);
         }
+
         return out;
     }
 
     private String getFormattedLocation() {
         Location l = handler.getLoc();
+
         if (l.getWorld() != null) {
             return l.getWorld().getName() + "@ " + l.getBlockX() + " "
                     + l.getBlockY() + " " + l.getBlockZ();
         }
+
         return "INVALID";
     }
 
-
     private String getDescription(ActionTypeImpl action) {
         String description = handler.getCustomDesc();
+
         if (description == null) {
             description = action.getNiceDescription();
         }
+
         return description;
     }
 
@@ -140,11 +147,13 @@ public class ActionMessage {
         if (showExtended && (handler.getMaterial() != Material.AIR)) {
             return Component.text(handler.getMaterial() + Utilities.dataString(handler.getBlockData()) + " ");
         }
+
         return Component.empty();
     }
 
     private TextComponent.Builder getActor(ActionTypeImpl action, TextColor highlight) {
         String target = "";
+
         if (action.getHandler() != null) {
             if (!handler.getNiceName().isEmpty()) {
                 target = handler.getNiceName() + " ";
@@ -157,9 +166,10 @@ public class ActionMessage {
             } else if (action.getName().equals("water-bucket")) {
                 target = "water ";
             } else if (action.getName().equals("powdersnow-bucket")) {
-            target = "powder snow ";
+                target = "powder snow ";
             }
         }
+
         return Component.text()
                 .content(target)
                 .color(highlight);
@@ -169,6 +179,7 @@ public class ActionMessage {
         if (handler.getAggregateCount() > 1) {
             return Component.text("x" + handler.getAggregateCount() + " ");
         }
+
         return Component.empty();
     }
 

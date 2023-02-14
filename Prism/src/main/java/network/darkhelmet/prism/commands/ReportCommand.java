@@ -59,7 +59,7 @@ public class ReportCommand extends AbstractCommand {
 
         if (call.getArgs().length < 2) {
             Prism.messenger.sendMessage(call.getSender(),
-                  Prism.messenger.playerError(Il8nHelper.getMessage("report-error")));
+                    Prism.messenger.playerError(Il8nHelper.getMessage("report-error")));
             return;
         }
 
@@ -114,7 +114,8 @@ public class ReportCommand extends AbstractCommand {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-report-queue"),
+        return new String[] {
+                Il8nHelper.getRawMessage("help-report-queue"),
                 Il8nHelper.getRawMessage("help-report-db"),
                 Il8nHelper.getRawMessage("help-report-player")
         };
@@ -131,9 +132,9 @@ public class ReportCommand extends AbstractCommand {
                 Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("report-queue-header")));
 
         Prism.messenger.sendMessage(sender,
-              Prism.messenger.playerMsg(ReplaceableTextComponent.builder("report-actions-queue")
-                    .replace("<size>", RecordingQueue.getQueueSize())
-                    .build()));
+                Prism.messenger.playerMsg(ReplaceableTextComponent.builder("report-actions-queue")
+                        .replace("<size>", RecordingQueue.getQueueSize())
+                        .build()));
 
         final ConcurrentSkipListMap<Long, QueueStats.TaskRunInfo> runs = plugin.queueStats.getRecentRunCounts();
         if (runs.size() > 0) {
@@ -156,23 +157,23 @@ public class ReportCommand extends AbstractCommand {
                 Il8nHelper.getMessage("report-database-header")));
 
         Prism.messenger.sendMessage(sender, Prism.messenger
-              .playerMsg(ReplaceableTextComponent.builder("report-database-failureCount")
-                    .replace("<count>", RecordingManager.failedDbConnectionCount)
-                    .build()));
+                .playerMsg(ReplaceableTextComponent.builder("report-database-failureCount")
+                        .replace("<count>", RecordingManager.failedDbConnectionCount)
+                        .build()));
         Prism.messenger.sendMessage(sender,
-              Prism.messenger.playerMsg(ReplaceableTextComponent.builder("report-actions-queue")
-                    .replace("<size>", RecordingQueue.getQueueSize())
-                    .build()));
+                Prism.messenger.playerMsg(ReplaceableTextComponent.builder("report-actions-queue")
+                        .replace("<size>", RecordingQueue.getQueueSize())
+                        .build()));
         if (Prism.getPrismDataSource().getDataSource() instanceof HikariDataSource) {
             HikariDataSource ds = (HikariDataSource) Prism.getPrismDataSource().getDataSource();
             Prism.messenger.sendMessage(sender, Prism.messenger.playerMsg(ReplaceableTextComponent
-                  .builder("report-hikari-props")
-                  .replace("<total>", ds.getHikariPoolMXBean().getTotalConnections())
-                  .replace("<activeConnections>", ds.getHikariPoolMXBean().getActiveConnections())
-                  .replace("<idleConnections>", ds.getHikariPoolMXBean().getIdleConnections())
-                  .replace("<minIdleConnections>", ds.getMinimumIdle())
-                  .replace("<maxIdleConnections>", ds.getMaximumPoolSize())
-                  .build()));
+                    .builder("report-hikari-props")
+                    .replace("<total>", ds.getHikariPoolMXBean().getTotalConnections())
+                    .replace("<activeConnections>", ds.getHikariPoolMXBean().getActiveConnections())
+                    .replace("<idleConnections>", ds.getHikariPoolMXBean().getIdleConnections())
+                    .replace("<minIdleConnections>", ds.getMinimumIdle())
+                    .replace("<maxIdleConnections>", ds.getMaximumPoolSize())
+                    .build()));
         }
 
         boolean recorderActive = checkRecorderActive(plugin);
@@ -201,23 +202,22 @@ public class ReportCommand extends AbstractCommand {
             }
         } catch (final SQLException e) {
             Prism.messenger.sendMessage(sender, Prism.messenger
-                  .playerError(ReplaceableTextComponent.builder("exception-message")
-                        .replace("<message>", e.getLocalizedMessage())
-                        .build()));
+                    .playerError(ReplaceableTextComponent.builder("exception-message")
+                            .replace("<message>", e.getLocalizedMessage())
+                            .build()));
             e.printStackTrace();
         }
     }
-
 
     private void blockSumReports(final CallInfo call) {
 
         // Process and validate all of the arguments
         final QueryParameters parameters = PreprocessArgs.process(plugin, call.getSender(), call.getArgs(),
-              PrismProcessType.LOOKUP, 3, !plugin.getConfig().getBoolean("prism.queries.never-use-defaults"));
+                PrismProcessType.LOOKUP, 3, !plugin.getConfig().getBoolean("prism.queries.never-use-defaults"));
         if (parameters == null) {
             Prism.getAudiences().sender(call.getSender())
                     .sendMessage(Identity.nil(),
-                          Prism.messenger.playerError(Il8nHelper.getMessage("report-player-error")));
+                            Prism.messenger.playerError(Il8nHelper.getMessage("report-player-error")));
             return;
         }
         // No actions
@@ -228,8 +228,8 @@ public class ReportCommand extends AbstractCommand {
         final BlockReportQuery reportQuery = Prism.getPrismDataSource().createBlockReportQuery();
         reportQuery.setParameters(parameters);
         /*
-          Run the lookup itself in an async task so the lookup query isn't done on the
-          main thread
+         * Run the lookup itself in an async task so the lookup query isn't done on the
+         * main thread
          */
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> reportQuery.report(call.getSender()));
     }
@@ -256,8 +256,8 @@ public class ReportCommand extends AbstractCommand {
 
         // Process and validate all of the arguments
         final QueryParameters parameters = PreprocessArgs.process(plugin, call.getSender(), call.getArgs(),
-              PrismProcessType.LOOKUP, 3,
-              !plugin.getConfig().getBoolean("prism.queries.never-use-defaults"));
+                PrismProcessType.LOOKUP, 3,
+                !plugin.getConfig().getBoolean("prism.queries.never-use-defaults"));
         if (parameters == null) {
             return;
         }

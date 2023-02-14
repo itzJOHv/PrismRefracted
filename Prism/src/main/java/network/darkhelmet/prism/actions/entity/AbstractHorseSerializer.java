@@ -47,12 +47,14 @@ public class AbstractHorseSerializer extends EntitySerializer {
         if (entity instanceof ChestedHorse) {
             chest = ((ChestedHorse) entity).isCarryingChest();
         }
+
         dom = h.getDomestication();
         maxDom = h.getMaxDomestication();
         jump = h.getJumpStrength();
         maxHealth = h.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 
         AttributeInstance attributeInstance = h.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+
         if (attributeInstance != null) {
             movementSpeed = attributeInstance.getBaseValue();
         }
@@ -94,6 +96,7 @@ public class AbstractHorseSerializer extends EntitySerializer {
         h.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 
         AttributeInstance attributeInstance = h.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+
         if (attributeInstance != null) {
             attributeInstance.setBaseValue(movementSpeed);
         }

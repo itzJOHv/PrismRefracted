@@ -6,7 +6,6 @@ import network.darkhelmet.prism.api.actions.Handler;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class RecordingQueue {
-
     private static final LinkedBlockingQueue<Handler> queue = new LinkedBlockingQueue<>();
 
     public static int getQueueSize() {
@@ -19,7 +18,6 @@ public class RecordingQueue {
      * @param a handler to add
      */
     public static void addToQueue(final Handler a) {
-
         if (a == null) {
             return;
         }
@@ -28,7 +26,6 @@ public class RecordingQueue {
             return;
         }
         queue.add(a);
-
     }
 
     /**

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class Ignore {
-
     private final Prism plugin;
     private final List<String> ignorePlayers;
     private final boolean ignorePlayersWhiteList;
@@ -33,14 +32,15 @@ public class Ignore {
     }
 
     /**
-     * Check event type.  This checks to see if an event was configured for tracking - in effect it is an inverted
-     * check.  You could just call the config instead..  but this does report to debug if the action is not tracked.
+     * Check event type. This checks to see if an event was configured for tracking
+     * - in effect it is an inverted
+     * check. You could just call the config instead.. but this does report to debug
+     * if the action is not tracked.
      *
      * @param actionTypeName type.
      * @return boolean
      */
     public boolean event(String actionTypeName) {
-
         // Always track Prism actions - it's mainly internal
         if (actionTypeName.contains("prism")) {
             return true;
@@ -75,7 +75,6 @@ public class Ignore {
      * @return boolean.
      */
     public boolean event(String actionTypeName, Player player) {
-
         if (!event(actionTypeName, player.getWorld())) {
             return false;
         }
@@ -98,7 +97,6 @@ public class Ignore {
      * @return boolean
      */
     public boolean event(Player player) {
-
         if (player == null) {
             Prism.debug("Player is null will be ignored");
             return false;
@@ -140,7 +138,6 @@ public class Ignore {
      * @return boolean.
      */
     public boolean event(String actionTypeName, World world) {
-
         // Should we ignore this world?
         if (ignoreWorlds != null && ignoreWorlds.contains(world.getName()) != ignoreWorldsWhiteList) {
             Prism.debug("World is being ignored, per config: " + world.getName());
@@ -148,6 +145,5 @@ public class Ignore {
         }
 
         return event(actionTypeName);
-
     }
 }

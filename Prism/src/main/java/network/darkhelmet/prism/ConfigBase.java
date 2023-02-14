@@ -10,8 +10,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class ConfigBase {
-
-
     protected final Plugin plugin;
     protected FileConfiguration config;
 
@@ -28,7 +26,6 @@ public class ConfigBase {
         config = plugin.getConfig();
         return config;
     }
-
 
     /**
      * Returns base directory for config.

@@ -7,8 +7,6 @@ import network.darkhelmet.prism.settings.Settings;
 import java.util.ArrayList;
 
 public class DatabaseUpdater {
-
-
     protected final Prism plugin;
     private final int currentDbSchemaVersion = 8;
     private final ArrayList<Runnable> updates = new ArrayList<>(currentDbSchemaVersion);
@@ -42,7 +40,6 @@ public class DatabaseUpdater {
      * Run any queries lower than current currentDbSchemaVersion.
      */
     void applyUpdates() {
-
         int clientSchemaVer = getClientDbSchemaVersion();
 
         for (int i = clientSchemaVer; i < currentDbSchemaVersion; ++i) {

@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class ActionRegistry {
-
     private final TreeMap<String, ActionTypeImpl> registeredActions = new TreeMap<>();
 
     public ActionRegistry() {
@@ -46,22 +45,25 @@ public class ActionRegistry {
     }
 
     /**
-     * Register a new action type for event recording, lookups, etc.  Actions must have a name with
-     * 2 hyphens.  And the plugin must be on the allowed list of plugins.
+     * Register a new action type for event recording, lookups, etc. Actions must
+     * have a name with
+     * 2 hyphens. And the plugin must be on the allowed list of plugins.
      *
      * @param actionType type
      * @throws InvalidActionException if action not allowed.
      */
-    @SuppressWarnings("unused")
     public void registerCustomAction(Plugin apiPlugin, ActionTypeImpl actionType) throws InvalidActionException {
         final List<String> allowedPlugins = Prism.config.getStringList("prism.tracking.api.allowed-plugins");
+
         if (!allowedPlugins.contains(apiPlugin.getName())) {
             throw new InvalidActionException("Registering action type not allowed. Plugin '" + apiPlugin.getName()
                     + "' is not in list of allowed plugins.");
         }
+
         if (TypeUtils.subStrOccurences(actionType.getName(), "-") != 2) {
             throw new InvalidActionException("Invalid action type. Custom actions must contain two hyphens.");
         }
+
         Prism.getPrismDataSource().addActionName(actionType.getName());
         registeredActions.put(actionType.getName(), actionType);
     }
@@ -82,6 +84,7 @@ public class ActionRegistry {
      */
     public ArrayList<ActionTypeImpl> getActionsByShortName(String name) {
         final ArrayList<ActionTypeImpl> actions = new ArrayList<>();
+
         for (final Entry<String, ActionTypeImpl> entry : registeredActions.entrySet()) {
             // Match either the name or the short name
             if (entry.getValue().getFamilyName().equals(name) || entry.getValue().getShortName().equals(name)
@@ -89,6 +92,7 @@ public class ActionRegistry {
                 actions.add(entry.getValue());
             }
         }
+
         return actions;
     }
 
@@ -99,11 +103,13 @@ public class ActionRegistry {
      */
     public String[] listAll() {
         final String[] names = new String[registeredActions.size()];
+
         int i = 0;
         for (final Entry<String, ActionTypeImpl> entry : registeredActions.entrySet()) {
             names[i] = entry.getKey();
             i++;
         }
+
         return names;
     }
 
@@ -112,14 +118,15 @@ public class ActionRegistry {
      *
      * @return list
      */
-    @SuppressWarnings("unused")
     public ArrayList<String> listActionsThatAllowRollback() {
         final ArrayList<String> names = new ArrayList<>();
+
         for (final Entry<String, ActionTypeImpl> entry : registeredActions.entrySet()) {
             if (entry.getValue().canRollback()) {
                 names.add(entry.getKey());
             }
         }
+
         return names;
     }
 
@@ -128,19 +135,19 @@ public class ActionRegistry {
      *
      * @return list
      */
-    @SuppressWarnings("unused")
     public ArrayList<String> listActionsThatAllowRestore() {
         final ArrayList<String> names = new ArrayList<>();
+
         for (final Entry<String, ActionTypeImpl> entry : registeredActions.entrySet()) {
             if (entry.getValue().canRestore()) {
                 names.add(entry.getKey());
             }
         }
+
         return names;
     }
 
     private void registerPrismDefaultActions() {
-
         registerAction(new ActionTypeImpl("block-break", false, true, true,
                 BlockAction.class, Il8nHelper.getRawMessage("broke")));
         registerAction(new ActionTypeImpl("block-burn", false, true, true,
@@ -305,6 +312,7 @@ public class ActionRegistry {
                 BlockChangeAction.class, Il8nHelper.getRawMessage("edited")));
         registerAction(new ActionTypeImpl("xp-pickup", false, false, false,
                 PlayerAction.class, Il8nHelper.getRawMessage("picked-up")));
+
         if (Prism.isPaper) {
             registerAction(new ActionTypeImpl("target-hit", false, false, false,
                     BlockAction.class, Il8nHelper.getRawMessage("hit_and_triggered")));
