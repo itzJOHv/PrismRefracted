@@ -34,16 +34,12 @@ public class QueueDrain {
 
         final RecordingTask recorderTask = new RecordingTask(plugin);
 
-        // Faster drain
-        // RecordingTask.setActionsPerInsert(15000);
+        RecordingTask.setActionsPerInsert(256);
         Prism.getInstance().getConfig().set("prism.query.max-failures-before-wait", 10);
         Prism.getInstance().getConfig().set("prism.query.queue-empty-tick-delay", 0);
 
-        // Force queue to empty
-        while (!RecordingQueue.getQueue().isEmpty()) {
-
+        if (!RecordingQueue.getQueue().isEmpty()) {
             Prism.log("Starting drain batch...");
-            Prism.log("Current queue size: " + RecordingQueue.getQueue().size());
 
             Timer timer = new Timer();
             TimerTask task = new TimerTask() {
@@ -52,8 +48,12 @@ public class QueueDrain {
                     Prism.log("Current queue size: " + RecordingQueue.getQueue().size());
                 }
             };
-            timer.schedule(task, 5000, 5000);
 
+            timer.schedule(task, 0, 5000);
+        }
+
+        // Force queue to empty
+        while (!RecordingQueue.getQueue().isEmpty()) {
             if (Prism.getPrismDataSource().isPaused()) {
                 Prism.getPrismDataSource().setPaused(false);
                 Prism.log("Force unpaused the recorder for drain.");
