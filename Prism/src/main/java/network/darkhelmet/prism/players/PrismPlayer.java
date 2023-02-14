@@ -5,26 +5,26 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class PrismPlayer {
-
     private int playerId;
     private String player;
     private UUID playerUuid;
 
     /**
      * Constructor.
+     * 
      * @param playerId int
-     * @param player Player
+     * @param player   Player
      */
-    @SuppressWarnings("unused")
     public PrismPlayer(int playerId, Player player) {
         this(playerId, player.getUniqueId(), player.getName());
     }
 
     /**
      * Constructor.
-     * @param playerId int
+     * 
+     * @param playerId   int
      * @param playerUuid Uuid
-     * @param player Player
+     * @param player     Player
      */
     public PrismPlayer(int playerId, UUID playerUuid, String player) {
         this.playerId = playerId;
@@ -34,6 +34,7 @@ public class PrismPlayer {
 
     /**
      * Get id.
+     * 
      * @return id
      */
     public int getId() {
@@ -47,11 +48,13 @@ public class PrismPlayer {
         if (playerId > 0) {
             throw new IllegalArgumentException("Cannot overwrite PrismPlayer primary key.");
         }
+
         playerId = newId;
     }
 
     /**
      * Get Name.
+     * 
      * @return String
      */
     public String getName() {

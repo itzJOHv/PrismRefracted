@@ -10,10 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventHelper {
-
     public static PrismRollBackEvent createRollBackEvent(List<BlockStateChange> blockStateChanges,
-                                                         Player onBehalfOf, PrismParameters parameters,
-                                                         ApplierResult result) {
+            Player onBehalfOf, PrismParameters parameters,
+            ApplierResult result) {
         return new PrismRollBackEvent(blockStateChanges, onBehalfOf, parameters, result);
     }
 
@@ -26,12 +25,12 @@ public class EventHelper {
     }
 
     public static PrismDrainEvent createDrainEvent(ArrayList<BlockStateChange> blockStateChanges,
-                                                   Player onBehalfOf, int radius) {
+            Player onBehalfOf, int radius) {
         return new PrismDrainEvent(blockStateChanges, onBehalfOf, radius);
     }
 
     public static PrismExtinguishEvent createExtinguishEvent(ArrayList<BlockStateChange> blockStateChanges,
-                                                             Player onBehalfOf, int radius) {
-        return new PrismExtinguishEvent(blockStateChanges,onBehalfOf,radius);
+            Player onBehalfOf, int radius) {
+        return new PrismExtinguishEvent(blockStateChanges, onBehalfOf, radius);
     }
 }

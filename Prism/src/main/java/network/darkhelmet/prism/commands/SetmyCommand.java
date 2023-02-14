@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SetmyCommand extends AbstractCommand {
-
     private final Prism plugin;
 
     /**
@@ -29,8 +28,8 @@ public class SetmyCommand extends AbstractCommand {
 
     @Override
     public void handle(CallInfo call) {
-
         String setType = null;
+
         if (call.getArgs().length >= 2) {
             setType = call.getArg(1);
         }
@@ -57,26 +56,31 @@ public class SetmyCommand extends AbstractCommand {
         // Disable any current wand
         if (Prism.playersWithActiveTools.containsKey(call.getPlayer().getName())) {
             final Wand oldwand = Prism.playersWithActiveTools.get(call.getPlayer().getName());
+
             oldwand.disable(call.getPlayer());
             Prism.playersWithActiveTools.remove(call.getPlayer().getName());
+
             WandCommand.sendWandStatus(call.getPlayer(), "wand-current", false, "", "");
         }
 
         String setSubType = null;
+
         if (call.getArgs().length >= 3) {
             setSubType = call.getArg(2).toLowerCase();
         }
 
         if (setSubType != null && setSubType.equals("mode")) {
-
             String setWandMode = null;
+
             if (call.getArgs().length >= 4) {
                 setWandMode = call.getArg(3);
             }
+
             if (setWandMode != null
                     && (setWandMode.equals("hand") || setWandMode.equals("item") || setWandMode.equals("block"))) {
                 Settings.saveSetting("wand.mode", setWandMode, call.getPlayer());
                 Settings.deleteSetting("wand.item", call.getPlayer());
+
                 Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerHeaderMsg(
                         ReplaceableTextComponent.builder("setWandMode")
                                 .replace("<wandMode>", setWandMode,
@@ -84,6 +88,7 @@ public class SetmyCommand extends AbstractCommand {
                                 .build()));
                 return;
             }
+
             Prism.messenger.sendMessage(call.getPlayer(),
                     Prism.messenger.playerError(Il8nHelper.getMessage("invalid-arguments")));
             return;
@@ -97,11 +102,12 @@ public class SetmyCommand extends AbstractCommand {
                 // If non-material, check for name
                 if (setWand == null) {
                     final ArrayList<Material> itemMaterials = Prism.getItems().getMaterialsByAlias(wandString);
+
                     if (itemMaterials.size() > 0) {
                         setWand = itemMaterials.get(0);
                     } else {
                         Prism.messenger.sendMessage(call.getPlayer(),
-                              Prism.messenger.playerError(Il8nHelper.getMessage("item-no-match")));
+                                Prism.messenger.playerError(Il8nHelper.getMessage("item-no-match")));
                         return;
                     }
                 }
@@ -114,12 +120,14 @@ public class SetmyCommand extends AbstractCommand {
                 }
 
                 Settings.saveSetting("wand.item", wandString, call.getPlayer());
+
                 Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerHeaderMsg(
                         ReplaceableTextComponent.builder("wand-item-change").replace("<itemName>", wandString)
                                 .build()));
                 return;
             }
         }
+
         Prism.messenger.sendMessage(call.getPlayer(),
                 Prism.messenger.playerError(Il8nHelper.getMessage("invalid-arguments")));
     }
@@ -131,7 +139,7 @@ public class SetmyCommand extends AbstractCommand {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-wand-set")};
+        return new String[] { Il8nHelper.getRawMessage("help-wand-set") };
     }
 
     @Override

@@ -11,27 +11,30 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 
 public class PrismDatabaseFactory {
-
     private static PrismDataSource database = null;
 
     /**
      * Create a config.
+     * 
      * @param configuration ConfigurationSection
      */
     public static void createDefaultConfig(final ConfigurationSection configuration) {
         ConfigurationSection dataSourceSection;
-        ConfigurationSection  dataSourceProperties;
+        ConfigurationSection dataSourceProperties;
+
         if (configuration.isConfigurationSection("datasource")) {
             dataSourceSection = configuration.getConfigurationSection("datasource");
-            dataSourceSection.addDefault("type","mysql");
+            dataSourceSection.addDefault("type", "mysql");
+
             if (!dataSourceSection.isConfigurationSection("properties")) {
                 dataSourceProperties = dataSourceSection.createSection("properties");
             } else {
                 dataSourceProperties = dataSourceSection.getConfigurationSection("properties");
             }
         } else {
-            String type = configuration.getString("datasource");//gets the old datasource.
+            String type = configuration.getString("datasource");// gets the old datasource.
             dataSourceSection = configuration.createSection("datasource");
+
             if (type != null) {
                 dataSourceSection.set("type", type);
             } else {
@@ -39,17 +42,21 @@ public class PrismDatabaseFactory {
             }
             dataSourceProperties = dataSourceSection.createSection("properties");
         }
-        String dataType = dataSourceSection.getString("type","mysql");
-        updateDataSourceProperties(dataType,dataSourceProperties);
+
+        String dataType = dataSourceSection.getString("type", "mysql");
+
+        updateDataSourceProperties(dataType, dataSourceProperties);
         addDatabaseDefaults(configuration);
     }
 
     private static void updateDataSourceProperties(@Nullable final String type,
-                                                   final ConfigurationSection configuration) {
+            final ConfigurationSection configuration) {
         String test = type;
-        if (test  == null) {
+
+        if (test == null) {
             test = "mysql";
         }
+
         switch (test) {
             case "mysql":
                 MySqlPrismDataSource.updateDefaultConfig(configuration);
@@ -69,12 +76,14 @@ public class PrismDatabaseFactory {
 
     private static void upgradeEntry(ConfigurationSection section, String oldPath, String newPath, Object def) {
         Object old = section.get(oldPath);
+
         section.set(oldPath, null);
         section.addDefault(newPath, old == null ? def : old);
     }
 
     /**
      * Constuct Data source.
+     * 
      * @param configuration ConfigurationSection
      * @return PrismDataSource
      */
@@ -82,37 +91,35 @@ public class PrismDatabaseFactory {
         if (configuration == null) {
             return null;
         }
+
         String dataSource;
         ConfigurationSection dataSourceProperties;
 
         if (configuration.isConfigurationSection("datasource")) {
             ConfigurationSection dataSourceSection = configuration.getConfigurationSection("datasource");
-            if (dataSourceSection != null) {  //in case they didnt update the config.
+
+            if (dataSourceSection != null) { // in case they didnt update the config.
                 dataSource = dataSourceSection.getString("type");
                 dataSourceProperties = dataSourceSection.getConfigurationSection("properties");
             } else {
-                //old config style
+                // old config style
                 dataSource = configuration.getString("datasource");
                 dataSourceProperties = configuration.getConfigurationSection("prism." + dataSource);
             }
         } else {
-            //old config style
+            // old config style
             dataSource = configuration.getString("datasource");
             dataSourceProperties = configuration.getConfigurationSection("prism." + dataSource);
         }
+
         if (dataSource == null) {
             return null;
         }
+
         switch (dataSource) {
             case "mysql":
                 Prism.log("Attempting to configure datasource as MySQL.");
                 database = new MySqlPrismDataSource(dataSourceProperties);
-                break;
-            case "sqlite":
-                Prism.warn("ERROR: This version of Prism no longer supports SQLite.");
-                break;
-            case "derby":
-                Prism.warn("ERROR: This version of Prism no longer supports Derby. Please use Hikari.");
                 break;
             case "hikari":
                 Prism.log("Attempting to configure datasource using the Hikari parameters.");
@@ -122,11 +129,13 @@ public class PrismDatabaseFactory {
                 Prism.warn("ERROR: This version of Prism does not support " + dataSource);
                 break;
         }
+
         return database;
     }
 
     /**
      * Create updater for datasource.
+     * 
      * @param configuration ConfigurationSection
      * @return PrismDataSourceUpdater
      */
@@ -134,10 +143,13 @@ public class PrismDatabaseFactory {
         if (configuration == null) {
             return null;
         }
+
         String dataSource = configuration.getString("type", "mysql");
+
         if (dataSource == null) {
             return null;
         }
+
         switch (dataSource) {
             case "mysql":
             case "derby":
@@ -151,5 +163,4 @@ public class PrismDatabaseFactory {
     public static Connection getConnection() {
         return database.getConnection();
     }
-
 }

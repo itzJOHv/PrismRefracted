@@ -5,12 +5,12 @@ import network.darkhelmet.prism.api.ChangeResult;
 import network.darkhelmet.prism.api.ChangeResultType;
 
 public class ChangeResultImpl implements ChangeResult {
-
     protected final BlockStateChange blockStateChange;
     protected final ChangeResultType changeResultType;
 
     /**
      * Constructor.
+     * 
      * @param changeResultType ChangeResultType
      */
     public ChangeResultImpl(ChangeResultType changeResultType) {
@@ -19,6 +19,7 @@ public class ChangeResultImpl implements ChangeResult {
 
     /**
      * Constructor.
+     * 
      * @param changeResultType ChangeResultType
      * @param blockStateChange BlockStateChange
      */
@@ -29,6 +30,7 @@ public class ChangeResultImpl implements ChangeResult {
 
     /**
      * Get BlockStateChange.
+     * 
      * @return BlockStateChange
      */
     public BlockStateChange getBlockStateChange() {
@@ -37,6 +39,7 @@ public class ChangeResultImpl implements ChangeResult {
 
     /**
      * Return ChangeResultType.
+     * 
      * @return ChangeResultType
      */
     public ChangeResultType getType() {

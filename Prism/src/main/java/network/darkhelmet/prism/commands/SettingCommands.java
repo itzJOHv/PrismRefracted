@@ -15,12 +15,15 @@ public class SettingCommands extends AbstractCommand {
             switch (call.getArg(1).toLowerCase()) {
                 case "batchsize":
                     int actions = Integer.parseInt(call.getArg(2));
+
                     RecordingTask.setActionsPerInsert(actions);
+
                     Prism.messenger.sendMessage(call.getSender(),
-                            Prism.messenger.playerHeaderMsg(Il8nHelper.formatMessage("command-settings-batchsize-set", actions)));
+                            Prism.messenger.playerHeaderMsg(
+                                    Il8nHelper.formatMessage("command-settings-batchsize-set", actions)));
                     return;
                 default:
-                    //todo add feedback
+                    // todo add feedback
             }
         }
     }
@@ -28,8 +31,7 @@ public class SettingCommands extends AbstractCommand {
     @Override
     public List<String> handleComplete(CallInfo call) {
         List<String> result = new ArrayList<>();
-        SWITCH:
-        switch (call.getArgs().length) {
+        SWITCH: switch (call.getArgs().length) {
             case 2:
                 result.add("batchsize");
                 break;
@@ -40,12 +42,13 @@ public class SettingCommands extends AbstractCommand {
                         break SWITCH;
                 }
         }
+
         return result;
     }
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-settings")};
+        return new String[] { Il8nHelper.getRawMessage("help-settings") };
     }
 
     @Override

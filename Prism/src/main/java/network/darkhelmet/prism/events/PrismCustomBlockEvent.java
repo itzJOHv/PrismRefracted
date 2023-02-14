@@ -8,9 +8,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("unused")
 public class PrismCustomBlockEvent extends Event {
-
     private static final HandlerList handlers = new HandlerList();
     private final String pluginName;
     private final String actionTypeName;
@@ -33,7 +31,6 @@ public class PrismCustomBlockEvent extends Event {
         this.block = block;
         this.message = message + ChatColor.GOLD + " [" + this.pluginName + "]" + ChatColor.DARK_AQUA;
     }
-
 
     public String getPluginName() {
         return pluginName;
@@ -64,9 +61,7 @@ public class PrismCustomBlockEvent extends Event {
     /**
      * Required by bukkit for proper event handling.
      */
-    @SuppressWarnings("unused")
     public static HandlerList getHandlerList() {
         return handlers;
-
     }
 }

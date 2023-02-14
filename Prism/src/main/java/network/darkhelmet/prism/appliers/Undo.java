@@ -8,14 +8,13 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class Undo extends Preview {
-
     /**
      * Constructor.
      *
      * @param plugin Prism
      */
     public Undo(Prism plugin, Player player, List<Handler> results, QueryParameters parameters,
-                ApplierCallback callback) {
+            ApplierCallback callback) {
         super(plugin, player, results, parameters, callback);
     }
 

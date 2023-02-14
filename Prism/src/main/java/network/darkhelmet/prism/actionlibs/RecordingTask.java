@@ -65,12 +65,14 @@ public class RecordingTask implements Runnable {
                 Prism.log(
                         "Prism database paused. An external actor has paused database processing..."
                                 + "scheduling next recording");
+
                 scheduleNextRecording();
                 return;
             }
 
             long start = System.currentTimeMillis();
             Prism.debug("Beginning batch insert from queue. " + start);
+
             try (Connection conn = Prism.getPrismDataSource().getConnection()) {
                 if ((conn == null) || (conn.isClosed())) {
                     if (RecordingManager.failedDbConnectionCount == 0) {
@@ -84,10 +86,14 @@ public class RecordingTask implements Runnable {
                         if (QueueDrain.isDraining()) {
                             throw new RuntimeException("Too many problems connecting.");
                         }
+
                         Prism.log("Too many problems connecting. Giving up for a bit.");
+
                         scheduleNextRecording();
                     }
+
                     Prism.debug("Database connection still missing, incrementing count.");
+
                     return;
                 } else {
                     RecordingManager.failedDbConnectionCount = 0;
@@ -95,6 +101,7 @@ public class RecordingTask implements Runnable {
             } catch (SQLException e) {
                 e.printStackTrace();
                 Prism.getPrismDataSource().handleDataSourceException(e);
+
                 return;
             }
 
@@ -104,11 +111,14 @@ public class RecordingTask implements Runnable {
                 batchedQuery.createBatch();
             } catch (Exception e) {
                 e.printStackTrace();
+
                 if (e instanceof SQLException) {
                     Prism.getPrismDataSource().handleDataSourceException((SQLException) e);
                 }
+
                 Prism.debug("Database connection issue;");
                 RecordingManager.failedDbConnectionCount++;
+
                 return;
             }
 
@@ -120,9 +130,11 @@ public class RecordingTask implements Runnable {
                 if (a == null) {
                     break;
                 }
+
                 if (a.isCanceled()) {
                     continue;
                 }
+
                 batchedQuery.insertActionIntoDatabase(a);
 
                 actionsRecorded++;
@@ -149,6 +161,7 @@ public class RecordingTask implements Runnable {
             // Save the current count to the queue for short historical data
             long batchProcessedEnd = System.currentTimeMillis();
             long batchRunTime = batchProcessedEnd - batchDoneTime;
+
             plugin.queueStats.addRunInfo(new QueueStats.TaskRunInfo(actionsRecorded, batchingTime, batchRunTime));
         }
     }
@@ -161,6 +174,7 @@ public class RecordingTask implements Runnable {
         if (RecordingManager.failedDbConnectionCount > 5) {
             Prism.getPrismDataSource().rebuildDataSource(); // force rebuild pool after several failures
         }
+
         save();
         scheduleNextRecording();
     }
@@ -171,7 +185,6 @@ public class RecordingTask implements Runnable {
      * @return delay
      */
     private int getTickDelayForNextBatch() {
-
         // If we have too many rejected connections, increase the schedule
         if (RecordingManager.failedDbConnectionCount > plugin.getConfig()
                 .getInt("prism.query.max-failures-before-wait")) {
@@ -179,9 +192,11 @@ public class RecordingTask implements Runnable {
         }
 
         int recorderTickDelay = plugin.getConfig().getInt("prism.query.queue-empty-tick-delay");
+
         if (recorderTickDelay < 0) {
             recorderTickDelay = 3;
         }
+
         return recorderTickDelay;
     }
 

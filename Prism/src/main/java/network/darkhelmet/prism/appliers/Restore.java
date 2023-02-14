@@ -8,14 +8,13 @@ import org.bukkit.command.CommandSender;
 import java.util.Collection;
 
 public class Restore extends Preview {
-
     /**
      * Create a restore.
      *
      * @param plugin Prism
      */
     public Restore(Prism plugin, CommandSender sender, Collection<Handler> results, QueryParameters parameters,
-                   ApplierCallback callback) {
+            ApplierCallback callback) {
         super(plugin, sender, results, parameters, callback);
     }
 

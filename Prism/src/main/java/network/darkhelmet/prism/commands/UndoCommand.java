@@ -16,13 +16,11 @@ import network.darkhelmet.prism.appliers.Undo;
 import network.darkhelmet.prism.commandlibs.CallInfo;
 import network.darkhelmet.prism.commandlibs.SubHandler;
 import network.darkhelmet.prism.utils.TypeUtils;
-import net.kyori.adventure.audience.Audience;
 import org.bukkit.ChatColor;
 
 import java.util.List;
 
 public class UndoCommand implements SubHandler {
-
     private final Prism plugin;
 
     /**
@@ -36,14 +34,13 @@ public class UndoCommand implements SubHandler {
 
     @Override
     public void handle(CallInfo call) {
-        final Audience audience = Prism.getAudiences().player(call.getPlayer());
         if (call.getArgs().length > 1) {
-
             final ActionsQuery aq = new ActionsQuery(plugin);
-
             long recordId = 0;
+
             if (TypeUtils.isNumeric(call.getArg(1))) {
                 recordId = Long.parseLong(call.getArg(1));
+
                 if (recordId <= 0) {
                     Prism.messenger.sendMessage(call.getPlayer(),
                             Prism.messenger.playerError("Record ID must be greater than zero."));
@@ -63,6 +60,7 @@ public class UndoCommand implements SubHandler {
             }
 
             final PrismProcessAction process = aq.getPrismProcessRecord(recordId);
+
             if (process == null) {
                 Prism.messenger.sendMessage(call.getPlayer(),
                         Prism.messenger.playerError("A process does not exists with that value."));
@@ -78,6 +76,7 @@ public class UndoCommand implements SubHandler {
 
             // Pull the actual block change data for this undo event
             final QueryParameters parameters = new QueryParameters();
+
             parameters.setWorld(call.getPlayer().getWorld().getName());
             parameters.addActionType(process.getProcessChildActionType());
             parameters.addPlayerName(call.getPlayer().getName());
@@ -85,58 +84,60 @@ public class UndoCommand implements SubHandler {
             parameters.setProcessType(PrismProcessType.UNDO);
 
             // make sure the distance isn't too far away
-
             final QueryResult results = aq.lookup(parameters, call.getPlayer());
-            if (!results.getActionResults().isEmpty()) {
 
+            if (!results.getActionResults().isEmpty()) {
                 Prism.messenger.sendMessage(call.getPlayer(),
                         Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("command-undo-complete")));
 
                 final Previewable rb = new Undo(plugin, call.getPlayer(), results.getActionResults(), parameters,
                         new PrismApplierCallback());
-                rb.apply();
 
+                rb.apply();
             } else {
                 Prism.messenger.sendMessage(call.getPlayer(),
                         Prism.messenger.playerError("Nothing found to undo. Must be a problem with Prism."));
             }
 
         } else {
-
             // Show the list
             // Process and validate all of the arguments
             final QueryParameters parameters = new QueryParameters();
+
             parameters.setAllowNoRadius(true);
             parameters.addActionType("prism-process");
             parameters.addPlayerName(call.getPlayer().getName());
-            parameters.setLimit(5); // @todo config this, and move the logic
-            // to queryparams
+            parameters.setLimit(5); // @todo config this, and move the logic to queryparams
 
             final ActionsQuery aq = new ActionsQuery(plugin);
             final QueryResult results = aq.lookup(parameters, call.getPlayer());
+
             if (!results.getActionResults().isEmpty()) {
-                Prism.messenger.sendMessage(call.getPlayer(),Prism.messenger.playerHeaderMsg(
+                Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerHeaderMsg(
                         Il8nHelper.formatMessage("lookup-header-message",
                                 results.getTotalResults(), 1, results.getTotalPages())));
                 Prism.messenger.sendMessage(call.getPlayer(),
                         Prism.messenger.playerSubduedHeaderMsg(Il8nHelper.getMessage("command-undo-help")));
 
                 final List<Handler> paginated = results.getPaginatedActionResults();
+
                 if (paginated != null) {
                     for (final Handler a : paginated) {
                         final ActionMessage am = new ActionMessage(a);
+
                         if (parameters.hasFlag(Flag.EXTENDED)
                                 || plugin.getConfig().getBoolean("prism.messenger.always-show-extended")) {
                             am.showExtended();
                         }
-                        Prism.messenger.sendMessage(call.getPlayer(),Prism.messenger.playerMsg(am.getMessage()));
+
+                        Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerMsg(am.getMessage()));
                     }
                 } else {
-                    Prism.messenger.sendMessage(call.getPlayer(),Prism.messenger
+                    Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger
                             .playerError("Pagination can't find anything. Do you have the right page number?"));
                 }
             } else {
-                Prism.messenger.sendMessage(call.getPlayer(),Prism.messenger.playerError(
+                Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerError(
                         "Nothing found." + ChatColor.GRAY + " Either you're missing something, or we are."));
             }
         }
@@ -149,7 +150,7 @@ public class UndoCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-undo")};
+        return new String[] { Il8nHelper.getRawMessage("help-undo") };
     }
 
     @Override

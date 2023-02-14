@@ -12,7 +12,6 @@ import net.kyori.adventure.text.format.Style;
 import java.util.List;
 
 public class ResetmyCommand extends AbstractCommand {
-
     private final Prism plugin;
 
     /**
@@ -26,8 +25,8 @@ public class ResetmyCommand extends AbstractCommand {
 
     @Override
     public void handle(CallInfo call) {
-
         String setType = null;
+
         if (call.getArgs().length >= 2) {
             setType = call.getArg(1);
         }
@@ -42,16 +41,20 @@ public class ResetmyCommand extends AbstractCommand {
             Prism.messenger.sendMessage(call.getPlayer(),
                     Prism.messenger.playerError(Il8nHelper.getMessage("wand-personal-blocked")));
         }
+
         if (checkNoPermissions(call.getPlayer(), "prism.rollback", "prism.restore", "prism.wand.*",
                 "prism.wand.inspect", "prism.wand.profile", "prism.wand.rollback",
                 "prism.wand.restore")) {
             return;
         }
+
         // Disable any current wand
         if (Prism.playersWithActiveTools.containsKey(call.getPlayer().getName())) {
             final Wand oldwand = Prism.playersWithActiveTools.get(call.getPlayer().getName());
+
             oldwand.disable(call.getPlayer());
             Prism.playersWithActiveTools.remove(call.getPlayer().getName());
+
             Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger
                     .playerHeaderMsg(ReplaceableTextComponent.builder("wand-current")
                             .replace("<status", Il8nHelper.getRawMessage("disabled"),
@@ -61,6 +64,7 @@ public class ResetmyCommand extends AbstractCommand {
 
         Settings.deleteSetting("wand.item", call.getPlayer());
         Settings.deleteSetting("wand.mode", call.getPlayer());
+
         Prism.messenger.sendMessage(call.getPlayer(),
                 Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("wand-reset")));
     }
@@ -72,7 +76,7 @@ public class ResetmyCommand extends AbstractCommand {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-wand-reset-default")};
+        return new String[] { Il8nHelper.getRawMessage("help-wand-reset-default") };
     }
 
     @Override

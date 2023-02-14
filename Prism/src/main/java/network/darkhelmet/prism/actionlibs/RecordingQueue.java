@@ -21,10 +21,12 @@ public class RecordingQueue {
         if (a == null) {
             return;
         }
+
         if (a.getSourceName() == null || a.getSourceName().trim().isEmpty()) {
             Prism.debug("Handler dropped Source empty - " + a.toString());
             return;
         }
+
         queue.add(a);
     }
 

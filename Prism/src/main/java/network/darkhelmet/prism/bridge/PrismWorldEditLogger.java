@@ -30,6 +30,7 @@ public class PrismWorldEditLogger extends AbstractDelegateExtent {
      */
     public PrismWorldEditLogger(Actor player, Extent extent, World world) {
         super(extent);
+
         this.player = player;
         this.world = world;
     }
@@ -41,9 +42,11 @@ public class PrismWorldEditLogger extends AbstractDelegateExtent {
             Block oldBlock = loc.getBlock();
             Material newMaterial = BukkitAdapter.adapt(newBlock.getBlockType());
             BlockData newData = BukkitAdapter.adapt(newBlock);
+
             RecordingQueue.addToQueue(ActionFactory.createBlockChange("world-edit", loc, oldBlock.getType(),
                     oldBlock.getBlockData(), newMaterial, newData, Bukkit.getPlayer(player.getUniqueId())));
         }
+
         return super.setBlock(pt, newBlock);
     }
 }

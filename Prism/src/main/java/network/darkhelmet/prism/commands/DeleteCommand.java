@@ -11,7 +11,6 @@ import network.darkhelmet.prism.commandlibs.PreprocessArgs;
 import network.darkhelmet.prism.purge.PurgeTask;
 import network.darkhelmet.prism.purge.SenderPurgeCallback;
 import net.kyori.adventure.text.Component;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,7 +19,6 @@ import java.util.regex.Pattern;
 public class DeleteCommand extends AbstractCommand {
 
     private final Prism plugin;
-    private BukkitTask deleteTask;
 
     /**
      * Constructor.
@@ -33,7 +31,6 @@ public class DeleteCommand extends AbstractCommand {
 
     @Override
     public void handle(final CallInfo call) {
-
         // Allow for canceling tasks
         if (call.getArgs().length > 1 && call.getArg(1).equals("cancel")) {
             if (plugin.getPurgeManager().deleteTask != null) {
@@ -44,6 +41,7 @@ public class DeleteCommand extends AbstractCommand {
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerError(Il8nHelper.getMessage("no-purge-running")));
             }
+
             return;
         }
 
@@ -53,7 +51,9 @@ public class DeleteCommand extends AbstractCommand {
                 Prism.log("User " + call.getSender().getName()
                         + " wiped the live queue before it could be written to the database. "
                         + RecordingQueue.getQueue().size() + " events lost.");
+
                 RecordingQueue.getQueue().clear();
+
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerSuccess(Il8nHelper.getMessage("clear-queue")));
             } else {
@@ -61,49 +61,57 @@ public class DeleteCommand extends AbstractCommand {
                         Prism.messenger.playerError(
                                 Il8nHelper.getMessage("event-queue-clear")));
             }
+
             return;
         }
 
         // Process and validate all of the arguments
         final QueryParameters parameters = PreprocessArgs.process(plugin, call.getSender(), call.getArgs(),
                 PrismProcessType.DELETE, 1, !plugin.getConfig().getBoolean("prism.queries.never-use-defaults"));
+
         if (parameters == null) {
             return;
         }
+
         parameters.setStringFromRawArgs(call.getArgs(), 1);
 
         StringBuilder defaultsReminder = checkIfDefaultUsed(parameters);
-        if (parameters.getFoundArgs().size() > 0) {
 
+        if (parameters.getFoundArgs().size() > 0) {
             Prism.messenger.sendMessage(call.getSender(),
                     Prism.messenger.playerSubduedHeaderMsg(Il8nHelper.getMessage("purge-data")
-                            .replaceFirstText(Pattern.compile("<defaults>"), builder ->
-                                    Component.text()
-                                            .content(defaultsReminder.toString()))));
+                            .replaceFirstText(Pattern.compile("<defaults>"), builder -> Component.text()
+                                    .content(defaultsReminder.toString()))));
             Prism.messenger.sendMessage(call.getSender(), Prism.messenger
                     .playerHeaderMsg(Il8nHelper.getMessage("start-purge")));
+
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                 int purgeTickDelay = plugin.getConfig().getInt("prism.purge.batch-tick-delay");
+
                 if (purgeTickDelay < 0) {
                     purgeTickDelay = 20;
                 }
 
                 // build callback
                 final SenderPurgeCallback callback = new SenderPurgeCallback();
+
                 callback.setSender(call.getSender());
 
                 // add to an arraylist so we're consistent
                 final CopyOnWriteArrayList<QueryParameters> paramList = new CopyOnWriteArrayList<>();
+
                 paramList.add(parameters);
 
                 final ActionsQuery aq = new ActionsQuery(plugin);
                 final long[] extents = aq.getQueryExtents(parameters);
                 final long minId = extents[0];
                 final long maxId = extents[1];
+
                 Prism.log(
                         "Beginning prism database purge cycle. Will be performed in batches so "
                                 + "we don't tie up the db...");
-                deleteTask = plugin.getServer().getScheduler().runTaskAsynchronously(plugin,
+
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin,
                         new PurgeTask(plugin, paramList, purgeTickDelay, minId, maxId, callback));
             });
         } else {
@@ -119,7 +127,7 @@ public class DeleteCommand extends AbstractCommand {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-delete")};
+        return new String[] { Il8nHelper.getRawMessage("help-delete") };
     }
 
     @Override

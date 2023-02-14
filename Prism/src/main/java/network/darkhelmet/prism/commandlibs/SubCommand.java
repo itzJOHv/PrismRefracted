@@ -4,7 +4,6 @@ import network.darkhelmet.prism.Prism;
 import org.bukkit.entity.Player;
 
 public final class SubCommand {
-
     private final String[] commandAliases;
     private String[] permissionNodes;
     private int minArgs = 0;
@@ -24,9 +23,10 @@ public final class SubCommand {
 
     /**
      * Create subcommand.
-     * @param commandAliases String[]
+     * 
+     * @param commandAliases  String[]
      * @param permissionNodes String[]
-     * @param handler SubHandler.
+     * @param handler         SubHandler.
      */
     public SubCommand(String[] commandAliases, String[] permissionNodes, SubHandler handler) {
         this(commandAliases, permissionNodes);
@@ -35,6 +35,7 @@ public final class SubCommand {
 
     /**
      * Set allow console true.
+     * 
      * @return SubCOmmand
      */
     public SubCommand allowConsole() {
@@ -44,6 +45,7 @@ public final class SubCommand {
 
     /**
      * If console allowed.
+     * 
      * @return boolean.
      */
     public boolean isConsoleAllowed() {
@@ -52,6 +54,7 @@ public final class SubCommand {
 
     /**
      * Min Args.
+     * 
      * @return int
      */
     public int getMinArgs() {
@@ -60,6 +63,7 @@ public final class SubCommand {
 
     /**
      * Set min args.
+     * 
      * @param minArgs int
      * @return Subcommand.
      */
@@ -70,6 +74,7 @@ public final class SubCommand {
 
     /**
      * Get handler.
+     * 
      * @return {@link SubHandler}
      */
     public SubHandler getHandler() {
@@ -78,6 +83,7 @@ public final class SubCommand {
 
     /**
      * Set handler.
+     * 
      * @param handler SubHandler
      * @return this
      */
@@ -88,6 +94,7 @@ public final class SubCommand {
 
     /**
      * If has perm.
+     * 
      * @return boolean
      */
     public boolean playerHasPermission(Player player) {
@@ -95,6 +102,7 @@ public final class SubCommand {
             if (player.hasPermission(node)) {
                 return true;
             }
+
             // Also check for global nodes
             if (node.contains("*")) {
                 continue;
@@ -103,17 +111,21 @@ public final class SubCommand {
             int index = node.lastIndexOf('.');
             while (index != -1) {
                 node = node.substring(0, index);
+
                 if (player.hasPermission(node + ".*")) {
                     return true;
                 }
+
                 index = node.lastIndexOf('.');
             }
         }
+
         return false;
     }
 
     /**
      * Set permission nodes to check.
+     * 
      * @param permissionNodes String[]
      */
     public void setPermNodes(String[] permissionNodes) {
@@ -122,6 +134,7 @@ public final class SubCommand {
 
     /**
      * Get aliases.
+     * 
      * @return aliases String[]
      */
     public String[] getAliases() {

@@ -1,7 +1,6 @@
 package network.darkhelmet.prism.database;
 
 public interface PrismDataSourceUpdater {
-
     void v1_to_v2();
 
     void v2_to_v3();
@@ -16,4 +15,3 @@ public interface PrismDataSourceUpdater {
 
     void v7_to_v8();
 }
-

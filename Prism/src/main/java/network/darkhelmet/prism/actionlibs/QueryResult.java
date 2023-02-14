@@ -35,6 +35,7 @@ public class QueryResult implements Result {
 
     public void setQueryTime() {
         final java.util.Date date = new java.util.Date();
+
         this.queryTime = date.getTime();
     }
 
@@ -55,8 +56,10 @@ public class QueryResult implements Result {
             if (limit > totalResults) {
                 limit = totalResults;
             }
+
             return actionResults.subList(offset, limit);
         }
+
         return null;
     }
 
@@ -88,6 +91,7 @@ public class QueryResult implements Result {
 
     void setPerPage(int perPage) {
         this.perPage = perPage;
+
         totalPages = (int) Math.ceil(((double) totalResults / (double) perPage));
     }
 
@@ -101,6 +105,7 @@ public class QueryResult implements Result {
 
     public int getIndexOfFirstResult() {
         final int index = (page * perPage) - perPage;
+
         return index + 1;
     }
 

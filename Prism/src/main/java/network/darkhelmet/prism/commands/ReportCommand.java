@@ -140,8 +140,10 @@ public class ReportCommand extends AbstractCommand {
         if (runs.size() > 0) {
             Prism.messenger.sendMessage(sender,
                     Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("report-queue-recent")));
+
             for (final Entry<Long, QueueStats.TaskRunInfo> entry : runs.entrySet()) {
                 final String time = new SimpleDateFormat("HH:mm:ss").format(entry.getKey());
+
                 Prism.messenger.sendMessage(sender,
                         Prism.messenger.playerMsg(Component.text()
                                 .content(time + " ").color(NamedTextColor.GRAY)
@@ -152,10 +154,8 @@ public class ReportCommand extends AbstractCommand {
     }
 
     private void databaseReport(CommandSender sender) {
-
         Prism.messenger.sendMessage(sender, Prism.messenger.playerHeaderMsg(
                 Il8nHelper.getMessage("report-database-header")));
-
         Prism.messenger.sendMessage(sender, Prism.messenger
                 .playerMsg(ReplaceableTextComponent.builder("report-database-failureCount")
                         .replace("<count>", RecordingManager.failedDbConnectionCount)
@@ -164,8 +164,10 @@ public class ReportCommand extends AbstractCommand {
                 Prism.messenger.playerMsg(ReplaceableTextComponent.builder("report-actions-queue")
                         .replace("<size>", RecordingQueue.getQueueSize())
                         .build()));
+
         if (Prism.getPrismDataSource().getDataSource() instanceof HikariDataSource) {
             HikariDataSource ds = (HikariDataSource) Prism.getPrismDataSource().getDataSource();
+
             Prism.messenger.sendMessage(sender, Prism.messenger.playerMsg(ReplaceableTextComponent
                     .builder("report-hikari-props")
                     .replace("<total>", ds.getHikariPoolMXBean().getTotalConnections())
@@ -210,22 +212,24 @@ public class ReportCommand extends AbstractCommand {
     }
 
     private void blockSumReports(final CallInfo call) {
-
         // Process and validate all of the arguments
         final QueryParameters parameters = PreprocessArgs.process(plugin, call.getSender(), call.getArgs(),
                 PrismProcessType.LOOKUP, 3, !plugin.getConfig().getBoolean("prism.queries.never-use-defaults"));
+
         if (parameters == null) {
             Prism.getAudiences().sender(call.getSender())
                     .sendMessage(Identity.nil(),
                             Prism.messenger.playerError(Il8nHelper.getMessage("report-player-error")));
             return;
         }
+
         // No actions
         if (checkParams(parameters, call)) {
             return;
         }
 
         final BlockReportQuery reportQuery = Prism.getPrismDataSource().createBlockReportQuery();
+
         reportQuery.setParameters(parameters);
         /*
          * Run the lookup itself in an async task so the lookup query isn't done on the
@@ -242,18 +246,20 @@ public class ReportCommand extends AbstractCommand {
                                     Il8nHelper.getMessage("report-actions-invalid")));
             return true;
         }
+
         // Verify single player name for now
         final Map<String, MatchRule> players = parameters.getPlayerNames();
+
         if (players.size() != 1) {
             Prism.messenger.sendMessage(call.getSender(),
                     Prism.messenger.playerError(Il8nHelper.getMessage("single-player-only")));
             return true;
         }
+
         return false;
     }
 
     private void actionTypeCountReport(final CallInfo call) {
-
         // Process and validate all of the arguments
         final QueryParameters parameters = PreprocessArgs.process(plugin, call.getSender(), call.getArgs(),
                 PrismProcessType.LOOKUP, 3,
@@ -266,7 +272,9 @@ public class ReportCommand extends AbstractCommand {
         if (checkParams(parameters, call)) {
             return;
         }
+
         final ActionReportQuery reportQuery = Prism.getPrismDataSource().createActionReportQuery();
+
         reportQuery.setParameters(parameters);
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> reportQuery.report(call.getSender()));
     }

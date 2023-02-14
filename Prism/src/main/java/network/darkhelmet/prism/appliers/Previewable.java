@@ -1,7 +1,6 @@
 package network.darkhelmet.prism.appliers;
 
 public interface Previewable {
-
     /**
      * Set if preview.
      */

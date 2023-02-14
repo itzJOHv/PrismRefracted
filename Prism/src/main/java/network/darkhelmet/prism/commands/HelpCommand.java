@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class HelpCommand implements SubHandler {
-
     private final boolean failed;
 
     public HelpCommand(boolean failed) {
@@ -41,7 +40,7 @@ public class HelpCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{"Displays Help"};
+        return new String[] { "Displays Help" };
     }
 
     @Override
@@ -56,32 +55,36 @@ public class HelpCommand implements SubHandler {
      */
     protected void help(CommandSender s) {
         Audience sender = Prism.getAudiences().sender(s);
+
         if (failed) {
             sender.sendMessage(Identity.nil(),
-                  Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("prism-disabled-header")
-                        .color(NamedTextColor.GOLD))
-                        .append(Component.newline())
-                        .append(
-                              Prism.messenger.playerMsg(Il8nHelper.getMessage("prism-disabled-content"))
-                                    .color(NamedTextColor.GOLD))
-                        .append(Component.newline())
-                        .append(
-                                Component.text().content("Discord: ")
-                                        .append(Component.text("https://discord.gg/7FxZScH4EJ")
-                                                .color(NamedTextColor.WHITE))
-                                        .clickEvent(ClickEvent.openUrl("https://discord.gg/7FxZScH4EJ"))
-                                        .build()));
+                    Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("prism-disabled-header")
+                            .color(NamedTextColor.GOLD))
+                            .append(Component.newline())
+                            .append(
+                                    Prism.messenger.playerMsg(Il8nHelper.getMessage("prism-disabled-content"))
+                                            .color(NamedTextColor.GOLD))
+                            .append(Component.newline())
+                            .append(
+                                    Component.text().content("Discord: ")
+                                            .append(Component.text("https://discord.gg/7FxZScH4EJ")
+                                                    .color(NamedTextColor.WHITE))
+                                            .clickEvent(ClickEvent.openUrl("https://discord.gg/7FxZScH4EJ"))
+                                            .build()));
             return;
         }
+
         TextComponent component = Prism.messenger.playerHeaderMsg(
                 Component.text("--- Basic Usage ---").color(NamedTextColor.GOLD))
                 .append(Component.newline())
                 .append(Prism.messenger.playerSubduedHeaderMsg(Il8nHelper.getMessage("help-extended-message")))
                 .append(Component.newline());
         Stream<SubCommand> stream = Prism.getInstance().getCommands().getSubCommands().values().stream().distinct();
-        for (SubCommand command:stream.collect(Collectors.toList())) {
+
+        for (SubCommand command : stream.collect(Collectors.toList())) {
             if (command.getHelp().length > 1) {
                 int i = 0;
+
                 for (String message : command.getHelp()) {
                     if (i == 0) {
                         component = component.append(Prism.messenger.playerHelp(
@@ -93,6 +96,7 @@ public class HelpCommand implements SubHandler {
                                 .clickEvent(ClickEvent.openUrl(command.getWebLink())))
                                 .append(Component.newline());
                     }
+
                     i++;
                 }
             } else {
@@ -102,6 +106,7 @@ public class HelpCommand implements SubHandler {
                         .append(Component.newline());
             }
         }
-        sender.sendMessage(Identity.nil(),component);
+
+        sender.sendMessage(Identity.nil(), component);
     }
 }

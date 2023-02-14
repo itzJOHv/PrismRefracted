@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class PageCommand implements SubHandler {
-
     private final Prism plugin;
 
     /**
@@ -34,12 +33,13 @@ public class PageCommand implements SubHandler {
      */
     @Override
     public void handle(CallInfo call) {
-
         // Is there anything even stored to paginate?
         String keyName = "console";
+
         if (call.getSender() instanceof Player) {
             keyName = call.getSender().getName();
         }
+
         if (!plugin.cachedQueries.containsKey(keyName)) {
             Prism.messenger.sendMessage(call.getSender(), Prism.messenger
                     .playerError("There's no saved query to paginate. Maybe they expired? Try your lookup again."));
@@ -52,16 +52,16 @@ public class PageCommand implements SubHandler {
         if (call.getArgs().length != 2) {
             Prism.getAudiences().sender(call.getSender())
                     .sendMessage(Identity.nil(),
-                          Prism.messenger.playerError("Please specify a page number. Like /prism page 2"));
+                            Prism.messenger.playerError("Please specify a page number. Like /prism page 2"));
             return;
         }
 
         // Determine page number
         int page;
+
         if (TypeUtils.isNumeric(call.getArg(1))) {
             page = Integer.parseInt(call.getArg(1));
         } else {
-
             if (call.getArg(1).equals("next") || call.getArg(1).equals("n")) {
                 page = results.getPage() + 1;
             } else if (call.getArg(1).equals("prev") || call.getArg(1).equals("p")) {
@@ -70,6 +70,7 @@ public class PageCommand implements SubHandler {
                             Prism.messenger.playerError("There is no previous page."));
                     return;
                 }
+
                 page = results.getPage() - 1;
             } else {
                 Prism.messenger.sendMessage(call.getSender(), Prism.messenger
@@ -103,7 +104,9 @@ public class PageCommand implements SubHandler {
         Prism.messenger.sendMessage(call.getSender(),
                 Prism.messenger.playerHeaderMsg(Il8nHelper.formatMessage("lookup-header-message",
                         results.getTotalResults(), results.getPage(), results.getTotalPages())));
+
         final List<Handler> paginated = results.getPaginatedActionResults();
+
         if (paginated == null || paginated.size() == 0) {
             Prism.messenger.sendMessage(call.getSender(),
                     Prism.messenger.playerError("Pagination can't find anything. "
@@ -113,18 +116,22 @@ public class PageCommand implements SubHandler {
 
         // Show it!
         int resultCount = results.getIndexOfFirstResult();
+
         for (final Handler a : paginated) {
             final ActionMessage am = new ActionMessage(a);
+
             if (results.getParameters().hasFlag(Flag.EXTENDED)
                     || plugin.getConfig().getBoolean("prism.messenger.always-show-extended")) {
                 am.showExtended();
             }
+
             am.setResultIndex(resultCount);
             MiscUtils.sendClickableTpRecord(am, call.getSender());
+
             resultCount++;
         }
-        MiscUtils.sendPageButtons(results, call.getSender());
 
+        MiscUtils.sendPageButtons(results, call.getSender());
     }
 
     @Override
@@ -134,7 +141,7 @@ public class PageCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-pg-nav")};
+        return new String[] { Il8nHelper.getRawMessage("help-pg-nav") };
     }
 
     @Override

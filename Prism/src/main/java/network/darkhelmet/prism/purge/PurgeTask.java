@@ -7,8 +7,6 @@ import network.darkhelmet.prism.actionlibs.QueryParameters;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PurgeTask implements Runnable {
-
-
     private final Prism plugin;
     private final CopyOnWriteArrayList<QueryParameters> paramList;
     private final int purgeTickDelay;
@@ -21,14 +19,14 @@ public class PurgeTask implements Runnable {
     /**
      * Used when we dont know the min max.
      *
-     * @param plugin Prism
-     * @param paramList List
+     * @param plugin         Prism
+     * @param paramList      List
      * @param purgeTickDelay int
-     * @param callback Callback
+     * @param callback       Callback
      */
     @SuppressWarnings("WeakerAccess")
     public PurgeTask(Prism plugin, CopyOnWriteArrayList<QueryParameters> paramList, int purgeTickDelay,
-                     PurgeCallback callback) {
+            PurgeCallback callback) {
         this.plugin = plugin;
         this.paramList = paramList;
         this.purgeTickDelay = purgeTickDelay;
@@ -41,7 +39,7 @@ public class PurgeTask implements Runnable {
      * @param plugin Prism
      */
     public PurgeTask(Prism plugin, CopyOnWriteArrayList<QueryParameters> paramList, int purgeTickDelay, long minId,
-                     long maxId, PurgeCallback callback) {
+            long maxId, PurgeCallback callback) {
         this.plugin = plugin;
         this.paramList = paramList;
         this.purgeTickDelay = purgeTickDelay;
@@ -52,7 +50,6 @@ public class PurgeTask implements Runnable {
 
     @Override
     public void run() {
-
         if (paramList.isEmpty()) {
             return;
         }
@@ -61,16 +58,20 @@ public class PurgeTask implements Runnable {
 
         // Pull the next-in-line purge param
         final QueryParameters param = paramList.get(0);
+
         if (minId == 0 && maxId == 0) {
             // First run - Set the min and max IDs
             long[] result = aq.getQueryExtents(param);
             minId = result[0];
+
             if (minId > 0) {
                 maxId = result[1];
             }
         }
+
         boolean cycleComplete = false;
         cycleRowsAffected = 0;
+
         // We're chunking by IDs instead of using LIMIT because
         // that should be a lot better as far as required record lock counts
         // http://mysql.rjweb.org/doc.php/deletebig
@@ -78,10 +79,14 @@ public class PurgeTask implements Runnable {
         if (spread <= 1) {
             spread = 10000;
         }
-        // Delete includes id < newMinId. This ensures the maxId isn't exceeded on the final chunk
-        // and also handles the case where minId == maxId (they need to be different by at least 1).
+
+        // Delete includes id < newMinId. This ensures the maxId isn't exceeded on the
+        // final chunk
+        // and also handles the case where minId == maxId (they need to be different by
+        // at least 1).
         long newMinId = Math.min(minId + spread, maxId + 1);
         long startTime = System.nanoTime();
+
         // Make sure there are rows to potentially delete
         if (maxId > 0) {
             param.setMinPrimaryKey(minId);
@@ -89,6 +94,7 @@ public class PurgeTask implements Runnable {
             cycleRowsAffected = aq.delete(param);
             plugin.totalRecordsAffected += cycleRowsAffected;
         }
+
         // If done, remove rule and mark complete
         if (newMinId >= maxId) {
             paramList.remove(param);
@@ -96,6 +102,7 @@ public class PurgeTask implements Runnable {
         }
 
         long cycleTime = (System.nanoTime() - startTime) / 1000000L; // msec
+
         plugin.maxCycleTime = Math.max(plugin.maxCycleTime, cycleTime);
 
         Prism.debug("------------------- ");
@@ -113,7 +120,7 @@ public class PurgeTask implements Runnable {
 
         if (!plugin.isEnabled()) {
             Prism.log("Can't schedule new purge tasks as plugin is now disabled. "
-                            + "If you're shutting down the server, ignore me.");
+                    + "If you're shutting down the server, ignore me.");
             return;
         }
 

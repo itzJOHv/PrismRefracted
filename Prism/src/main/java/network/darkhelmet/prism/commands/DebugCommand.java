@@ -28,11 +28,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DebugCommand implements SubHandler {
-
     @Override
     public void handle(CallInfo call) {
         if (call.getArgs().length == 2) {
             String arg = call.getArg(1);
+
             switch (arg.toLowerCase()) {
                 case "on":
                     Prism.setDebug(true);
@@ -40,14 +40,16 @@ public class DebugCommand implements SubHandler {
                 case "off":
                     Prism.setDebug(false);
                     break;
-                default: //toggle.
+                default: // toggle.
                     Prism.setDebug(!Prism.isDebug());
                     break;
             }
+
             Prism.messenger.sendMessage(call.getSender(), Prism.messenger.playerMsg(
                     Component.text(Il8nHelper.getRawMessage("debug-msg") + " " + Prism.isDebug())));
             return;
         }
+
         Bukkit.getScheduler().runTaskAsynchronously(Prism.getInstance(), () -> createPaste(
                 call.getSender()));
     }
@@ -55,26 +57,31 @@ public class DebugCommand implements SubHandler {
     private String getFile(Path file) {
         try {
             String out = new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
-            out = removePatterns("hostname: (.*)",out,"**secret.host**");
-            out = removePatterns("username: (.*)",out,"**username**");
-            return removePatterns("password: (.*)",out,"**password**");
+
+            out = removePatterns("hostname: (.*)", out, "**secret.host**");
+            out = removePatterns("username: (.*)", out, "**username**");
+            out = removePatterns("password: (.*)", out, "**password**");
+
+            return out;
         } catch (IOException e) {
             return ExceptionUtils.getStackTrace(e);
         }
-
     }
 
     private String removePatterns(String patten, String haystack, String replacement) {
         Pattern p = Pattern.compile(patten);
         Matcher matcher = p.matcher(haystack);
+
         while (matcher.find()) {
-            haystack = haystack.replaceFirst(matcher.group(1),replacement);
+            haystack = haystack.replaceFirst(matcher.group(1), replacement);
         }
+
         return haystack;
     }
 
     private String getMainInfo() {
         StringBuilder mainInfo = new StringBuilder();
+
         mainInfo.append(Bukkit.getName()).append(" version: ").append(Bukkit.getServer()
                 .getVersion()).append(System.lineSeparator());
         mainInfo.append("Plugin version: ").append(Prism.getInstance().getDescription()
@@ -82,11 +89,13 @@ public class DebugCommand implements SubHandler {
         mainInfo.append("Java version: ").append(System.getProperty("java.version")).append('\n');
         mainInfo.append(System.lineSeparator());
         mainInfo.append("Plugins:").append(System.lineSeparator());
+
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             mainInfo.append(' ').append(plugin.getName()).append(" - ").append(
                     plugin.getDescription().getVersion()).append(System.lineSeparator());
             mainInfo.append("  ").append(plugin.getDescription().getAuthors()).append(System.lineSeparator());
         }
+
         return mainInfo.toString();
     }
 
@@ -94,9 +103,12 @@ public class DebugCommand implements SubHandler {
         PrismDataSource dataSource = Prism.getPrismDataSource();
         StringBuilder out = new StringBuilder();
         String name = dataSource.getClass().getName();
+
         out.append("DataSource Name: ").append(name).append(System.lineSeparator());
+
         if (dataSource.getDataSource() instanceof HikariDataSource) {
             HikariDataSource ds = (HikariDataSource) dataSource.getDataSource();
+
             out.append("Running: ").append(ds.isRunning())
                     .append("Total Connections: ")
                     .append(ds.getHikariPoolMXBean().getTotalConnections())
@@ -105,17 +117,20 @@ public class DebugCommand implements SubHandler {
                     .append(ds.getHikariPoolMXBean().getActiveConnections())
                     .append(System.lineSeparator());
         }
+
         out.append("Illegal Blocks:").append(System.lineSeparator());
+
         for (Material mat : Prism.getIllegalBlocks()) {
             out.append("   ").append(mat.name()).append(System.lineSeparator());
         }
+
         out.append("Worlds Tracked: ").append(Prism.prismWorlds.size()).append(System.lineSeparator());
         out.append("Players Tracked: ").append(Prism.prismPlayers.size()).append(System.lineSeparator());
         out.append("Players with Tools: ").append(Prism.playersWithActiveTools.size())
                 .append(System.lineSeparator());
+
         return out.toString();
     }
-
 
     private void createPaste(CommandSender sender) {
         Path dataPath = Prism.getInstance().getDataFolder().toPath();
@@ -123,15 +138,17 @@ public class DebugCommand implements SubHandler {
         Path hikariProps = dataPath.resolve("hikari.properties");
         Path prismLog = dataPath.resolve("prism.log");
         String pLog;
+
         if (prismLog.toFile().length() < 2000000L) {
             pLog = getFile(prismLog);
         } else {
             pLog = "TRUNCATED DUE TO LARGE SIZE: you may need to manually paste. <pluginDir>/prism.log";
         }
+
         PasteBuilder.PasteResult result = new PasteBuilder().name("Prism Debug Output")
                 .visibility(Visibility.UNLISTED)
                 .setApiKey(Prism.getPasteKey())
-                .expires(ZonedDateTime.now().plusDays(1)) //1 day
+                .expires(ZonedDateTime.now().plusDays(1)) // 1 day
                 .addFile(new PasteFile("Main Info",
                         new PasteContent(PasteContent.ContentType.TEXT, getMainInfo())))
                 .addFile(new PasteFile("config.yml",
@@ -143,26 +160,26 @@ public class DebugCommand implements SubHandler {
                 .addFile(new PasteFile("Prism Log",
                         new PasteContent(PasteContent.ContentType.TEXT, pLog)))
                 .build();
+
         if (result.getPaste().isPresent()) {
             String pasteUrl = "https://paste.gg/" + result.getPaste().get().getId();
+
             Prism.messenger.sendMessage(sender,
                     Prism.messenger.playerMsg(Il8nHelper.getMessage("paste-output")
-                            .replaceFirstText(Pattern.compile("<pasteUrl>"), builder ->
-                                    Component.text()
-                                            .content(pasteUrl)
-                                            .clickEvent(ClickEvent.openUrl(pasteUrl)))));
+                            .replaceFirstText(Pattern.compile("<pasteUrl>"), builder -> Component.text()
+                                    .content(pasteUrl)
+                                    .clickEvent(ClickEvent.openUrl(pasteUrl)))));
             Prism.log("Paste Created : " + pasteUrl);
+
             result.getPaste().get().getDeletionKey().ifPresent(
-                  s -> {
-                          Prism.messenger.sendMessage(sender, Prism.messenger.playerMsg(
-                                  Il8nHelper.getMessage("delete-key")
-                                          .replaceFirstText(Pattern.compile("<deletekey>"), builder ->
-                                                  Component.text()
-                                                          .content(s)
-                                                          .clickEvent(ClickEvent.copyToClipboard(s)))));
-                          Prism.log("Deletion Key:" + s);
-                  }
-            );
+                    s -> {
+                        Prism.messenger.sendMessage(sender, Prism.messenger.playerMsg(
+                                Il8nHelper.getMessage("delete-key")
+                                        .replaceFirstText(Pattern.compile("<deletekey>"), builder -> Component.text()
+                                                .content(s)
+                                                .clickEvent(ClickEvent.copyToClipboard(s)))));
+                        Prism.log("Deletion Key:" + s);
+                    });
         } else {
             Prism.messenger.sendMessage(sender,
                     Prism.messenger.playerError(Il8nHelper.getMessage("debug-paste-error")));
@@ -176,7 +193,7 @@ public class DebugCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{"Debug Help"};
+        return new String[] { "Debug Help" };
     }
 
     @Override

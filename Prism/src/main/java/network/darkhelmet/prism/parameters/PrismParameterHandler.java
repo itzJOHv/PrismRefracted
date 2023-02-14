@@ -7,7 +7,6 @@ import org.bukkit.permissions.Permissible;
 import java.util.List;
 
 public interface PrismParameterHandler {
-
     String getName();
 
     String[] getHelp();

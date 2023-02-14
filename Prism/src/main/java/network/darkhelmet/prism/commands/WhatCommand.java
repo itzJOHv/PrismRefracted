@@ -15,7 +15,6 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 
 public class WhatCommand extends Executor {
-
     /**
      * Constructor.
      *
@@ -31,8 +30,10 @@ public class WhatCommand extends Executor {
             @Override
             public void handle(CallInfo call) {
                 final ItemStack item = call.getPlayer().getInventory().getItemInMainHand();
+
                 Prism.messenger.sendMessage(call.getPlayer(),
                         Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("what-header", ":")));
+
                 // TODO: Better material formatting
                 TextComponent out = Component.text()
                         .append(Il8nHelper.getMessage("what-item-name", ": ").color(NamedTextColor.DARK_AQUA))
@@ -48,7 +49,8 @@ public class WhatCommand extends Executor {
                         .append(Component.text(ItemUtils.getItemFullNiceName(item)))
                         .colorIfAbsent(NamedTextColor.WHITE)
                         .build();
-                Prism.messenger.sendMessage(call.getPlayer(),out);
+
+                Prism.messenger.sendMessage(call.getPlayer(), out);
             }
 
             @Override
@@ -58,7 +60,7 @@ public class WhatCommand extends Executor {
 
             @Override
             public String[] getHelp() {
-                return new String[]{Il8nHelper.getRawMessage("help-what")};
+                return new String[] { Il8nHelper.getRawMessage("help-what") };
             }
 
             @Override

@@ -19,35 +19,36 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class PreprocessArgs {
-
     public static QueryParameters process(Plugin plugin, CommandSender sender, String[] args,
-                                          PrismProcessType processType, int startAt, boolean useDefaults) {
+            PrismProcessType processType, int startAt, boolean useDefaults) {
         return process(plugin, sender, args, processType, startAt, useDefaults, false);
     }
 
     /**
      * Create a set of parameters.
-     * @param plugin plugin.
-     * @param sender CommandSender
-     * @param args arg list
+     * 
+     * @param plugin      plugin.
+     * @param sender      CommandSender
+     * @param args        arg list
      * @param processType {@link PrismProcessType}
-     * @param startAt int
-     * @param useDefaults  bool
-     * @param optional bool
+     * @param startAt     int
+     * @param useDefaults bool
+     * @param optional    bool
      * @return {@link QueryParameters}
      */
     public static QueryParameters process(Plugin plugin, CommandSender sender, String[] args,
-                                          PrismProcessType processType, int startAt, boolean useDefaults,
-                                          boolean optional) {
-
+            PrismProcessType processType, int startAt, boolean useDefaults,
+            boolean optional) {
         // Check for player or sender
         Player player = null;
+
         if (sender instanceof Player) {
             player = (Player) sender;
         }
 
         // Start query
         final QueryParameters parameters = new QueryParameters();
+
         parameters.setProcessType(processType);
 
         // Define pagination/process type
@@ -69,16 +70,18 @@ public class PreprocessArgs {
         }
 
         for (int i = startAt; i < args.length; i++) {
-
             final String arg = args[i];
+
             if (arg.isEmpty()) {
                 continue;
             }
+
             if (ParseResult.NotFound == parseParam(plugin, sender, parameters, registeredParams,
                     foundArgsNames, foundArgsList, arg)) {
                 return null;
             }
         }
+
         parameters.setFoundArgs(foundArgsNames);
 
         // Reject no matches
@@ -89,11 +92,12 @@ public class PreprocessArgs {
             } else {
                 Prism.log("Missing valid parameters");
             }
+
             return null;
         }
 
         /*
-          Call default method for handlers *not* used
+         * Call default method for handlers *not* used
          */
         if (useDefaults) {
             for (final Entry<String, PrismParameterHandler> entry : registeredParams.entrySet()) {
@@ -104,11 +108,12 @@ public class PreprocessArgs {
         }
 
         /*
-          Send arguments to parameter handlers
+         * Send arguments to parameter handlers
          */
         for (final MatchedParam matchedParam : foundArgsList) {
             try {
                 final PrismParameterHandler handler = matchedParam.getHandler();
+
                 handler.process(parameters, matchedParam.getArg(), sender);
             } catch (final IllegalArgumentException e) {
                 if (sender != null) {
@@ -116,6 +121,7 @@ public class PreprocessArgs {
                 } else {
                     Prism.log(e.getMessage());
                 }
+
                 return null;
             }
         }
@@ -134,37 +140,43 @@ public class PreprocessArgs {
                 && (parameters.getMaxLocation() == null || parameters.getMinLocation() == null)) {
             parameters.setMinMaxVectorsFromPlayerLocation(player.getLocation());
         }
+
         return parameters;
     }
 
     /**
      * Parse a set of params.
-     * @param plugin Prism
-     * @param sender CommandSender
-     * @param parameters QueryParameters
+     * 
+     * @param plugin           Prism
+     * @param sender           CommandSender
+     * @param parameters       QueryParameters
      * @param registeredParams Map
-     * @param foundArgsNames Collection
-     * @param foundArgsList Collection
-     * @param arg String
+     * @param foundArgsNames   Collection
+     * @param foundArgsList    Collection
+     * @param arg              String
      * @return ParseResult.
      */
     private static ParseResult parseParam(Plugin plugin, CommandSender sender, QueryParameters parameters,
-                                          Map<String, PrismParameterHandler> registeredParams,
-                                          Collection<String> foundArgsNames, Collection<MatchedParam> foundArgsList,
-                                          String arg) {
+            Map<String, PrismParameterHandler> registeredParams,
+            Collection<String> foundArgsNames, Collection<MatchedParam> foundArgsList,
+            String arg) {
         ParseResult result = ParseResult.NotFound;
 
         // Match command argument to parameter handler
         for (final Entry<String, PrismParameterHandler> entry : registeredParams.entrySet()) {
             PrismParameterHandler parameterHandler = entry.getValue();
+
             if (!parameterHandler.applicable(arg, sender)) {
                 continue;
             }
+
             if (!parameterHandler.hasPermission(arg, sender)) {
                 result = ParseResult.NoPermission;
                 continue;
             }
+
             result = ParseResult.Found;
+
             foundArgsList.add(new MatchedParam(parameterHandler, arg));
             foundArgsNames.add(parameterHandler.getName().toLowerCase());
             break;
@@ -177,12 +189,16 @@ public class PreprocessArgs {
             // feature of minecraft. Using p: prevents it.
 
             final Player autoFillPlayer = plugin.getServer().getPlayer(arg);
+
             if (autoFillPlayer != null) {
                 MatchRule match = MatchRule.INCLUDE;
+
                 if (arg.startsWith("!")) {
                     match = MatchRule.EXCLUDE;
                 }
+
                 result = ParseResult.Found;
+
                 parameters.addPlayerName(arg.replace("!", ""), match);
             }
         }
@@ -196,6 +212,7 @@ public class PreprocessArgs {
                 } else {
                     Prism.log("Unrecognized parameter '" + arg + "'");
                 }
+
                 break;
             case NoPermission:
                 if (sender != null) {
@@ -205,18 +222,21 @@ public class PreprocessArgs {
                 } else {
                     Prism.log("No permission for parameter '" + arg + "'");
                 }
+
                 break;
             default:
                 break;
         }
+
         return result;
     }
 
     /**
      * TabComplete the an argument.
-     * @param sender  CommandSender
-     * @param args String[]
-     * @param arg int
+     * 
+     * @param sender CommandSender
+     * @param args   String[]
+     * @param arg    int
      * @return List
      */
     public static List<String> complete(CommandSender sender, String[] args, int arg) {
@@ -230,8 +250,9 @@ public class PreprocessArgs {
 
     /**
      * TabComplete the last argument.
-     * @param sender  CommandSender
-     * @param args String[]
+     * 
+     * @param sender CommandSender
+     * @param args   String[]
      * @return List
      */
     public static List<String> complete(CommandSender sender, String[] args) {
@@ -240,8 +261,9 @@ public class PreprocessArgs {
 
     /**
      * TabComplete the an argument.
-     * @param sender  CommandSender
-     * @param arg String
+     * 
+     * @param sender CommandSender
+     * @param arg    String
      * @return List
      */
     public static List<String> complete(CommandSender sender, String arg) {
@@ -264,6 +286,7 @@ public class PreprocessArgs {
 
     /**
      * Enum to show results of a parse.
+     * 
      * @author botskonet
      */
     private enum ParseResult {

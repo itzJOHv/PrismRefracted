@@ -11,10 +11,11 @@ public class SenderPurgeCallback implements PurgeCallback {
 
     @Override
     public void cycle(QueryParameters param, int cycleRowsAffected, int totalRecordsAffected,
-                      boolean cycleComplete, long maxCycleTime) {
+            boolean cycleComplete, long maxCycleTime) {
         if (sender == null) {
             return;
         }
+
         Prism.messenger.sendMessage(sender,
                 Prism.messenger.playerSubduedHeaderMsg(ReplaceableTextComponent.builder("purge-cycle-cleared")
                         .replace("<cycleRowsAffected>", cycleRowsAffected)

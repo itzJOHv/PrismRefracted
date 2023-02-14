@@ -15,7 +15,6 @@ import network.darkhelmet.prism.text.ReplaceableTextComponent;
 import java.util.List;
 
 public class RollbackCommand extends AbstractCommand {
-
     private final Prism plugin;
 
     public RollbackCommand(Prism plugin) {
@@ -24,25 +23,27 @@ public class RollbackCommand extends AbstractCommand {
 
     @Override
     public void handle(final CallInfo call) {
-
         final QueryParameters parameters = PreprocessArgs.process(plugin, call.getSender(), call.getArgs(),
                 PrismProcessType.ROLLBACK, 1, !plugin.getConfig().getBoolean("prism.queries.never-use-defaults"));
         if (parameters == null) {
             return;
         }
+
         parameters.setProcessType(PrismProcessType.ROLLBACK);
         parameters.setStringFromRawArgs(call.getArgs(), 1);
+
         StringBuilder defaultsReminder = checkIfDefaultUsed(parameters);
+
         Prism.messenger.sendMessage(call.getSender(),
                 Prism.messenger.playerSubduedHeaderMsg(ReplaceableTextComponent.builder("rollback-prepare")
                         .replace("<defaults>", defaultsReminder)
                         .build()));
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
 
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             final ActionsQuery aq = new ActionsQuery(plugin);
             final QueryResult results = aq.lookup(parameters, call.getSender());
-            if (!results.getActionResults().isEmpty()) {
 
+            if (!results.getActionResults().isEmpty()) {
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("rollback-start")));
 
@@ -50,9 +51,9 @@ public class RollbackCommand extends AbstractCommand {
                 plugin.getServer().getScheduler().runTask(plugin, () -> {
                     final Rollback rb = new Rollback(plugin, call.getSender(), results.getActionResults(),
                             parameters, new PrismApplierCallback());
+
                     rb.apply();
                 });
-
             } else {
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerError(Il8nHelper.getMessage("rollback-error")));
@@ -67,7 +68,7 @@ public class RollbackCommand extends AbstractCommand {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-rollback")};
+        return new String[] { Il8nHelper.getRawMessage("help-rollback") };
     }
 
     @Override

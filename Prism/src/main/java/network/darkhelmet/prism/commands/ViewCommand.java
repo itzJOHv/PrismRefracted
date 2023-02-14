@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViewCommand implements SubHandler {
-
     private final Prism plugin;
 
     /**
@@ -29,27 +28,22 @@ public class ViewCommand implements SubHandler {
      */
     @Override
     public void handle(CallInfo call) {
-
         final String playerName = call.getPlayer().getName();
 
         if (call.getArg(1).equals("chunk")) {
-
             // Do they already have a view?
             if (plugin.playerActiveViews.containsKey(playerName)) {
-
                 // Get bounding blocks
                 final ArrayList<Block> blocks = plugin.playerActiveViews.get(playerName);
 
                 // Reset to current
                 ChunkUtils.resetPreviewBoundaryBlocks(call.getPlayer(), blocks);
+                plugin.playerActiveViews.remove(playerName);
 
                 // Close
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("command-view-close")));
-                plugin.playerActiveViews.remove(playerName);
-
             } else {
-
                 // Get bounding blocks
                 final ArrayList<Block> blocks = ChunkUtils.getBoundingBlocksAtY(
                         call.getPlayer().getLocation().getChunk(), call.getPlayer().getLocation().getBlockY());
@@ -60,14 +54,13 @@ public class ViewCommand implements SubHandler {
 
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("command-view-chunks")));
-
             }
+
             return;
         }
 
         Prism.messenger.sendMessage(call.getSender(),
                 Prism.messenger.playerError(Il8nHelper.getMessage("invalid-command")));
-
     }
 
     @Override
@@ -77,7 +70,7 @@ public class ViewCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("command-view-chunks")};
+        return new String[] { Il8nHelper.getRawMessage("command-view-chunks") };
     }
 
     @Override

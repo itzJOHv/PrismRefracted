@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class PurgeCommand implements SubHandler {
-
     private final Prism plugin;
 
     public PurgeCommand(Prism plugin) {
@@ -27,11 +26,11 @@ public class PurgeCommand implements SubHandler {
                     Prism.messenger.playerHeaderMsg(Component.text("Prism")
                             .append(Component.text(" v" + plugin.getPrismVersion()).color(NamedTextColor.GRAY))));
             Prism.messenger.sendMessage(call.getSender(),
-                  Prism.messenger.playerSubduedHeaderMsg(ReplaceableTextComponent.builder("purge-report")
-                    .replace("<taskCount>", plugin.getSchedulePool().getTaskCount())
-                    .replace("<purgesComplete>", plugin.getSchedulePool().getCompletedTaskCount())
-                    .replace("<poolString>", plugin.getSchedulePool().toString())
-                    .build()));
+                    Prism.messenger.playerSubduedHeaderMsg(ReplaceableTextComponent.builder("purge-report")
+                            .replace("<taskCount>", plugin.getSchedulePool().getTaskCount())
+                            .replace("<purgesComplete>", plugin.getSchedulePool().getCompletedTaskCount())
+                            .replace("<poolString>", plugin.getSchedulePool().toString())
+                            .build()));
         } else if (call.getArgs().length > 1) {
             if (Objects.equals(call.getArgs()[1], "execute")) {
                 Prism.messenger.sendMessage(call.getSender(),
@@ -39,9 +38,8 @@ public class PurgeCommand implements SubHandler {
                 Bukkit.getScheduler().runTaskAsynchronously(plugin, plugin.getPurgeManager());
             }
         } else {
-            Prism.messenger.sendMessage(call.getSender(),Il8nHelper.getMessage("invalid-command"));
+            Prism.messenger.sendMessage(call.getSender(), Il8nHelper.getMessage("invalid-command"));
         }
-
     }
 
     @Override
@@ -51,7 +49,7 @@ public class PurgeCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-purge")};
+        return new String[] { Il8nHelper.getRawMessage("help-purge") };
     }
 
     @Override

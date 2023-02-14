@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DrainCommand implements SubHandler {
-
     private final Prism plugin;
 
     /**
      * Constructor.
+     * 
      * @param plugin Prism
      */
     public DrainCommand(Prism plugin) {
@@ -30,18 +30,18 @@ public class DrainCommand implements SubHandler {
 
     @Override
     public void handle(CallInfo call) {
-
         String drainType = "";
         int radius = plugin.getConfig().getInt("prism.drain.default-radius");
+
         if (call.getArgs().length == 3) {
             if (call.getArg(1).equalsIgnoreCase("water") || call.getArg(1).equalsIgnoreCase("lava")) {
                 drainType = call.getArg(1);
             } else {
-
                 Prism.messenger.sendMessage(call.getPlayer(),
                         Prism.messenger.playerError("Invalid drain type. Must be lava, water, or left out."));
                 return;
             }
+
             // Validate radius
             radius = validateRadius(call, call.getArg(2));
         } else if (call.getArgs().length == 2) {
@@ -64,15 +64,19 @@ public class DrainCommand implements SubHandler {
 
         TextComponent.Builder builder = Component.text()
                 .append(Il8nHelper.formatMessage("command-drain-lookup", drainType, radius));
+
         String key = "command-drain-lookup-water";
+
         if (drainType.equals("lava")) {
             key = "command-drain-lookup-lava";
         }
+
         builder.append(Component.text(" ")).append(Il8nHelper.getMessage(key).color(NamedTextColor.GRAY));
 
         Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerHeaderMsg(builder.build()));
 
         ArrayList<BlockStateChange> blockStateChanges = null;
+
         if (drainType.isEmpty()) {
             blockStateChanges = Utilities.drain(call.getPlayer().getLocation(), radius);
         } else if (drainType.equals("water")) {
@@ -82,8 +86,6 @@ public class DrainCommand implements SubHandler {
         }
 
         if (blockStateChanges != null && !blockStateChanges.isEmpty()) {
-
-            // @todo remove the extra space in msg
             Component out = Prism.messenger
                     .playerHeaderMsg(Il8nHelper.formatMessage("command-drain-lookup-result",
                             blockStateChanges.size(), drainType))
@@ -93,8 +95,8 @@ public class DrainCommand implements SubHandler {
 
             // Trigger the event
             final PrismDrainEvent event = EventHelper.createDrainEvent(blockStateChanges, call.getPlayer(), radius);
-            plugin.getServer().getPluginManager().callEvent(event);
 
+            plugin.getServer().getPluginManager().callEvent(event);
         } else {
             Prism.messenger.sendMessage(call.getPlayer(),
                     Prism.messenger.playerError(Il8nHelper.getMessage("command-drain-result-empty")));
@@ -108,7 +110,7 @@ public class DrainCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-drain-radius")};
+        return new String[] { Il8nHelper.getRawMessage("help-drain-radius") };
     }
 
     @Override
@@ -119,6 +121,7 @@ public class DrainCommand implements SubHandler {
     protected int validateRadius(CallInfo call, String radiusArg) {
         if (TypeUtils.isNumeric(radiusArg)) {
             final int _tmp_radius = Integer.parseInt(radiusArg);
+
             if (_tmp_radius > 0) {
                 if (_tmp_radius > plugin.getConfig().getInt("prism.drain.max-radius")) {
                     Prism.messenger.sendMessage(call.getPlayer(),

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class ParamsCommand implements SubHandler {
-
     @Override
     public void handle(CallInfo call) {
         help(call.getSender());
@@ -26,7 +25,7 @@ public class ParamsCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-params")};
+        return new String[] { Il8nHelper.getRawMessage("help-params") };
     }
 
     @Override
@@ -34,19 +33,22 @@ public class ParamsCommand implements SubHandler {
         return "/parameters.html";
     }
 
-
     private void help(CommandSender s) {
         TextComponent.Builder builder = Component.text()
                 .append(Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("params-header")
                         .color(NamedTextColor.GOLD)).append(Component.newline()))
                 .append(Prism.messenger.playerMsg(colourParamHelp(
-                        Il8nHelper.getMessage("params-radius-help")))).append(Component.newline())
+                        Il8nHelper.getMessage("params-radius-help"))))
+                .append(Component.newline())
                 .append(Prism.messenger.playerMsg(
-                        colourParamHelp(Il8nHelper.getMessage("params-radius-help2")))).append(Component.newline())
+                        colourParamHelp(Il8nHelper.getMessage("params-radius-help2"))))
+                .append(Component.newline())
                 .append(Prism.messenger.playerMsg(
-                        colourParamHelp(Il8nHelper.getMessage("params-radius-help3")))).append(Component.newline())
+                        colourParamHelp(Il8nHelper.getMessage("params-radius-help3"))))
+                .append(Component.newline())
                 .append(Prism.messenger.playerMsg(
-                        colourParamHelp(Il8nHelper.getMessage("params-radius-help4")))).append(Component.newline())
+                        colourParamHelp(Il8nHelper.getMessage("params-radius-help4"))))
+                .append(Component.newline())
                 .append(Component.text("---").color(NamedTextColor.GRAY)).append(Component.newline())
                 .append(Prism.messenger.playerMsg(Component.text(" a[action]: ").color(NamedTextColor.LIGHT_PURPLE)))
                 .append(Il8nHelper.getMessage("params-help-action")).append(Component.newline())
@@ -71,7 +73,8 @@ public class ParamsCommand implements SubHandler {
                 .append(Il8nHelper.getMessage("params-help-prefix")).append(Component.newline())
                 .append(Il8nHelper.getMessage("params-help-partial")).append(Component.newline())
                 .append(Il8nHelper.getMessage("params-help-actionlist")).append(Component.newline());
-        Prism.messenger.sendMessage(s,builder.build());
+
+        Prism.messenger.sendMessage(s, builder.build());
     }
 
     private static Component colourParamHelp(TextComponent message) {

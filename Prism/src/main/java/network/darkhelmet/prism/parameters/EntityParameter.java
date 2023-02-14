@@ -11,15 +11,16 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class EntityParameter extends SimplePrismParameterHandler {
-
     @Override
     protected List<String> tabComplete(String alias, String partialParameter, CommandSender sender) {
         List<String> result = new ArrayList<>();
+
         for (EntityType ent : EntityType.values()) {
             if (ent.name().toLowerCase(Locale.ENGLISH).startsWith(partialParameter)) {
                 result.add(ent.name().toLowerCase(Locale.ENGLISH));
             }
         }
+
         return result;
     }
 
@@ -30,10 +31,13 @@ public class EntityParameter extends SimplePrismParameterHandler {
     @Override
     public void process(QueryParameters query, String alias, String input, CommandSender sender) {
         MatchRule match = MatchRule.INCLUDE;
+
         if (input.startsWith("!")) {
             match = MatchRule.EXCLUDE;
         }
+
         final String[] entityNames = input.split(",");
+
         if (entityNames.length > 0) {
             for (final String entityName : entityNames) {
                 query.addEntity(entityName.replace("!", ""), match);

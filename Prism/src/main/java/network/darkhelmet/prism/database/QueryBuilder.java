@@ -23,7 +23,9 @@ public abstract class QueryBuilder {
      */
     public QueryBuilder(PrismDataSource dataSource) {
         this.dataSource = dataSource;
+
         prefix = this.dataSource.getPrefix();
+
         tableNameData = prefix + "data";
         tableNameDataExtra = prefix + "data_extra";
     }
@@ -37,7 +39,8 @@ public abstract class QueryBuilder {
     }
 
     /**
-     * Setting this will cause the recording queue to be unable to process while the query is running.
+     * Setting this will cause the recording queue to be unable to process while the
+     * query is running.
      *
      * @param shouldPause boolean
      */
@@ -53,7 +56,6 @@ public abstract class QueryBuilder {
      * @return String with query
      */
     public String getQuery(@Nullable PrismParameters parameters, boolean shouldGroup) {
-
         this.parameters = parameters;
         this.shouldGroup = shouldGroup;
 
@@ -65,8 +67,8 @@ public abstract class QueryBuilder {
 
         query += ";";
         Prism.debug(query);
-        return query;
 
+        return query;
     }
 
     protected String select() {
@@ -91,6 +93,7 @@ public abstract class QueryBuilder {
 
     /**
      * Add a condition.
+     * 
      * @param condition String.
      */
     protected void addCondition(String condition) {

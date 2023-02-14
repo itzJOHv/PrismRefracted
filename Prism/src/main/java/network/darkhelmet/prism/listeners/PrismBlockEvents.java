@@ -18,7 +18,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Chest.Type;
-import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -53,7 +52,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class PrismBlockEvents extends BaseListener {
-
     private final Cache<Location, PlayerBed> bedWeakCache = CacheBuilder
             .newBuilder()
             .expireAfterWrite(30, TimeUnit.SECONDS)
@@ -74,18 +72,23 @@ public class PrismBlockEvents extends BaseListener {
 
     /**
      * Process over each item.
-     * @param block Block
+     * 
+     * @param block    Block
      * @param callback callback that consumes items/integer pairs.
      */
     void forEachItem(Block block, BiConsumer<ItemStack, Integer> callback) {
         if (block.getType().equals(Material.JUKEBOX)) {
             final Jukebox jukebox = (Jukebox) block.getState();
             final Material playing = jukebox.getPlaying();
+
             if (playing.equals(Material.AIR)) {
                 return;
             }
+
             final ItemStack i = new ItemStack(jukebox.getPlaying(), 1);
+
             callback.accept(i, 0);
+
             return;
         }
         if (block.getState() instanceof InventoryHolder) {
@@ -108,10 +111,12 @@ public class PrismBlockEvents extends BaseListener {
                             && slot > 26) {
                         break;
                     }
+
                     // record item
                     if (i != null) {
                         callback.accept(i, slot);
                     }
+
                     slot++;
                 }
             }
@@ -120,24 +125,26 @@ public class PrismBlockEvents extends BaseListener {
 
     private void logBlockRelationshipsForBlock(Player player, Block block) {
         relatedBlockCallback(block, b -> RecordingQueue.addToQueue(
-                ActionFactory.createBlock("block-break", b, player)), s -> plugin.preplannedBlockFalls.put(
+                ActionFactory.createBlock("block-break", b, player)),
+                s -> plugin.preplannedBlockFalls.put(
                         s, player.getUniqueId().toString()));
     }
 
     void logBlockRelationshipsForBlock(String nonPlayer, Block block) {
         relatedBlockCallback(block, b -> RecordingQueue.addToQueue(
-                ActionFactory.createBlock("block-break", b, nonPlayer)), s -> plugin.preplannedBlockFalls.put(
+                ActionFactory.createBlock("block-break", b, nonPlayer)),
+                s -> plugin.preplannedBlockFalls.put(
                         s, nonPlayer));
     }
 
     private void relatedBlockCallback(Block block, Consumer<Block> breakCallback, Consumer<String> fallCallback) {
-
         if (MaterialTag.DOORS.isTagged(block.getType())) {
             return;
         }
 
         // Find a list of all blocks above this block that we know will fall.
         final ArrayList<Block> falling_blocks = Utilities.findFallingBlocksAboveBlock(block);
+
         if (falling_blocks.size() > 0) {
             for (final Block b : falling_blocks) {
                 breakCallback.accept(b);
@@ -154,6 +161,7 @@ public class PrismBlockEvents extends BaseListener {
         // if it's a piston, the base will break without a physics events
         if (block.getType().equals(Material.PISTON_HEAD) || block.getType().equals(Material.MOVING_PISTON)) {
             final ArrayList<Block> pistonBases = Utilities.findSideFaceAttachedBlocks(block);
+
             if (pistonBases.size() > 0) {
                 for (final Block p : pistonBases) {
                     breakCallback.accept(p);
@@ -163,6 +171,7 @@ public class PrismBlockEvents extends BaseListener {
 
         // Find a list of side-face attached blocks that will detach
         ArrayList<Block> detachedBlocks = Utilities.findSideFaceAttachedBlocks(block);
+
         if (detachedBlocks.size() > 0) {
             for (final Block b : detachedBlocks) {
                 breakCallback.accept(b);
@@ -171,6 +180,7 @@ public class PrismBlockEvents extends BaseListener {
 
         // Find a list of top-side attached blocks that will detach
         detachedBlocks = Utilities.findTopFaceAttachedBlocks(block);
+
         if (detachedBlocks.size() > 0) {
             for (final Block b : detachedBlocks) {
                 breakCallback.accept(b);
@@ -179,6 +189,7 @@ public class PrismBlockEvents extends BaseListener {
 
         // Find a list of all hanging entities on this block
         final ArrayList<Entity> hanging = Utilities.findHangingEntities(block);
+
         if (hanging.size() > 0) {
             for (final Entity e : hanging) {
                 final String coord_key = e.getLocation().getBlockX() + ":" + e.getLocation().getBlockY() + ":"
@@ -190,11 +201,11 @@ public class PrismBlockEvents extends BaseListener {
 
     /**
      * Handle a block break event.
+     * 
      * @param event BlockBreakEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(final BlockBreakEvent event) {
-
         final Player player = event.getPlayer();
         final Block block = Utilities.getBaseBlock(event.getBlock());
 
@@ -217,7 +228,7 @@ public class PrismBlockEvents extends BaseListener {
         // logItemRemoveFromDestroyedContainer( player, block );
         forEachItem(block, (i, s) -> RecordingQueue.addToQueue(
                 ActionFactory.createItemStack("item-remove", i, i.getAmount(), 0, null,
-                block.getLocation(), player)));
+                        block.getLocation(), player)));
 
         // Change handling a bit if it's a long block
         /*
@@ -252,11 +263,11 @@ public class PrismBlockEvents extends BaseListener {
 
     /**
      * Handle BlockPlaceEvent.
+     * 
      * @param event BlockPlaceEvent.
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(final BlockPlaceEvent event) {
-
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
 
@@ -282,13 +293,14 @@ public class PrismBlockEvents extends BaseListener {
 
     /**
      * BlockSpreadEvent.
+     * 
      * @param event BlockSpreadEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockSpread(final BlockSpreadEvent event) {
-
         // If fire, do we track fire spread? If not, do we track block-spread
         String type = "block-spread";
+
         if (event.getNewState().getType().equals(Material.FIRE)) {
             if (!Prism.getIgnore().event("fire-spread")) {
                 return;
@@ -309,6 +321,7 @@ public class PrismBlockEvents extends BaseListener {
 
     /**
      * BlockFormEvent.
+     * 
      * @param event BlockFormEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -316,6 +329,7 @@ public class PrismBlockEvents extends BaseListener {
         if (!Prism.getIgnore().event("block-form", event.getBlock())) {
             return;
         }
+
         final Block b = event.getBlock();
         final BlockState s = event.getNewState();
 
@@ -325,6 +339,7 @@ public class PrismBlockEvents extends BaseListener {
 
     /**
      * BlockFadeEvent.
+     * 
      * @param event BlockFadeEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -332,10 +347,13 @@ public class PrismBlockEvents extends BaseListener {
         if (!Prism.getIgnore().event("block-fade", event.getBlock())) {
             return;
         }
+
         final Block b = event.getBlock();
+
         if (b.getType().equals(Material.FIRE)) {
             return;
         }
+
         final BlockState s = event.getNewState();
 
         RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fade", b.getType(),
@@ -344,6 +362,7 @@ public class PrismBlockEvents extends BaseListener {
 
     /**
      * LeavesDecayEvent.
+     * 
      * @param event LeavesDecayEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -351,6 +370,7 @@ public class PrismBlockEvents extends BaseListener {
         if (!Prism.getIgnore().event("leaf-decay", event.getBlock())) {
             return;
         }
+
         RecordingQueue.addToQueue(ActionFactory.createBlock("leaf-decay", event.getBlock(),
                 "Environment"));
     }
@@ -358,6 +378,7 @@ public class PrismBlockEvents extends BaseListener {
     /**
      * Primarily for tracking respawn anchor explosions in the world and end,
      * and bed explosions in the nether and end.
+     * 
      * @param event BlockExplodeEvent
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -366,34 +387,49 @@ public class PrismBlockEvents extends BaseListener {
             if (!Prism.getIgnore().event("bed-explode", event.getBlock())) {
                 return;
             }
-            //while it might be nice to check that it's a bed - the block is already air
+
+            // while it might be nice to check that it's a bed - the block is already air
             PlayerBed playerBed = bedWeakCache.getIfPresent(event.getBlock().getLocation());
+
             if (playerBed == null) {
                 return;
             }
+
             String source = playerBed.player.getName();
             List<Block> affected = event.blockList();
+
             RecordingQueue.addToQueue(ActionFactory.createBlock("bed-explode", playerBed.bed, playerBed.player));
+
             contructBlockEvent("bed-explode", source, affected);
+
             bedWeakCache.invalidate(event.getBlock().getLocation());
         } else if (event.getBlock().getType() == Material.RESPAWN_ANCHOR) {
             if (!Prism.getIgnore().event("respawnanchor-explode", event.getBlock())) {
                 return;
             }
+
             Player player = anchorWeakCache.getIfPresent(event.getBlock().getLocation());
+
             if (player == null) {
                 return;
             }
+
             String source = player.getName();
             List<Block> affected = event.blockList();
-            RecordingQueue.addToQueue(ActionFactory.createBlock("respawnanchor-explode", event.getBlock().getState(), player));
+
+            RecordingQueue.addToQueue(
+                    ActionFactory.createBlock("respawnanchor-explode", event.getBlock().getState(), player));
+
             contructBlockEvent("respawnanchor-explode", source, affected);
+
             anchorWeakCache.invalidate(event.getBlock().getLocation());
         }
     }
 
     /**
-     * Tracks players use respawn anchor to set spawnpoint and cache it in case of explosion.
+     * Tracks players use respawn anchor to set spawnpoint and cache it in case of
+     * explosion.
+     * 
      * @param event PlayerInteractEvent
      */
     @EventHandler(priority = EventPriority.MONITOR)
@@ -404,7 +440,9 @@ public class PrismBlockEvents extends BaseListener {
     }
 
     /**
-     * Tracks players entering a bed and where its not possible cache's it in case of explosion.
+     * Tracks players entering a bed and where its not possible cache's it in case
+     * of explosion.
+     * 
      * @param enterEvent PlayerBedEnterEvent
      */
     @EventHandler(priority = EventPriority.MONITOR)
@@ -413,14 +451,17 @@ public class PrismBlockEvents extends BaseListener {
             bedWeakCache.put(enterEvent.getBed().getLocation(), new PlayerBed(enterEvent.getPlayer(),
                     enterEvent.getBed().getState()));
         }
+
         if (!Prism.getIgnore().event("block-use", enterEvent.getBed())) {
             return;
         }
+
         RecordingQueue.addToQueue(ActionFactory.createBlock("block-use", enterEvent.getBed(), enterEvent.getPlayer()));
     }
 
     /**
      * BlockBurnEvent.
+     * 
      * @param event BlockBurnEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -428,11 +469,13 @@ public class PrismBlockEvents extends BaseListener {
         if (!Prism.getIgnore().event("block-burn", event.getBlock())) {
             return;
         }
+
         Block block = event.getBlock();
         RecordingQueue.addToQueue(ActionFactory.createBlock("block-burn", block, "Environment"));
 
         // Change handling a bit if it's a long block
         final Block sibling = Utilities.getSiblingForDoubleLengthBlock(block);
+
         if (sibling != null && !block.getType().equals(Material.CHEST)
                 && !block.getType().equals(Material.TRAPPED_CHEST)) {
             block = sibling;
@@ -445,6 +488,7 @@ public class PrismBlockEvents extends BaseListener {
 
     /**
      * SignChangeEvent.
+     * 
      * @param event SignChangeEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -452,6 +496,7 @@ public class PrismBlockEvents extends BaseListener {
         if (!Prism.getIgnore().event("sign-change", event.getPlayer())) {
             return;
         }
+
         if (event.getBlock().getState() instanceof Sign) {
             RecordingQueue.addToQueue(
                     ActionFactory.createSign("sign-change", event.getBlock(), event.getLines(), event.getPlayer()));
@@ -460,11 +505,11 @@ public class PrismBlockEvents extends BaseListener {
 
     /**
      * BlockIgniteEvent.
+     * 
      * @param event BlockIgniteEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSetFire(final BlockIgniteEvent event) {
-
         String cause = null;
         switch (event.getCause()) {
             case FIREBALL:
@@ -481,8 +526,8 @@ public class PrismBlockEvents extends BaseListener {
                 break;
             default:
         }
-        if (cause != null) {
 
+        if (cause != null) {
             if (!Prism.getIgnore().event(cause, event.getBlock().getWorld())) {
                 return;
             }
@@ -503,12 +548,12 @@ public class PrismBlockEvents extends BaseListener {
             } else {
                 RecordingQueue.addToQueue(ActionFactory.createBlock(cause, event.getBlock(), "Environment"));
             }
-
         }
     }
 
     /**
      * BlockDispenseEvent.
+     * 
      * @param event BlockDispenseEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -516,22 +561,25 @@ public class PrismBlockEvents extends BaseListener {
         if (!Prism.getIgnore().event("block-dispense")) {
             return;
         }
+
         RecordingQueue.addToQueue(ActionFactory.createItemStack("block-dispense", event.getItem(),
                 event.getItem().getAmount(), -1, null, event.getBlock().getLocation(), "dispenser"));
     }
 
     /**
      * BlockPistonExtendEvent.
+     * 
      * @param event BlockPistonExtendEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPistonExtend(final BlockPistonExtendEvent event) {
-
         if (plugin.getConfig().getBoolean("prism.alerts.vanilla-xray.enabled")) {
             final Block noPlayer = event.getBlock().getRelative(event.getDirection()).getRelative(event.getDirection())
                     .getRelative(BlockFace.DOWN);
+
             for (final Player pl : plugin.getServer().getOnlinePlayers()) {
                 final Location loc = pl.getLocation();
+
                 if (loc.getBlockX() == noPlayer.getX() && loc.getBlockY() == noPlayer.getY()
                         && loc.getBlockZ() == noPlayer.getZ()) {
                     plugin.useMonitor.alertOnVanillaXray(pl, "possibly used a vanilla piston/xray trick", null);
@@ -545,9 +593,9 @@ public class PrismBlockEvents extends BaseListener {
         }
 
         final List<Block> blocks = event.getBlocks();
+
         if (!blocks.isEmpty()) {
             for (final Block block : blocks) {
-
                 if (block.getType().equals(Material.AIR)) {
                     continue;
                 }
@@ -558,13 +606,13 @@ public class PrismBlockEvents extends BaseListener {
                 // replaced, as well as the block moved.
                 RecordingQueue.addToQueue(ActionFactory.createBlockShift("block-shift", block,
                         block.getRelative(event.getDirection()).getLocation(), "Piston"));
-
             }
         }
     }
 
     /**
      * BlockPistonRetractEvent.
+     * 
      * @param event BlockPistonRetractEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -572,6 +620,7 @@ public class PrismBlockEvents extends BaseListener {
         if (!Prism.getIgnore().event("block-shift", event.getBlock())) {
             return;
         }
+
         if (!event.isSticky()) {
             return;
         }
@@ -579,10 +628,10 @@ public class PrismBlockEvents extends BaseListener {
         BlockFace facing = event.getDirection();
 
         for (Block block : event.getBlocks()) {
-
             if (block.getType().equals(Material.AIR)) {
                 continue;
             }
+
             RecordingQueue.addToQueue(ActionFactory.createBlockShift("block-shift", block,
                     block.getRelative(facing).getLocation(), "Piston"));
         }
@@ -592,33 +641,34 @@ public class PrismBlockEvents extends BaseListener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
     public void onBlockFall(final EntityChangeBlockEvent event) {
-        if (
-                event.isCancelled()
+        if (event.isCancelled()
                 || !Prism.getIgnore().event("block-fall", event.getBlock())
-                || event.getEntityType() != EntityType.FALLING_BLOCK
-        ) {
+                || event.getEntityType() != EntityType.FALLING_BLOCK) {
             return;
         }
 
         if (event.getTo() == Material.AIR) {
             // Start falling.
             fallingBlockOldLocation.put(event.getEntity(), event.getBlock().getLocation());
-            RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", Material.AIR, event.getBlock().getType(),
-                    null, event.getBlock().getLocation(), event.getBlock().getType().name().toLowerCase(Locale.ENGLISH)));
+            RecordingQueue
+                    .addToQueue(ActionFactory.createBlockFall("block-fall", Material.AIR, event.getBlock().getType(),
+                            null, event.getBlock().getLocation(),
+                            event.getBlock().getType().name().toLowerCase(Locale.ENGLISH)));
         } else {
             // Falling block lands.
             RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", event.getTo(), Material.AIR,
-                    fallingBlockOldLocation.get(event.getEntity()), event.getBlock().getLocation(), event.getTo().name().toLowerCase(Locale.ENGLISH)));
+                    fallingBlockOldLocation.get(event.getEntity()), event.getBlock().getLocation(),
+                    event.getTo().name().toLowerCase(Locale.ENGLISH)));
         }
     }
 
     /**
      * BlockFromToEvent.
+     * 
      * @param event BlockFromToEvent
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockFromTo(final BlockFromToEvent event) {
-
         // Ignore blocks that aren't liquid. @todo what else triggers this?
         if (!event.getBlock().isLiquid()) {
             return;

@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class WandCommand extends AbstractCommand {
-
     private final Prism plugin;
 
     /**
@@ -41,17 +40,21 @@ public class WandCommand extends AbstractCommand {
     @Override
     public void handle(CallInfo call) {
         String type = "i";
-        final boolean isInspect = call.getArg(0).equalsIgnoreCase("inspect") || call.getArg(0).equalsIgnoreCase("i");
+        final boolean isInspect = call.getArg(0).equalsIgnoreCase("inspect")
+                || call.getArg(0).equalsIgnoreCase("i");
+
         if (!isInspect) {
             if (call.getArgs().length < 2) {
                 Prism.messenger.sendMessage(call.getPlayer(),
                         Prism.messenger.playerError(Il8nHelper.getMessage("wand-error-type")));
                 return;
             }
+
             type = call.getArg(1);
         }
 
         Wand oldWand = null;
+
         if (Prism.playersWithActiveTools.containsKey(call.getPlayer().getName())) {
             // Pull the wand in use
             oldWand = Prism.playersWithActiveTools.get(call.getPlayer().getName());
@@ -66,6 +69,7 @@ public class WandCommand extends AbstractCommand {
         // Check if the player has a personal override
         if (plugin.getConfig().getBoolean("prism.wands.allow-user-override")) {
             final String personalMode = Settings.getSetting("wand.mode", call.getPlayer());
+
             if (personalMode != null) {
                 mode = personalMode;
             }
@@ -73,6 +77,7 @@ public class WandCommand extends AbstractCommand {
 
         // Determine which item we're using.
         String toolKey = null;
+
         if ("item".equals(mode)) {
             toolKey = plugin.getConfig().getString("prism.wands.default-item-mode-id");
         } else if ("block".equals(mode)) {
@@ -82,6 +87,7 @@ public class WandCommand extends AbstractCommand {
         // Check if the player has a personal override
         if (plugin.getConfig().getBoolean("prism.wands.allow-user-override")) {
             final String personalToolKey = Settings.getSetting("wand.item", call.getPlayer());
+
             if (personalToolKey != null) {
                 toolKey = personalToolKey;
             }
@@ -96,6 +102,7 @@ public class WandCommand extends AbstractCommand {
         String wandOn = "";
         String itemName = "";
         StringBuilder parameters = new StringBuilder();
+
         if (itemMaterial != null) {
             itemName = Prism.getItems().getAlias(itemMaterial, null);
             wandOn += " on a " + itemName;
@@ -107,17 +114,19 @@ public class WandCommand extends AbstractCommand {
 
         if (ItemUtils.isBadWand(itemMaterial)) {
             final String itemNameFinal = itemName;
+
             Prism.messenger.sendMessage(call.getPlayer(),
                     Prism.messenger.playerError(Il8nHelper.getMessage("wand-bad")
                             .replaceText(Pattern.compile("<itemName>"),
-                                  builder -> Component.text().content(itemNameFinal))));
+                                    builder -> Component.text().content(itemNameFinal))));
             return;
         }
 
         boolean enabled = false;
         Wand wand = null;
+
         /*
-          Inspector wand
+         * Inspector wand
          */
         switch (type.toLowerCase()) {
             case "i":
@@ -125,12 +134,14 @@ public class WandCommand extends AbstractCommand {
                 if (checkNoPermissions(call.getPlayer(), "prism.lookup", "prism.wand.inspect")) {
                     return;
                 }
+
                 if (oldWand instanceof InspectorWand) {
                     sendWandStatus(call.getPlayer(), "wand-inspection", false, wandOn, parameters.toString());
                 } else {
                     wand = new InspectorWand(plugin);
-                    sendWandStatus(call.getPlayer(), "wand-inspection", true, wandOn, parameters.toString());
                     enabled = true;
+
+                    sendWandStatus(call.getPlayer(), "wand-inspection", true, wandOn, parameters.toString());
                 }
                 break;
             case "p":
@@ -138,11 +149,13 @@ public class WandCommand extends AbstractCommand {
                 if (checkNoPermissions(call.getPlayer(), "prism.lookup", "prism.wand.profile")) {
                     return;
                 }
+
                 if (oldWand instanceof ProfileWand) {
                     sendWandStatus(call.getPlayer(), "wand-profile", false, wandOn, parameters.toString());
                 } else {
                     wand = new ProfileWand();
                     enabled = true;
+
                     sendWandStatus(call.getPlayer(), "wand-profile", true, wandOn, parameters.toString());
                 }
                 break;
@@ -151,12 +164,14 @@ public class WandCommand extends AbstractCommand {
                 if (checkNoPermissions(call.getSender(), "prism.rollback", "prism.wand.rollback")) {
                     return;
                 }
+
                 if (oldWand instanceof RollbackWand) {
                     sendWandStatus(call.getPlayer(), "wand-rollback", false, wandOn, parameters.toString());
                 } else {
                     wand = new RollbackWand(plugin);
-                    sendWandStatus(call.getPlayer(), "wand-rollback", true, wandOn, parameters.toString());
                     enabled = true;
+
+                    sendWandStatus(call.getPlayer(), "wand-rollback", true, wandOn, parameters.toString());
                 }
                 break;
             case "restore":
@@ -170,6 +185,7 @@ public class WandCommand extends AbstractCommand {
                 } else {
                     wand = new RestoreWand(plugin);
                     enabled = true;
+
                     sendWandStatus(call.getPlayer(), "wand-current", true, wandOn, parameters.toString());
                 }
                 break;
@@ -181,17 +197,18 @@ public class WandCommand extends AbstractCommand {
                         Prism.messenger.playerError(Il8nHelper.getMessage("wand-invalid")));
                 return;
         }
+
         constructWand(call, enabled, itemMaterial, mode, wand, isInspect, oldWand);
     }
 
     private void constructWand(CallInfo call, boolean enabled,
-                               final Material itemMaterial, String mode, Wand wand,
-                               boolean isInspect,
-                               Wand oldWand) {
+            final Material itemMaterial, String mode, Wand wand,
+            boolean isInspect,
+            Wand oldWand) {
         Material item = itemMaterial;
         final PlayerInventory inv = call.getPlayer().getInventory();
-        if (enabled) {
 
+        if (enabled) {
             if (item == null) {
                 if (Objects.equals(mode, "block")) {
                     item = Material.SPRUCE_LOG;
@@ -220,18 +237,14 @@ public class WandCommand extends AbstractCommand {
                                 Prism.messenger.playerError(Il8nHelper.getMessage("wand-inventory-full")));
                     }
                 }
+
                 InventoryUtils.updateInventory(call.getPlayer());
             }
 
             // Let's build the QueryParameters for it if it's a Query wand.
             if (wand instanceof QueryWandBase) {
                 if (!((QueryWandBase) wand).setParameters(call.getPlayer(), call.getArgs(), (isInspect ? 1 : 2))) {
-                    // This
-                    // returns
-                    // if
-                    // it
-                    // was
-                    // successful
+                    // Thi returns if it was successful
                     Prism.messenger.sendMessage(call.getPlayer(),
                             Prism.messenger.playerError(Il8nHelper.getMessage("wand-params-few")));
                 }
@@ -247,30 +260,33 @@ public class WandCommand extends AbstractCommand {
     }
 
     static void sendWandStatus(final CommandSender sender,
-                               @PropertyKey(resourceBundle = "languages.message") String wandStatusMessageKey,
-                               final boolean status,
-                               final String wandType,
-                               final String parameters) {
+            @PropertyKey(resourceBundle = "languages.message") String wandStatusMessageKey,
+            final boolean status,
+            final String wandType,
+            final String parameters) {
         final TextComponent state;
+
         if (status) {
             state = Il8nHelper.getMessage("enabled").color(NamedTextColor.GREEN);
         } else {
             state = Il8nHelper.getMessage("disabled").color(NamedTextColor.RED);
         }
+
         TextComponent out = Prism.messenger
                 .playerHeaderMsg(Il8nHelper.getMessage(wandStatusMessageKey)
                         .replaceText(Pattern.compile("<status>"),
-                              builder -> Component.text().append(state)));
+                                builder -> Component.text().append(state)));
+
         if (status) {
             out.append(Component.newline())
                     .append(Il8nHelper.getMessage("wand-item-type")
                             .replaceText(Pattern.compile("<itemType>"),
-                                  builder -> Component.text().content(wandType))
+                                    builder -> Component.text().content(wandType))
                             .replaceText(Pattern.compile("<parameters"),
-                                  builder -> Component.text().content(parameters)));
+                                    builder -> Component.text().content(parameters)));
         }
-        Prism.messenger.sendMessage(sender, out);
 
+        Prism.messenger.sendMessage(sender, out);
     }
 
     @Override
@@ -280,7 +296,7 @@ public class WandCommand extends AbstractCommand {
 
     @Override
     public String[] getHelp() {
-        return new String[]{
+        return new String[] {
                 Il8nHelper.getRawMessage("help-inspector-wand"),
                 Il8nHelper.getRawMessage("help-restore-wand"),
                 Il8nHelper.getRawMessage("help-rollback-wand"),

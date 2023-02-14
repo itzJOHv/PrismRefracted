@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class PlayerIdentification {
-
     /**
      * Loads `prism_players` ID for a real player into our cache.
      * Runs during PlayerJoin events, so it will never be for a fake/null player.
@@ -21,35 +20,39 @@ public class PlayerIdentification {
     public static void cachePrismPlayer(UUID uuid, String name) {
         PrismPlayer prismPlayer;
         prismPlayer = getPrismPlayer(uuid, name);
+
         if (prismPlayer != null) {
             comparePlayerToCache(name, uuid, prismPlayer);
+
             Prism.debug("Loaded player " + name + ", id: " + uuid + " into the cache.");
+
             Prism.prismPlayers.put(uuid, prismPlayer);
             return;
         }
+
         SqlPlayerIdentificationHelper.addPlayer(name, uuid);
     }
 
     /**
-     * Gets a player from the cache by name in general this is always an online player but if not it
+     * Gets a player from the cache by name in general this is always an online
+     * player but if not it
      * will attempt to get the player id from the database.
      */
     public static PrismPlayer getPrismPlayerByNameFromCache(final String playerName) {
-
         // Lookup the player
         PrismPlayer prismPlayer = getPrismPlayer(playerName);
+
         if (prismPlayer != null) {
             // prismPlayer = comparePlayerToCache( player, prismPlayer );
-            // Prism.debug("Loaded player " + prismPlayer.getName() + ", id: " + prismPlayer.getId() + " into the cache.");
+            // Prism.debug("Loaded player " + prismPlayer.getName() + ", id: " +
+            // prismPlayer.getId() + " into the cache.");
             // Prism.prismPlayers.put( player.getUniqueId(), prismPlayer );
             return prismPlayer;
         }
 
         // Player is fake, create a record for them
         prismPlayer = SqlPlayerIdentificationHelper.addFakePlayer(playerName);
-
         return prismPlayer;
-
     }
 
     /**
@@ -62,7 +65,6 @@ public class PlayerIdentification {
      * @return PrismPlayer
      */
     private static PrismPlayer getPrismPlayer(String playerName) {
-
         Player player = Bukkit.getPlayer(playerName);
 
         if (player != null) {
@@ -70,9 +72,7 @@ public class PlayerIdentification {
         }
 
         // Player not online, we need to go to cache
-
         return SqlPlayerIdentificationHelper.lookupByName(playerName);
-
     }
 
     /**
@@ -83,10 +83,10 @@ public class PlayerIdentification {
      * @return PrismPlayer
      */
     private static @Nullable PrismPlayer getPrismPlayer(UUID uuid, String name) {
-
         PrismPlayer prismPlayer;
         // Are they in the cache?
         prismPlayer = Prism.prismPlayers.get(uuid);
+
         if (prismPlayer != null) {
             return prismPlayer;
         }
@@ -98,15 +98,18 @@ public class PlayerIdentification {
                 prismPlayer.setName(name);
                 SqlPlayerIdentificationHelper.updatePlayer(prismPlayer);
             }
+
             return prismPlayer;
         }
+
         // Still not found, try looking them up by name
         prismPlayer = SqlPlayerIdentificationHelper.lookupByName(name);
-        prismPlayer = comparePlayerToCache(name, uuid, prismPlayer);
-        // now check if the uuid is the same as the one logging in ...if it isn't we likely need to
-        // create a new player and update the old one with a new name
-        return prismPlayer;
 
+        // now check if the uuid is the same as the one logging in ...if it isn't we
+        // likely need to
+        // create a new player and update the old one with a new name
+        prismPlayer = comparePlayerToCache(name, uuid, prismPlayer);
+        return prismPlayer;
     }
 
     /**
@@ -121,29 +124,37 @@ public class PlayerIdentification {
      * @param prismPlayer PrismPlayer
      * @return PrismPlayer
      */
-
     private static @Nullable PrismPlayer comparePlayerToCache(final String name, final UUID uuid,
-                                                              PrismPlayer prismPlayer) {
+            PrismPlayer prismPlayer) {
         if (prismPlayer == null) {
             return null;
         }
+
         if (!name.equals(prismPlayer.getName())) {
-            //ok but now names can be used so lets check if an existing player uses that name
+            // ok but now names can be used so lets check if an existing player uses that
+            // name
             PrismPlayer test = SqlPlayerIdentificationHelper.lookupByName(name);
+
             if (test != null && test.getUuid() != prismPlayer.getUuid()) {
                 Prism.warn("Player UUID for " + name + " conflicts with another player: " + test.getUuid()
                         + " we are attempting to update that UUID with a new name before allowing this cache.");
+
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(test.getUuid());
+
                 test.setName(offlinePlayer.getName());
+
                 if (test.getName().equals(name)) {
                     Prism.warn("Players appear to have the same name "
                             + "- generally this is impossible with online servers.");
                 }
+
                 SqlPlayerIdentificationHelper.updatePlayer(test);
             }
+
             prismPlayer.setName(name);
             SqlPlayerIdentificationHelper.updatePlayer(prismPlayer);
         }
+
         if (!uuid.equals(prismPlayer.getUuid())) {
             Prism.warn("Player UUID for " + name + " does not match our cache! " + uuid
                     + " versus cache of " + prismPlayer.getName() + " / " + prismPlayer.getUuid());
@@ -152,6 +163,7 @@ public class PlayerIdentification {
             prismPlayer.setUuid(uuid);
             SqlPlayerIdentificationHelper.updatePlayer(prismPlayer);
         }
+
         return prismPlayer;
     }
 

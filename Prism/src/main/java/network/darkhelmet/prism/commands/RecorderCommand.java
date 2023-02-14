@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.util.List;
 
 public class RecorderCommand extends AbstractCommand {
-
     private final Prism plugin;
 
     /**
@@ -22,7 +21,6 @@ public class RecorderCommand extends AbstractCommand {
 
     @Override
     public void handle(final CallInfo call) {
-
         if (call.getArgs().length <= 1) {
             Prism.messenger.sendMessage(call.getSender(),
                     Prism.messenger.playerError(Il8nHelper.getMessage("invalid-command")));
@@ -44,6 +42,7 @@ public class RecorderCommand extends AbstractCommand {
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerError(Il8nHelper.getMessage("report-recorder-stopped")));
             }
+
             return;
         }
 
@@ -53,7 +52,6 @@ public class RecorderCommand extends AbstractCommand {
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerError(Il8nHelper.getMessage("report-already-running")));
             } else {
-
                 // Run db tests...
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerMsg(Il8nHelper.getMessage("database-validating")));
@@ -67,11 +65,10 @@ public class RecorderCommand extends AbstractCommand {
 
                     Prism.messenger.sendMessage(call.getSender(),
                             Prism.messenger.playerSuccess(Il8nHelper.getMessage("pool-valid-connection")));
-
                     Prism.messenger.sendMessage(call.getSender(),
                             Prism.messenger.playerMsg(Il8nHelper.getMessage("recorder-restarting")));
-                    plugin.actionRecorderTask();
 
+                    plugin.actionRecorderTask();
                 } catch (final Exception e) {
                     e.printStackTrace();
                 }

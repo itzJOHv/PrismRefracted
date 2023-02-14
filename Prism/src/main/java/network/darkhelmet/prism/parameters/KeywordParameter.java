@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import java.util.regex.Pattern;
 
 public class KeywordParameter extends SimplePrismParameterHandler {
-
     /**
      * A keyword parameter.
      */

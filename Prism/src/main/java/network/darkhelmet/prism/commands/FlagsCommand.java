@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 
 public class FlagsCommand implements SubHandler {
-
     /**
      * Handle the command.
      */
@@ -28,7 +27,7 @@ public class FlagsCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-flag-list")};
+        return new String[] { Il8nHelper.getRawMessage("help-flag-list") };
     }
 
     @Override
@@ -48,8 +47,9 @@ public class FlagsCommand implements SubHandler {
                 Il8nHelper.getMessage("flag-help-1").color(NamedTextColor.GRAY)));
         Prism.messenger.sendMessage(s, Prism.messenger
                 .playerMsg(Il8nHelper.getMessage("flag-help-2")));
+
         for (final Flag flag : Flag.values()) {
-            Prism.messenger.sendMessage(s,Prism.messenger.playerMsg(
+            Prism.messenger.sendMessage(s, Prism.messenger.playerMsg(
                     Component.text(flag.getUsage().replace("_", "-"))
                             .color(NamedTextColor.LIGHT_PURPLE)
                             .append(Component.text(" " + Il8nHelper.getRawMessage(flag.getDescription()))

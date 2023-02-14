@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExtinguishCommand implements SubHandler {
-
     private final Prism plugin;
 
     /**
      * Constructor.
+     * 
      * @param plugin Prism
      */
     public ExtinguishCommand(Prism plugin) {
@@ -31,11 +31,12 @@ public class ExtinguishCommand implements SubHandler {
      */
     @Override
     public void handle(CallInfo call) {
-
         int radius = plugin.getConfig().getInt("prism.ex.default-radius");
+
         if (call.getArgs().length == 2) {
             if (TypeUtils.isNumeric(call.getArg(1))) {
                 final int _tmp_radius = Integer.parseInt(call.getArg(1));
+
                 if (_tmp_radius > 0) {
                     if (_tmp_radius > plugin.getConfig().getInt("prism.ex.max-radius")) {
                         Prism.messenger.sendMessage(call.getPlayer(),
@@ -58,16 +59,16 @@ public class ExtinguishCommand implements SubHandler {
 
         final ArrayList<BlockStateChange> blockStateChanges = Utilities.extinguish(call.getPlayer().getLocation(),
                 radius);
-        if (!blockStateChanges.isEmpty()) {
 
+        if (!blockStateChanges.isEmpty()) {
             Prism.messenger.sendMessage(call.getPlayer(),
                     Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("fire-extinguished-sucess")));
 
             // Trigger the event
             final PrismExtinguishEvent event = EventHelper.createExtinguishEvent(blockStateChanges, call.getPlayer(),
                     radius);
-            plugin.getServer().getPluginManager().callEvent(event);
 
+            plugin.getServer().getPluginManager().callEvent(event);
         } else {
             Prism.getAudiences().player(call.getPlayer())
                     .sendMessage(Identity.nil(),
@@ -82,7 +83,7 @@ public class ExtinguishCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-extinguish-radius")};
+        return new String[] { Il8nHelper.getRawMessage("help-extinguish-radius") };
     }
 
     @Override

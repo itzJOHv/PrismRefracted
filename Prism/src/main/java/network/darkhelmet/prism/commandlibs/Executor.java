@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Executor implements CommandExecutor, TabCompleter {
-
     public final Plugin plugin;
 
     private final Map<String, SubCommand> subCommands = new LinkedHashMap<>();
@@ -30,8 +29,9 @@ public class Executor implements CommandExecutor, TabCompleter {
 
     /**
      * Constructor.
-     * @param plugin Prism
-     * @param mode String
+     * 
+     * @param plugin   Prism
+     * @param mode     String
      * @param permBase permission base
      */
     public Executor(Plugin plugin, @Nullable String mode, String permBase) {
@@ -39,22 +39,23 @@ public class Executor implements CommandExecutor, TabCompleter {
         this.plugin = plugin;
     }
 
-    public final Map<String,SubCommand> getSubCommands() {
+    public final Map<String, SubCommand> getSubCommands() {
         return subCommands;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String commandLabel,
-                             @NotNull String[] args) {
-
+            @NotNull String[] args) {
         // Set player
         Player player = null;
+
         if (sender instanceof Player) {
             player = (Player) sender;
         }
 
         // Find command
         String subcommandName;
+
         if (mode.equals("subcommand") && args.length > 0) {
             subcommandName = args[0].toLowerCase();
         } else {
@@ -64,8 +65,10 @@ public class Executor implements CommandExecutor, TabCompleter {
         String currentMode = mode;
 
         SubCommand sub = subCommands.get(subcommandName);
+
         if (sub == null) {
             sub = subCommands.get(defaultSubCommand);
+
             if (sub == null) {
                 sender.sendMessage("Invalid command");
                 return true;
@@ -84,6 +87,7 @@ public class Executor implements CommandExecutor, TabCompleter {
             sender.sendMessage("You're missing arguments for this command");
             return true;
         }
+
         // Ensure command allows console
         if (!(sender instanceof Player)) {
             if (!sub.isConsoleAllowed()) {
@@ -94,31 +98,34 @@ public class Executor implements CommandExecutor, TabCompleter {
 
         // Pass along call to handler
         final CallInfo call = new CallInfo(sender, player, args);
+
         sub.getHandler().handle(call);
-
         return true;
-
     }
 
     /**
      * Add a sub command.
-     * @param commandAliases String[] alias list
+     * 
+     * @param commandAliases  String[] alias list
      * @param permissionNodes String[] permissions
-     * @param handler SubHandler
+     * @param handler         SubHandler
      * @return SubCommand
      */
     private SubCommand addSub(String[] commandAliases, String[] permissionNodes,
-                              @SuppressWarnings("SameParameterValue") SubHandler handler) {
+            @SuppressWarnings("SameParameterValue") SubHandler handler) {
         final SubCommand cmd = new SubCommand(commandAliases, permissionNodes, handler);
+
         for (final String alias : commandAliases) {
             subCommands.put(alias, cmd);
         }
+
         return cmd;
     }
 
     /**
      * Add a sub command with a null handler.
-     * @param commandAliases String[] alias list
+     * 
+     * @param commandAliases  String[] alias list
      * @param permissionNodes String[] permissions
      * @return SubCommand
      */
@@ -128,48 +135,53 @@ public class Executor implements CommandExecutor, TabCompleter {
 
     /**
      * Add a sub command with a single permission.
+     * 
      * @param commandAliases String[] alias list
      * @param permissionNode String permission
      * @return SubCommand
      */
     protected SubCommand addSub(String[] commandAliases, String permissionNode) {
-        return addSub(commandAliases, new String[]{permissionNode}, null);
+        return addSub(commandAliases, new String[] { permissionNode }, null);
     }
 
     /**
      * Add a sub command with a single alias and null handler.
-     * @param commandAlias String alias list
+     * 
+     * @param commandAlias    String alias list
      * @param permissionNodes String[] permissions
      * @return SubCommand
      */
-    @SuppressWarnings("unused")
     protected SubCommand addSub(String commandAlias, String[] permissionNodes) {
-        return addSub(new String[]{commandAlias}, permissionNodes, null);
+        return addSub(new String[] { commandAlias }, permissionNodes, null);
     }
 
     /**
      * Add a sub command with a single alias and permission and null handler.
-     * @param commandAlias String alias
+     * 
+     * @param commandAlias   String alias
      * @param permissionNode String permissions
      * @return SubCommand
      */
     protected SubCommand addSub(String commandAlias, String permissionNode) {
-        return addSub(new String[]{commandAlias}, new String[]{permissionNode}, null);
+        return addSub(new String[] { commandAlias }, new String[] { permissionNode }, null);
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s,
-                                      @NotNull String[] args) {
+            @NotNull String[] args) {
         // Set player
         Player player = null;
+
         if (sender instanceof Player) {
             player = (Player) sender;
         }
 
         // Find command
         String subcommandName;
+
         if (mode.equals("subcommand") && args.length > 0) {
             subcommandName = args[0].toLowerCase();
+
             // Complete subcommand
             if (args.length == 1) {
                 return MiscUtils.getStartingWith(subcommandName, subCommands.keySet());
@@ -181,8 +193,10 @@ public class Executor implements CommandExecutor, TabCompleter {
         String currentMode = mode;
 
         SubCommand sub = subCommands.get(subcommandName);
+
         if (sub == null) {
             sub = subCommands.get(defaultSubCommand);
+
             if (sub == null) {
                 sender.sendMessage("Invalid command");
                 return null;
@@ -201,6 +215,7 @@ public class Executor implements CommandExecutor, TabCompleter {
             sender.sendMessage("You're missing arguments for this command");
             return null;
         }
+
         // Ensure command allows console
         if (!(sender instanceof Player)) {
             if (!sub.isConsoleAllowed()) {
@@ -211,6 +226,7 @@ public class Executor implements CommandExecutor, TabCompleter {
 
         // Pass along call to handler
         final CallInfo call = new CallInfo(sender, player, args);
+
         return sub.getHandler().handleComplete(call);
     }
 }

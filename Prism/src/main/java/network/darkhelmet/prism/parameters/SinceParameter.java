@@ -11,7 +11,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.regex.Pattern;
 
 public class SinceParameter extends SimplePrismParameterHandler {
-
     /**
      * Time since parameter.
      */
@@ -28,6 +27,7 @@ public class SinceParameter extends SimplePrismParameterHandler {
             query.setIgnoreTime(true);
         } else {
             final Long date = DateUtil.translateTimeStringToDate(input);
+
             if (date != null) {
                 query.setSinceTime(date);
             } else {
@@ -42,20 +42,20 @@ public class SinceParameter extends SimplePrismParameterHandler {
      */
     @Override
     public void defaultTo(QueryParameters query, CommandSender sender) {
-
         if (query.getProcessType().equals(PrismProcessType.DELETE)) {
             return;
         }
 
         if (!query.getFoundArgs().contains("before") && !query.getFoundArgs().contains("since")) {
-
             final FileConfiguration config = Bukkit.getPluginManager().getPlugin("Prism").getConfig();
 
             Long date = DateUtil.translateTimeStringToDate(config.getString("prism.queries.default-time-since"));
+
             if (date <= 0L) {
                 Prism.log("Error - date range configuration for prism.time-since is not valid");
                 date = DateUtil.translateTimeStringToDate("3d");
             }
+
             query.setSinceTime(date);
             query.addDefaultUsed("t:" + config.getString("prism.queries.default-time-since"));
         }

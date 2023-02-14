@@ -3,7 +3,6 @@ package network.darkhelmet.prism.appliers;
 import org.bukkit.entity.Player;
 
 public class PreviewSession {
-
     protected final Player player;
     protected final Previewable previewer;
     protected final long queryTime;
@@ -15,14 +14,16 @@ public class PreviewSession {
      * @param previewer the the Preview - able group.
      */
     public PreviewSession(Player player, Previewable previewer) {
+        final java.util.Date date = new java.util.Date();
+
         this.player = player;
         this.previewer = previewer;
-        final java.util.Date date = new java.util.Date();
         this.queryTime = date.getTime();
     }
 
     /**
      * Get the player.
+     * 
      * @return the player
      */
     public Player getPlayer() {
@@ -31,6 +32,7 @@ public class PreviewSession {
 
     /**
      * Get the preview items.
+     * 
      * @return the previewer
      */
     public Previewable getPreviewer() {
@@ -39,6 +41,7 @@ public class PreviewSession {
 
     /**
      * Get the time for the query.
+     * 
      * @return the queryTime
      */
     public long getQueryTime() {

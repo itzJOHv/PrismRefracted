@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class AboutCommand implements SubHandler {
-
     private final Prism plugin;
 
     public AboutCommand(Prism plugin) {
@@ -28,7 +27,8 @@ public class AboutCommand implements SubHandler {
                 Prism.messenger.playerHeaderMsg(
                         Il8nHelper.getMessage("about-header")
                                 .replaceText(Pattern.compile("<version>"),
-                                    builder -> Component.text().content(plugin.getPrismVersion()))));
+                                        builder -> Component.text().content(
+                                                plugin.getPrismVersion()))));
         Prism.messenger.sendMessage(call.getSender(), Prism.messenger.playerSubduedHeaderMsg(
                 Component.text("Help: ")
                         .append(Component.text("/pr ?")
@@ -38,7 +38,8 @@ public class AboutCommand implements SubHandler {
                         Component.text().content("Discord: ")
                                 .append(Component.text("https://discord.gg/7FxZScH4EJ")
                                         .color(NamedTextColor.WHITE))
-                                .clickEvent(ClickEvent.openUrl("https://discord.gg/7FxZScH4EJ"))
+                                .clickEvent(ClickEvent.openUrl(
+                                        "https://discord.gg/7FxZScH4EJ"))
                                 .build()));
     }
 
@@ -49,7 +50,7 @@ public class AboutCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{Il8nHelper.getRawMessage("help-about")};
+        return new String[] { Il8nHelper.getRawMessage("help-about") };
     }
 
     @Override
