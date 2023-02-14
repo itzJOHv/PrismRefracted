@@ -875,7 +875,7 @@ public class Prism extends JavaPlugin implements PrismApi {
                     if (mt) {
                         thread = "[M]";
                     } else {
-                        thread = "[" + lr.getLongThreadID() + "]";
+                        thread = "[" + lr.getThreadID() + "]";
                     }
 
                     String thrown;
