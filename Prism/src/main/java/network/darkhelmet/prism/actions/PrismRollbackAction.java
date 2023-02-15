@@ -3,18 +3,17 @@ package network.darkhelmet.prism.actions;
 import org.bukkit.block.BlockState;
 
 public class PrismRollbackAction extends BlockChangeAction {
-
     private long parentId;
 
     /**
      * Set the block change.
+     * 
      * @param oldBlock block
      * @param newBlock block
      * @param parentId long
      */
-    public void setBlockChange(BlockState oldBlock, BlockState newBlock, long parentId) {
+    public void setBlockChange(BlockState oldBlock, BlockState newBlock) {
         // TODO: Why string? Why?
-        this.parentId = parentId;
         if (oldBlock != null) {
             setOldMaterial(oldBlock.getType());
             setOldBlockData(oldBlock.getBlockData());

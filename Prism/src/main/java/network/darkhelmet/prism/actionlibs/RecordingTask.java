@@ -36,8 +36,8 @@ public class RecordingTask implements Runnable {
      * @param a Handler
      * @return rows affected.
      */
-    public static long insertActionIntoDatabase(Handler a) {
-        return Prism.getPrismDataSource().getDataInsertionQuery().insertActionIntoDatabase(a);
+    public static void insertActionIntoDatabase(Handler a) {
+        Prism.getPrismDataSource().getDataInsertionQuery().insertActionIntoDatabase(a);
     }
 
     /**
@@ -80,7 +80,9 @@ public class RecordingTask implements Runnable {
                                 "Prism database error. Connection should be there but it's not. "
                                         + "Leaving actions to log in queue.");
                     }
+
                     RecordingManager.failedDbConnectionCount++;
+
                     if (RecordingManager.failedDbConnectionCount > plugin.getConfig()
                             .getInt("prism.query.max-failures-before-wait")) {
                         if (QueueDrain.isDraining()) {
@@ -145,6 +147,7 @@ public class RecordingTask implements Runnable {
                             + RecordingQueue.getQueue().size());
                     break;
                 }
+
                 i++;
             }
 

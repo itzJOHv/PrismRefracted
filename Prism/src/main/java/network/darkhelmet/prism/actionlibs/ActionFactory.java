@@ -545,12 +545,14 @@ public class ActionFactory {
      * @return Handler
      */
     public static Handler createPrismRollback(String actionType, BlockState oldBlock, BlockState newBlock,
-            OfflinePlayer player, long parentId) {
+            OfflinePlayer player) {
         final PrismRollbackAction a = new PrismRollbackAction();
+
         a.setActionType(actionType);
         a.setPlayer(player);
         a.setLoc(oldBlock.getLocation());
-        a.setBlockChange(oldBlock, newBlock, parentId);
+        a.setBlockChange(oldBlock, newBlock);
+
         return a;
     }
 

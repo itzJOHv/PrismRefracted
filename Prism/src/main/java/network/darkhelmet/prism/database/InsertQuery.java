@@ -9,7 +9,7 @@ public interface InsertQuery {
      * @param a Handler
      * @return long
      */
-    long insertActionIntoDatabase(Handler a);
+    void insertActionIntoDatabase(Handler a);
 
     void createBatch() throws Exception;
 

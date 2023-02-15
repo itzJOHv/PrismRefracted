@@ -29,12 +29,13 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
     protected static HikariDataSource database = null;
     protected String name = "unconfigured";
     protected ConfigurationSection section;
-    private boolean paused; //when set the datasource will not allow insertions;
+    private boolean paused; // when set the datasource will not allow insertions;
     private SettingsQuery settingsQuery = null;
     private String prefix = "prism_";
 
     /**
      * Constructor.
+     * 
      * @param section Config
      */
     public SqlPrismDataSource(ConfigurationSection section) {
@@ -73,12 +74,14 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
 
     /**
      * Set the prefix for the data source.
+     * 
      * @param prefix String.
      */
     public void setPrefix(String prefix) {
         if (prefix == null) {
             this.prefix = "";
         }
+
         this.prefix = prefix;
     }
 
@@ -92,6 +95,7 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
             Prism.log("Could not retrieve a connection - with exception");
             return null;
         }
+
         Prism.log("Could not retrieve a connection");
         return null;
     }
@@ -149,13 +153,13 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
 
     /**
      * Setub Db.
+     * 
      * @param actionRegistry ActionReg.
      */
     public void setupDatabase(ActionRegistry actionRegistry) {
         try (
-                Connection  conn = getConnection();
-                Statement st = conn.createStatement()
-                ) {
+                Connection conn = getConnection();
+                Statement st = conn.createStatement()) {
             String query = "CREATE TABLE IF NOT EXISTS `" + prefix + "actions` ("
                     + "`action_id` int(10) unsigned NOT NULL AUTO_INCREMENT," + "`action` varchar(25) NOT NULL,"
                     + "PRIMARY KEY (`action_id`)," + "UNIQUE KEY `action` (`action`)"
@@ -182,8 +186,7 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
                     conn.getCatalog(),
                     conn.getSchema(),
                     prefix + "data_extra",
-                    new String[]{"TABLE"}
-            );
+                    new String[] { "TABLE" });
             if (!resultSet.next()) {
 
                 // extra data
@@ -246,6 +249,7 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
 
     /**
      * Add action to db.
+     * 
      * @param actionName String
      */
     public void addActionName(String actionName) {
@@ -256,8 +260,7 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
         try (
                 Connection conn = database.getConnection();
                 PreparedStatement s = conn.prepareStatement("INSERT INTO " + prefix + "actions (action) VALUES (?)",
-                        Statement.RETURN_GENERATED_KEYS)
-        ) {
+                        Statement.RETURN_GENERATED_KEYS)) {
             s.setString(1, actionName);
             s.executeUpdate();
             ResultSet rs = s.getGeneratedKeys();
@@ -280,8 +283,7 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
                 Connection conn = getConnection();
                 PreparedStatement s = conn.prepareStatement(
                         "SELECT action_id, action FROM " + prefix + "actions");
-                ResultSet rs = s.executeQuery()
-                ) {
+                ResultSet rs = s.executeQuery()) {
             while (rs.next()) {
                 Prism.debug("Loaded " + rs.getString(2) + ", id:" + rs.getInt(1));
                 Prism.prismActions.put(rs.getString(2), rs.getInt(1));
@@ -294,9 +296,9 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
         }
     }
 
-
     /**
      * Cache the world keys.
+     * 
      * @param prismWorlds Map
      */
     @Override
@@ -306,8 +308,7 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
                 Connection conn = getConnection();
                 PreparedStatement s = conn.prepareStatement(
                         "SELECT world_id, world FROM " + prefix + "worlds");
-                ResultSet rs = s.executeQuery()
-        ) {
+                ResultSet rs = s.executeQuery()) {
             while (rs.next()) {
                 prismWorlds.put(rs.getString(2), rs.getInt(1));
             }
@@ -328,8 +329,7 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
         String query = "INSERT INTO `" + prefix + "worlds` (world) VALUES (?)";
         try (
                 Connection conn = database.getConnection();
-                PreparedStatement s = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
-        ) {
+                PreparedStatement s = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             s.setString(1, worldName);
             s.executeUpdate();
             ResultSet rs = s.getGeneratedKeys();

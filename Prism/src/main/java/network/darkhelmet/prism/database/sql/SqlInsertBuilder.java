@@ -17,6 +17,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
     final ArrayList<Handler> extraDataQueue = new ArrayList<>();
@@ -25,25 +27,31 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
 
     /**
      * Create an insert builder.
+     * 
      * @param dataSource Data source
      */
     public SqlInsertBuilder(PrismDataSource dataSource) {
         super(dataSource);
     }
 
+    private long id;
+
     /**
      * {@inheritDoc}
      */
     @SuppressWarnings("DuplicatedCode")
     @Override
-    public long insertActionIntoDatabase(Handler a) {
+    public void insertActionIntoDatabase(Handler a) {
         int worldId = 0;
-        long id = 0;
+
         String worldName = a.getLoc().getWorld().getName();
+
         if (Prism.prismWorlds.containsKey(worldName)) {
             worldId = Prism.prismWorlds.get(worldName);
         }
+
         int actionId = 0;
+
         if (Prism.prismActions.containsKey(a.getActionType().getName())) {
             actionId = Prism.prismActions.get(a.getActionType().getName());
         }
@@ -54,6 +62,7 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
         if (worldId == 0 || actionId == 0 || playerId == 0) {
             Prism.debug("Sql data error: Handler:" + a.toString());
         }
+
         IntPair newIds = Prism.getItems().materialToIds(a.getMaterial(),
                 Utilities.dataString(a.getBlockData()));
         IntPair oldIds = Prism.getItems().materialToIds(a.getOldMaterial(),
@@ -61,35 +70,52 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
 
         Location l = a.getLoc();
 
-        try (
-                Connection con = dataSource.getConnection();
-                PreparedStatement s = con.prepareStatement(getQuery(), Statement.RETURN_GENERATED_KEYS)
-        ) {
+        try {
+            Connection con = dataSource.getConnection();
+            PreparedStatement s = con.prepareStatement(getQuery(), Statement.RETURN_GENERATED_KEYS);
             applyToInsert(s, a, actionId, playerId, worldId, newIds, oldIds, l);
             s.executeUpdate();
+
             ResultSet generatedKeys = s.getGeneratedKeys();
+
             if (generatedKeys.next()) {
                 id = generatedKeys.getLong(1);
             }
-            generatedKeys.close();
-            if (a.hasExtraData()) {
-                String serialData = a.serialize();
-                if (serialData != null && !serialData.isEmpty()) {
 
-                    try (
-                            PreparedStatement s2 = con.prepareStatement(
-                                    "INSERT INTO `" + prefix + "data_extra` (data_id, data) VALUES (?, ?)",
-                                    Statement.RETURN_GENERATED_KEYS)) {
-                        s2.setLong(1, id);
-                        s2.setString(2, serialData);
-                        s2.executeUpdate();
-                    }
-                }
-            }
+            generatedKeys.close();
+            s.close();
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return id;
+
+        if (a.hasExtraData()) {
+            String serialData = a.serialize();
+
+            if (serialData != null && !serialData.isEmpty()) {
+                ExecutorService executor = Executors.newFixedThreadPool(4);
+
+                for (int i = 0; i < 4; i++) {
+                    executor.execute(() -> {
+                        try {
+                            Connection con = dataSource.getConnection();
+                            PreparedStatement s = con.prepareStatement(
+                                    "INSERT INTO `" + prefix + "data_extra` (data_id, data) VALUES (?, ?)",
+                                    Statement.RETURN_GENERATED_KEYS);
+                            s.setLong(1, id);
+                            s.setString(2, serialData);
+                            s.executeUpdate();
+                            s.close();
+                            con.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+
+                executor.shutdown();
+            }
+        }
     }
 
     @Override
@@ -135,6 +161,7 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
 
     /**
      * Process the batch.
+     * 
      * @throws SQLException on sql errors
      */
     public void processBatch() throws SQLException {
@@ -151,6 +178,7 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
 
     /**
      * Process any extra data associated with the ResultSet.
+     * 
      * @param keys ResultSet
      * @throws SQLException SQLException.
      */
@@ -161,8 +189,7 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement s = conn.prepareStatement("INSERT INTO `"
-                        + prefix + "data_extra` (data_id,data) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS)
-        ) {
+                        + prefix + "data_extra` (data_id,data) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS)) {
             conn.setAutoCommit(false);
             int i = 0;
             while (keys.next()) {
@@ -207,7 +234,7 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
     }
 
     private void applyToInsert(PreparedStatement s, Handler a, int actionId, int playerId, int worldId,
-                               IntPair newIds, IntPair oldIds, Location l) throws SQLException {
+            IntPair newIds, IntPair oldIds, Location l) throws SQLException {
         s.setLong(1, a.getUnixEpoch());
         s.setInt(2, actionId);
         s.setInt(3, playerId);
