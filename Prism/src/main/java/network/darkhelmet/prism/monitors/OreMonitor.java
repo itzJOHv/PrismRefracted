@@ -11,7 +11,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OreMonitor {
-
-
     private final int thresholdMax = 100;
 
     private final Prism plugin;
@@ -33,6 +31,7 @@ public class OreMonitor {
 
     /**
      * Constructor.
+     * 
      * @param plugin Prism
      */
     public OreMonitor(Prism plugin) {
@@ -47,7 +46,6 @@ public class OreMonitor {
      * @param alertPerm Players with this permission will receive the alert
      */
     public void processAlertsFromBlock(final Player player, final Block block, final String alertPerm) {
-
         if (!plugin.getConfig().getBoolean("prism.alerts.ores.enabled")) {
             return;
         }
@@ -57,7 +55,6 @@ public class OreMonitor {
         }
 
         if (block != null && isWatched(block) && !plugin.alertedBlocks.containsKey(block.getLocation())) {
-
             threshold = 1;
 
             // identify all ore blocks on same Y axis in x/z direction
@@ -68,19 +65,24 @@ public class OreMonitor {
                 // Create alert message
                 final String count = foundores.size() + (foundores.size() >= thresholdMax ? "+" : "");
                 final String msg = player.getName() + " found " + count + " "
-                        + getOreNiceName(block) + " " + getLightLevel(block) + "% light";
-                final TextComponent component =
-                        Component.text().content(msg)
-                                .color(getOreColor(block))
-                                .hoverEvent(
-                                        HoverEvent.hoverEvent(HoverEvent.Action.SHOW_ITEM,
-                                                HoverEvent.ShowItem.of(Key.key(
-                                                        block.getType().getKey().toString()), 1)))
-                                .build();
+                        + getOreNiceName(block) + " " + getLightLevel(block) + "% light. "
+                        + "X: " + player.getLocation().getX()
+                        + " Y: " + player.getLocation().getY()
+                        + " Z: " + player.getLocation().getZ();
+
+                final TextComponent component = Component.text().content(msg)
+                        .color(getOreColor(block))
+                        .hoverEvent(
+                                HoverEvent.hoverEvent(HoverEvent.Action.SHOW_ITEM,
+                                        HoverEvent.ShowItem.of(Key.key(
+                                                block.getType().getKey().toString()), 1)))
+                        .build();
+
                 plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                     // Check if block placed
                     // Build params
                     final QueryParameters params = new QueryParameters();
+
                     params.setWorld(player.getWorld().getName());
                     params.addSpecificBlockLocation(block.getLocation());
                     params.addActionType("block-place");
@@ -90,10 +92,12 @@ public class OreMonitor {
                     if (results.getActionResults().isEmpty()) {
                         // Block was not placed - Alert staff
                         plugin.alertPlayers(null, component, alertPerm);
+
                         // Log to console
                         if (plugin.getConfig().getBoolean("prism.alerts.ores.log-to-console")) {
-                            Prism.log(PlainComponentSerializer.plain().serialize(component));
+                            Prism.log(PlainTextComponentSerializer.plainText().serialize(component));
                         }
+
                         // Log to commands
                         List<String> commands = plugin.getConfig().getStringList("prism.alerts.ores.log-commands");
                         MiscUtils.dispatchAlert(msg, commands);
@@ -111,15 +115,23 @@ public class OreMonitor {
      */
     private int getLightLevel(Block block) {
         int light = 0;
-        final BlockFace[] blockFaces =
-                new BlockFace[] {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST,
-                      BlockFace.UP, BlockFace.DOWN};
+        final BlockFace[] blockFaces = new BlockFace[] {
+                BlockFace.NORTH,
+                BlockFace.SOUTH,
+                BlockFace.EAST,
+                BlockFace.WEST,
+                BlockFace.UP,
+                BlockFace.DOWN
+        };
+
         for (BlockFace blockFace : blockFaces) {
             light = Math.max(light, block.getRelative(blockFace).getLightLevel());
+
             if (light >= 15) {
                 break;
             }
         }
+
         return light * 100 / 15;
     }
 
@@ -132,15 +144,18 @@ public class OreMonitor {
     private TextColor getOreColor(Block block) {
         if (isWatched(block)) {
             TextColor color = Prism.getAlertedOres().get(block.getType());
+
             if (color != null) {
                 return color;
             }
         }
+
         return NamedTextColor.WHITE;
     }
 
     /**
      * Get Nice Name.
+     * 
      * @param block Block.
      * @return String
      */
@@ -150,6 +165,7 @@ public class OreMonitor {
 
     /**
      * True if watching.
+     * 
      * @param block Block
      * @return bool
      */
@@ -159,17 +175,17 @@ public class OreMonitor {
 
     /**
      * Find nearby of same type.
-     * @param type Material
-     * @param currBlock Block
+     * 
+     * @param type           Material
+     * @param currBlock      Block
      * @param matchingBlocks List to match.
      * @return List that matched.
      */
     private ArrayList<Block> findNeighborBlocks(Material type, Block currBlock, ArrayList<Block> matchingBlocks) {
-
         if (isWatched(currBlock)) {
-
             matchingBlocks.add(currBlock);
             final java.util.Date date = new java.util.Date();
+
             plugin.alertedBlocks.put(currBlock.getLocation(), date.getTime());
 
             for (int x = -1; x <= 1; x++) {
@@ -179,6 +195,7 @@ public class OreMonitor {
                         // ensure it matches the type and wasn't already found
                         if (newblock.getType() == type && !matchingBlocks.contains(newblock)) {
                             threshold++;
+
                             if (threshold <= thresholdMax) {
                                 findNeighborBlocks(type, newblock, matchingBlocks);
                             }
@@ -189,6 +206,5 @@ public class OreMonitor {
         }
 
         return matchingBlocks;
-
     }
 }
