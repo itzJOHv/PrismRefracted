@@ -66,9 +66,9 @@ public class OreMonitor {
                 final String count = foundores.size() + (foundores.size() >= thresholdMax ? "+" : "");
                 final String msg = player.getName() + " found " + count + " "
                         + getOreNiceName(block) + " " + getLightLevel(block) + "% light. "
-                        + "X: " + player.getLocation().getX()
-                        + " Y: " + player.getLocation().getY()
-                        + " Z: " + player.getLocation().getZ();
+                        + "X: " + Math.round(player.getLocation().getX())
+                        + " Y: " + Math.round(player.getLocation().getY())
+                        + " Z: " + Math.round(player.getLocation().getZ());
 
                 final TextComponent component = Component.text().content(msg)
                         .color(getOreColor(block))
