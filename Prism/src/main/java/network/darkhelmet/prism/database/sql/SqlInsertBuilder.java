@@ -17,8 +17,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
     final ArrayList<Handler> extraDataQueue = new ArrayList<>();
@@ -93,27 +91,19 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
             String serialData = a.serialize();
 
             if (serialData != null && !serialData.isEmpty()) {
-                ExecutorService executor = Executors.newFixedThreadPool(4);
-
-                for (int i = 0; i < 4; i++) {
-                    executor.execute(() -> {
-                        try {
-                            Connection con = dataSource.getConnection();
-                            PreparedStatement s = con.prepareStatement(
-                                    "INSERT INTO `" + prefix + "data_extra` (data_id, data) VALUES (?, ?)",
-                                    Statement.RETURN_GENERATED_KEYS);
-                            s.setLong(1, id);
-                            s.setString(2, serialData);
-                            s.executeUpdate();
-                            s.close();
-                            con.close();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    });
+                try {
+                    Connection con = dataSource.getConnection();
+                    PreparedStatement s = con.prepareStatement(
+                            "INSERT INTO `" + prefix + "data_extra` (data_id, data) VALUES (?, ?)",
+                            Statement.RETURN_GENERATED_KEYS);
+                    s.setLong(1, id);
+                    s.setString(2, serialData);
+                    s.executeUpdate();
+                    s.close();
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-
-                executor.shutdown();
             }
         }
     }
