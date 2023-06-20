@@ -45,7 +45,13 @@ public class QueueDrain {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    Prism.log("Current queue size: " + RecordingQueue.getQueue().size());
+                    int size = RecordingQueue.getQueueSize();
+
+                    Prism.log("Current queue size: " + size);
+
+                    if (size == 0) {
+                        timer.cancel();
+                    }
                 }
             };
 
@@ -65,13 +71,13 @@ public class QueueDrain {
             } catch (final Exception e) {
                 e.printStackTrace();
                 Prism.log("Stopping queue drain due to caught exception. Queue items lost: "
-                        + RecordingQueue.getQueue().size());
+                        + RecordingQueue.getQueueSize());
                 break;
             }
 
             if (RecordingManager.failedDbConnectionCount > 0) {
                 Prism.log("Stopping queue drain due to detected database error. Queue items lost: "
-                        + RecordingQueue.getQueue().size());
+                        + RecordingQueue.getQueueSize());
             }
         }
     }
