@@ -60,15 +60,15 @@ public class OreMonitor {
             // identify all ore blocks on same Y axis in x/z direction
             final ArrayList<Block> matchingBlocks = new ArrayList<>();
             final ArrayList<Block> foundores = findNeighborBlocks(block.getType(), block, matchingBlocks);
-            if (!foundores.isEmpty()) {
 
+            if (!foundores.isEmpty()) {
                 // Create alert message
                 final String count = foundores.size() + (foundores.size() >= thresholdMax ? "+" : "");
                 final String msg = player.getName() + " found " + count + " "
                         + getOreNiceName(block) + " " + getLightLevel(block) + "% light. "
-                        + "X: " + Math.round(player.getLocation().getX())
-                        + " Y: " + Math.round(player.getLocation().getY())
-                        + " Z: " + Math.round(player.getLocation().getZ());
+                        + Math.round(player.getLocation().getX()) + " "
+                        + Math.round(player.getLocation().getY()) + " "
+                        + Math.round(player.getLocation().getZ());
 
                 final TextComponent component = Component.text().content(msg)
                         .color(getOreColor(block))
