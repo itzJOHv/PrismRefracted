@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ReportCommand extends AbstractCommand {
 
@@ -56,7 +58,6 @@ public class ReportCommand extends AbstractCommand {
      */
     @Override
     public void handle(CallInfo call) {
-
         if (call.getArgs().length < 2) {
             Prism.messenger.sendMessage(call.getSender(),
                     Prism.messenger.playerError(Il8nHelper.getMessage("report-error")));
@@ -73,7 +74,7 @@ public class ReportCommand extends AbstractCommand {
             databaseReport(call.getSender());
         }
 
-        // /prism report queue
+        // /prism report sum
         if (call.getArg(1).equals("sum")) {
 
             if (call.getArgs().length < 3) {
@@ -127,7 +128,6 @@ public class ReportCommand extends AbstractCommand {
     }
 
     private void queueReport(CommandSender sender) {
-
         Prism.messenger.sendMessage(sender,
                 Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("report-queue-header")));
 
@@ -141,7 +141,12 @@ public class ReportCommand extends AbstractCommand {
             Prism.messenger.sendMessage(sender,
                     Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("report-queue-recent")));
 
-            for (final Entry<Long, QueueStats.TaskRunInfo> entry : runs.entrySet()) {
+            // retrieve the last 15 entries
+            List<Entry<Long, QueueStats.TaskRunInfo>> lastEntries = new ArrayList<>(runs.entrySet());
+            int startIndex = Math.max(lastEntries.size() - 15, 0);
+            lastEntries = lastEntries.subList(startIndex, lastEntries.size());
+
+            for (final Entry<Long, QueueStats.TaskRunInfo> entry : lastEntries) {
                 final String time = new SimpleDateFormat("HH:mm:ss").format(entry.getKey());
 
                 Prism.messenger.sendMessage(sender,
@@ -191,24 +196,29 @@ public class ReportCommand extends AbstractCommand {
         Prism.messenger.sendMessage(sender,
                 Prism.messenger.playerSubduedHeaderMsg(Il8nHelper.getMessage("report-recorder-readiness")));
 
-        try (Connection conn = Prism.getPrismDataSource().getConnection()) {
-            if (conn == null) {
-                Prism.messenger.sendMessage(sender,
-                        Prism.messenger.playerError(Il8nHelper.getMessage("pool-no-valid")));
-            } else if (conn.isClosed()) {
-                Prism.messenger.sendMessage(sender,
-                        Prism.messenger.playerError(Il8nHelper.getMessage("pool-connection-closed")));
-            } else if (conn.isValid(5)) {
-                Prism.messenger.sendMessage(sender,
-                        Prism.messenger.playerSuccess(Il8nHelper.getMessage("pool-valid-connection")));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            try (Connection conn = Prism.getPrismDataSource().getConnection()) {
+                if (conn == null) {
+                    Prism.messenger.sendMessage(sender,
+                            Prism.messenger.playerError(Il8nHelper.getMessage("pool-no-valid")));
+                } else if (conn.isClosed()) {
+                    Prism.messenger.sendMessage(sender,
+                            Prism.messenger.playerError(Il8nHelper.getMessage("pool-connection-closed")));
+                } else if (conn.isValid(5)) {
+                    Prism.messenger.sendMessage(sender,
+                            Prism.messenger.playerSuccess(Il8nHelper.getMessage("pool-valid-connection")));
+                }
+            } catch (final SQLException e) {
+                Prism.messenger.sendMessage(sender, Prism.messenger
+                        .playerError(ReplaceableTextComponent.builder("exception-message")
+                                .replace("<message>", e.getLocalizedMessage())
+                                .build()));
+                e.printStackTrace();
             }
-        } catch (final SQLException e) {
-            Prism.messenger.sendMessage(sender, Prism.messenger
-                    .playerError(ReplaceableTextComponent.builder("exception-message")
-                            .replace("<message>", e.getLocalizedMessage())
-                            .build()));
-            e.printStackTrace();
-        }
+
+            executor.shutdown();
+        });
     }
 
     private void blockSumReports(final CallInfo call) {
