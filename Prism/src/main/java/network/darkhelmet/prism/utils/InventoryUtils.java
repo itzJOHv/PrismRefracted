@@ -19,7 +19,6 @@ import java.util.Map.Entry;
  * @author botskonet
  **/
 public class InventoryUtils {
-
     private static final EnumMap<Material, EquipmentSlot> slots = new EnumMap<>(Material.class);
 
     static {
@@ -69,8 +68,9 @@ public class InventoryUtils {
 
     /**
      * Returns ItemStock for a Slot.
+     * 
      * @param equipment Equipment
-     * @param slot Slot
+     * @param slot      Slot
      * @return ItemStack
      */
     public static ItemStack getEquipment(EntityEquipment equipment, EquipmentSlot slot) {
@@ -93,10 +93,11 @@ public class InventoryUtils {
     }
 
     /**
-     * Set the ItemStack for  Slot.
+     * Set the ItemStack for Slot.
+     * 
      * @param equipment EntityEquipment
-     * @param slot EquipmentSlot
-     * @param item ItemStack
+     * @param slot      EquipmentSlot
+     * @param item      ItemStack
      */
     public static void setEquipment(EntityEquipment equipment, EquipmentSlot slot, ItemStack item) {
         switch (slot) {
@@ -119,7 +120,7 @@ public class InventoryUtils {
                 equipment.setHelmet(item);
                 break;
             default:
-                //should never be hit
+                // should never be hit
                 break;
         }
     }
@@ -162,13 +163,12 @@ public class InventoryUtils {
 
     /**
      * Get items from inventory matching item in hand.
-     * @param player Player
+     * 
+     * @param player          Player
      * @param desiredQuantity qty
      * @return ItemStack
      */
-    @SuppressWarnings("unused")
     public static ItemStack extractItemsMatchingHeldItemFromPlayer(Player player, int desiredQuantity) {
-
         if (player == null || !ItemUtils.isValidItem(player.getInventory().getItemInMainHand())) {
             throw new IllegalArgumentException("Invalid player or invalid held item.");
         }
@@ -204,7 +204,6 @@ public class InventoryUtils {
         itemDefinition.setAmount(quantityFound);
 
         return itemDefinition;
-
     }
 
     /**
@@ -248,7 +247,8 @@ public class InventoryUtils {
 
     /**
      * Give an item to a player.
-     * @param inv Inventory
+     * 
+     * @param inv  Inventory
      * @param item ItemStack
      * @return boolean on success.
      */
@@ -282,8 +282,8 @@ public class InventoryUtils {
     /**
      * Subtract a specific quantity from an inventory slots item stack.
      *
-     * @param inv Inventory
-     * @param slot Slot id
+     * @param inv   Inventory
+     * @param slot  Slot id
      * @param quant amount
      */
     public static void subtractAmountFromPlayerInvSlot(Inventory inv, int slot, int quant) {
@@ -300,9 +300,8 @@ public class InventoryUtils {
      * Drop items at player's location.
      *
      * @param leftovers Map
-     * @param player Player
+     * @param player    Player
      */
-    @SuppressWarnings("unused")
     public static void dropItemsByPlayer(Map<Integer, ItemStack> leftovers, Player player) {
         if (!leftovers.isEmpty()) {
             for (Entry<Integer, ItemStack> entry : leftovers.entrySet()) {
@@ -329,10 +328,13 @@ public class InventoryUtils {
     }
 
     /*
-
-      @param player
+     * 
+     * @param player
+     * 
      * @param target
+     * 
      * @return
+     * 
      * @throws Exception
      */
     /*
@@ -344,10 +346,13 @@ public class InventoryUtils {
      */
 
     /*
-
-      @param player
+     * 
+     * @param player
+     * 
      * @param target
+     * 
      * @return
+     * 
      * @throws Exception
      */
     /*
@@ -358,10 +363,13 @@ public class InventoryUtils {
      */
 
     /*
-
-      @param player
+     * 
+     * @param player
+     * 
      * @param chest
+     * 
      * @param fullFlag
+     * 
      * @return
      */
     /*
@@ -389,9 +397,11 @@ public class InventoryUtils {
      */
 
     /*
-
-      @param stack
+     * 
+     * @param stack
+     * 
      * @param player
+     * 
      * @return
      */
     /*
@@ -400,11 +410,15 @@ public class InventoryUtils {
      */
 
     /*
-
-      @param stack
+     * 
+     * @param stack
+     * 
      * @param start
+     * 
      * @param end
+     * 
      * @param player
+     * 
      * @return
      */
     /*
@@ -414,10 +428,13 @@ public class InventoryUtils {
      */
 
     /*
-
-      @param items
+     * 
+     * @param items
+     * 
      * @param start
+     * 
      * @param end
+     * 
      * @return
      */
     /*
@@ -448,9 +465,11 @@ public class InventoryUtils {
      */
 
     /*
-
-      @param list
+     * 
+     * @param list
+     * 
      * @param first
+     * 
      * @param second
      */
     /*
@@ -459,10 +478,13 @@ public class InventoryUtils {
      */
 
     /*
-
-      @param list
+     * 
+     * @param list
+     * 
      * @param first
+     * 
      * @param last
+     * 
      * @return
      */
     /*
@@ -488,9 +510,11 @@ public class InventoryUtils {
      */
 
     /*
-
-      @param list
+     * 
+     * @param list
+     * 
      * @param first
+     * 
      * @param last
      */
     /*

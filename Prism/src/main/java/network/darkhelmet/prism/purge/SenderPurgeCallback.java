@@ -6,7 +6,6 @@ import network.darkhelmet.prism.text.ReplaceableTextComponent;
 import org.bukkit.command.CommandSender;
 
 public class SenderPurgeCallback implements PurgeCallback {
-
     private CommandSender sender;
 
     @Override

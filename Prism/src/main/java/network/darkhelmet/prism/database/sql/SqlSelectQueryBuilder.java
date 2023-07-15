@@ -103,7 +103,6 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
         query += "LEFT JOIN " + tableNameDataExtra + " ex ON ex.data_id = " + tableNameData + ".id ";
 
         return query;
-
     }
 
     @Override
@@ -136,7 +135,6 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
         coordinateCondition();
 
         return buildWhereConditions();
-
     }
 
     private void worldCondition() {
@@ -421,7 +419,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
     }
 
     private String buildGroupConditions(final String fieldName, String[] argValues, final String matchFormat,
-                                        final String matchType, final String dataFormat) {
+            final String matchType, final String dataFormat) {
 
         StringBuilder where = new StringBuilder();
         String format = (matchFormat == null ? "%s = %s" : matchFormat);
@@ -475,8 +473,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
         try (
                 Connection conn = Prism.getPrismDataSource().getDataSource().getConnection();
                 PreparedStatement s = conn.prepareStatement(query);
-                ResultSet rs = s.executeQuery()
-        ) {
+                ResultSet rs = s.executeQuery()) {
             RecordingManager.failedDbConnectionCount = 0;
             eventTimer.recordTimedEvent("query returned, building results");
             Map<Integer, String> worldsInverse = new HashMap<>();
@@ -599,7 +596,8 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                         // Entry could not be converted to a block or an item
 
                         boolean logWarning;
-                        // The current item is likely a spawn or death event for an entity, for example, a cow or horse
+                        // The current item is likely a spawn or death event for an entity, for example,
+                        // a cow or horse
                         logWarning = blockId != 0 || oldBlockId != 0 || extraData == null
                                 || !extraData.contains("entity_name");
 
@@ -629,7 +627,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                     // data
                     try {
                         if (baseHandler instanceof ItemStackAction) {
-                            ((ItemStackAction)baseHandler).deserialize(current, extraData);
+                            ((ItemStackAction) baseHandler).deserialize(current, extraData);
                         } else {
                             baseHandler.deserialize(extraData);
                         }

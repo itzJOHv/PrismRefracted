@@ -63,8 +63,6 @@ public class WorldParameter extends SimplePrismParameterHandler {
                 result.add(w.getName());
             }
         }
-
         return result;
     }
-
 }

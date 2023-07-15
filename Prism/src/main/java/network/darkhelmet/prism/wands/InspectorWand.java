@@ -22,15 +22,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class InspectorWand extends QueryWandBase {
-
     /**
      * Constructor.
+     * 
      * @param plugin Prism
      */
     public InspectorWand(Prism plugin) {
         super(plugin);
     }
-
 
     @Override
     public void playerRightClick(Player player, Entity entity) {
@@ -78,8 +77,9 @@ public class InspectorWand extends QueryWandBase {
 
             // Ignoring any actions via config?
             if (params.getActionTypes().size() == 0) {
-                @SuppressWarnings("unchecked") final Collection<String> ignoreActions =
-                        (ArrayList<String>) plugin.getConfig().getList("prism.wands.inspect.ignore-actions");
+                @SuppressWarnings("unchecked")
+                final Collection<String> ignoreActions = (ArrayList<String>) plugin.getConfig()
+                        .getList("prism.wands.inspect.ignore-actions");
                 if (ignoreActions != null && !ignoreActions.isEmpty()) {
                     for (final String ignore : ignoreActions) {
                         params.addActionType(ignore, MatchRule.EXCLUDE);
@@ -92,10 +92,10 @@ public class InspectorWand extends QueryWandBase {
                 final String blockname = Prism.getItems().getAlias(block.getType(), block.getBlockData());
                 Prism.messenger.sendMessage(player,
                         Prism.messenger.playerHeaderMsg(ReplaceableTextComponent.builder("inspector-wand-header")
-                                .replace("<blockname>",blockname)
-                                .replace("<x>",loc.getBlockX())
-                                .replace("<y>",loc.getBlockY())
-                                .replace("<z>",loc.getBlockZ())
+                                .replace("<blockname>", blockname)
+                                .replace("<x>", loc.getBlockX())
+                                .replace("<y>", loc.getBlockY())
+                                .replace("<z>", loc.getBlockZ())
                                 .build().colorIfAbsent(NamedTextColor.GOLD)));
                 Prism.messenger.sendMessage(player,
                         Prism.messenger.playerHeaderMsg(Il8nHelper.formatMessage("lookup-header-message",
@@ -115,11 +115,10 @@ public class InspectorWand extends QueryWandBase {
             } else {
                 final String space_name = (block.getType().equals(Material.AIR) ? "space"
                         : block.getType().toString().replaceAll("_", " ").toLowerCase()
-                        + (block.getType().toString().endsWith("BLOCK") ? "" : " block"));
+                                + (block.getType().toString().endsWith("BLOCK") ? "" : " block"));
                 Prism.messenger.sendMessage(player,
                         Prism.messenger.playerError("No history for this " + space_name + " found."));
             }
         });
     }
-
 }

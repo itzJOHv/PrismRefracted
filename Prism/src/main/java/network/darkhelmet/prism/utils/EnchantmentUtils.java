@@ -7,13 +7,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Map;
 
 public class EnchantmentUtils {
-
     /**
      * Given an enchantment, does the current item have any that conflict.
      *
      * @return bool
      */
-    @SuppressWarnings("unused")
     public static boolean hasConflictingEnchanment(ItemStack item, Enchantment ench) {
         Map<Enchantment, Integer> enchantments = item.getEnchantments();
         boolean conflict = false;
@@ -31,7 +29,6 @@ public class EnchantmentUtils {
      * @param name String
      * @return Enchantment
      */
-    @SuppressWarnings("unused")
     public static Enchantment getEnchantmentFromCommonName(String name) {
         switch (name.toLowerCase()) {
             case "aquaaffinity":
@@ -77,7 +74,7 @@ public class EnchantmentUtils {
             case "unbreaking":
                 return Enchantment.DURABILITY;
             default:
-                String formattedName = name.replace(' ','_');
+                String formattedName = name.replace(' ', '_');
                 NamespacedKey key = NamespacedKey.minecraft(formattedName);
                 return Enchantment.getByKey(key);
         }
@@ -87,13 +84,11 @@ public class EnchantmentUtils {
      * Return the common name for an enchantment.
      *
      * @param enchantment Keyed
-     * @param level int
+     * @param level       int
      * @return String
      */
     public static String getClientSideEnchantmentName(Enchantment enchantment, int level) {
-
         String enchantName;
-
         if (enchantment.equals(Enchantment.ARROW_DAMAGE)) {
             enchantName = "power";
         } else if (enchantment.equals(Enchantment.ARROW_FIRE)) {
@@ -156,6 +151,5 @@ public class EnchantmentUtils {
                 enchantName += " " + level;
         }
         return enchantName;
-
     }
 }

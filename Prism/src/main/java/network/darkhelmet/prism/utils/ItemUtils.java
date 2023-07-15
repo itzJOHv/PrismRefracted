@@ -27,9 +27,8 @@ import java.util.Objects;
 
 @SuppressWarnings("WeakerAccess")
 public class ItemUtils {
-
     private static final EnumSet<Material> badWands = EnumSet.of(Material.WATER, Material.LAVA, Material.FIRE,
-          Material.FLINT_AND_STEEL, Material.NETHER_PORTAL, Material.END_PORTAL);
+            Material.FLINT_AND_STEEL, Material.NETHER_PORTAL, Material.END_PORTAL);
 
     public static boolean isBadWand(Material material) {
         return badWands.contains(material);
@@ -73,7 +72,7 @@ public class ItemUtils {
     }
 
     /**
-     * Converts a lowercase string into an item  formatted as
+     * Converts a lowercase string into an item formatted as
      * 'materialname[:itemdamage]'.
      *
      * @param smallString String
@@ -93,7 +92,7 @@ public class ItemUtils {
                         return stack;
                     } catch (NumberFormatException e) {
                         Prism.debug(" Item could not have damage parsed. Data:" + smallString + " Error:"
-                              + e.getMessage());
+                                + e.getMessage());
                     }
                 }
                 return new ItemStack(mat, 1);
@@ -255,8 +254,8 @@ public class ItemUtils {
             }
 
             return skullA.hasOwner()
-                  && Objects.requireNonNull(skullA.getOwningPlayer()).getUniqueId()
-                  .equals(Objects.requireNonNull(skullB.getOwningPlayer()).getUniqueId());
+                    && Objects.requireNonNull(skullA.getOwningPlayer()).getUniqueId()
+                            .equals(Objects.requireNonNull(skullB.getOwningPlayer()).getUniqueId());
         }
 
         // Potions
@@ -346,11 +345,9 @@ public class ItemUtils {
                 return false;
             }
             return effectA.hasTrail() == effectB.hasTrail();
-
         }
 
         return true;
-
     }
 
     /**
@@ -361,7 +358,6 @@ public class ItemUtils {
      * @return bool
      */
     protected static boolean enchantsUnEqual(Map<Enchantment, Integer> a, Map<Enchantment, Integer> b) {
-
         // Enchants
         if (a.size() != b.size()) {
             return true;
@@ -369,7 +365,6 @@ public class ItemUtils {
 
         // Match enchantments and levels
         for (Entry<Enchantment, Integer> entryA : a.entrySet()) {
-
             // If enchantment not present
             if (!b.containsKey(entryA.getKey())) {
                 return true;
@@ -379,11 +374,8 @@ public class ItemUtils {
             if (!b.get(entryA.getKey()).equals(entryA.getValue())) {
                 return true;
             }
-
         }
-
         return false;
-
     }
 
     /**
@@ -393,11 +385,10 @@ public class ItemUtils {
      * @todo this is buggy, wth?
      */
     public static String getUsedDurabilityPercentage(ItemStack item) {
-
         short currentDurability = (short) getItemDamage(item);
         short maxDurability = item.getType().getMaxDurability();
         if (currentDurability > 0 && maxDurability > 0 && currentDurability != maxDurability) {
-            double diff = (((float)currentDurability / (float)maxDurability) * 100);
+            double diff = (((float) currentDurability / (float) maxDurability) * 100);
             if (diff > 0) {
                 return Math.floor(diff) + "%";
             }
@@ -411,7 +402,6 @@ public class ItemUtils {
      * @return String
      */
     public static String getDurabilityPercentage(ItemStack item) {
-
         short currentDurability = (short) getItemDamage(item);
         short maxDurability = item.getType().getMaxDurability();
         if (currentDurability > 0 && maxDurability > 0 && currentDurability != maxDurability) {
@@ -422,7 +412,6 @@ public class ItemUtils {
             }
             return "0%";
         }
-
         return "";
     }
 
@@ -432,9 +421,8 @@ public class ItemUtils {
      * @return string
      */
     public static String getItemFullNiceName(ItemStack item) {
-
         StringBuilder itemName = new StringBuilder(item.getType().name().toLowerCase(Locale.ENGLISH)
-              .replace('_', ' '));
+                .replace('_', ' '));
 
         ItemMeta meta = null;
 
@@ -499,9 +487,7 @@ public class ItemUtils {
                 itemName.append(" named \"").append(meta.getDisplayName()).append("\"");
             }
         }
-
         return itemName.toString();
-
     }
 
     /**
@@ -528,7 +514,6 @@ public class ItemUtils {
      *
      * @param item ItemStack
      */
-    @SuppressWarnings("unused")
     public static boolean canSafelyStack(ItemStack item) {
         // Can't stack
         if (item.getMaxStackSize() == 1) {
@@ -561,7 +546,6 @@ public class ItemUtils {
      * @param is       The items to drop
      * @param quantity The amount of items to drop
      */
-    @SuppressWarnings("unused")
     public static void dropItem(Location location, ItemStack is, int quantity) {
         for (int i = 0; i < quantity; i++) {
             dropItem(location, is);

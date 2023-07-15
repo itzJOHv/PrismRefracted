@@ -45,7 +45,6 @@ public class SinceParameter extends SimplePrismParameterHandler {
         if (query.getProcessType().equals(PrismProcessType.DELETE)) {
             return;
         }
-
         if (!query.getFoundArgs().contains("before") && !query.getFoundArgs().contains("since")) {
             final FileConfiguration config = Bukkit.getPluginManager().getPlugin("Prism").getConfig();
 

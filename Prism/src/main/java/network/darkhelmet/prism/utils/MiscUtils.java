@@ -11,7 +11,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,7 +41,7 @@ public class MiscUtils {
      * @return integer
      */
     public static int clampRadius(Player player, int desiredRadius, PrismProcessType processType,
-                                  ConfigurationSection config) {
+            ConfigurationSection config) {
 
         if (desiredRadius <= 0) {
             return config.getInt("prism.near.default-radius");
@@ -69,8 +69,7 @@ public class MiscUtils {
             }
             // Otherwise non-player
             return desiredRadius;
-        } else if (!processType.equals(PrismProcessType.LOOKUP) && desiredRadius
-                > maxApplierRadius) {
+        } else if (!processType.equals(PrismProcessType.LOOKUP) && desiredRadius > maxApplierRadius) {
             // If player does not have permission to override the max
             if (player != null && !player.hasPermission("prism.override-max-applier-radius")) {
                 return maxApplierRadius;
@@ -116,7 +115,6 @@ public class MiscUtils {
      * @param results String
      */
     public static void paste_results(CommandSender sender, String results) {
-
         final String prismWebUrl = "https://paste.gg/";
 
         if (!Prism.getInstance().getConfig().getBoolean("prism.paste.enable")) {
@@ -129,8 +127,7 @@ public class MiscUtils {
         PasteFile file = new PasteFile("Prism Result",
                 new PasteContent(PasteContent.ContentType.TEXT, results));
 
-        final PasteBuilder.PasteResult result
-                = new PasteBuilder().name("Prism Results")
+        final PasteBuilder.PasteResult result = new PasteBuilder().name("Prism Results")
                 .setApiKey(Prism.getPasteKey())
                 .expires(expire)
                 .addFile(file)
@@ -138,20 +135,19 @@ public class MiscUtils {
                 .build();
         if (result.getPaste().isPresent()) {
             Paste paste = result.getPaste().get();
+            String urlpaste = prismWebUrl + paste.getId();
             Prism.messenger.sendMessage(sender,
                     Prism.messenger.playerSuccess("Successfully pasted results: "
-                            + prismWebUrl
-                            + paste.getId()).clickEvent(ClickEvent.openUrl(prismWebUrl)));
+                            + urlpaste
+                            + paste.getId()).clickEvent(ClickEvent.openUrl(urlpaste)));
         } else {
             String message = result.getMessage().isPresent() ? result.getMessage().get() : "";
             Prism.messenger.sendMessage(sender,
                     Prism.messenger.playerError(
                             Component.text("Unable to paste results (")
                                     .append(Component.text(message).color(NamedTextColor.YELLOW))
-                                    .append(Component.text(")."))
-                    ));
+                                    .append(Component.text(")."))));
         }
-
     }
 
     /**
@@ -193,7 +189,7 @@ public class MiscUtils {
      * @return List of Strings
      */
     public static List<String> getStartingWith(final String start, Iterable<String> options,
-                                               boolean caseSensitive) {
+            boolean caseSensitive) {
         final List<String> result = new ArrayList<>();
         if (caseSensitive) {
             for (final String option : options) {
@@ -224,13 +220,14 @@ public class MiscUtils {
      * @param commands the commands
      */
     public static void dispatchAlert(String msg, Iterable<String> commands) {
-        String cleanMessage = PlainComponentSerializer.plain().deserialize(msg).content();
+        String cleanMessage = PlainTextComponentSerializer.plainText().deserialize(msg).content();
         for (String command : commands) {
             if ("examplecommand <alert>".equals(command)) {
                 continue;
             }
             String processedCommand = command.replace("<alert>", cleanMessage);
-            Bukkit.getScheduler().runTask(Prism.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), processedCommand));
+            Bukkit.getScheduler().runTask(Prism.getInstance(),
+                    () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), processedCommand));
         }
     }
 

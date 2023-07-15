@@ -52,6 +52,7 @@ public class ConfigBase {
      * @param filename      filename
      * @return FileConfig.
      */
+    @SuppressWarnings("unused")
     private FileConfiguration loadConfig(String defaultFolder, String filename) {
         final File file = getFilename(filename);
         if (file.exists()) {

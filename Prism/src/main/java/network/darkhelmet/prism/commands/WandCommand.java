@@ -130,7 +130,7 @@ public class WandCommand extends AbstractCommand {
          */
         switch (type.toLowerCase()) {
             case "i":
-            case "inpect":
+            case "inspect":
                 if (checkNoPermissions(call.getPlayer(), "prism.lookup", "prism.wand.inspect")) {
                     return;
                 }
@@ -159,8 +159,8 @@ public class WandCommand extends AbstractCommand {
                     sendWandStatus(call.getPlayer(), "wand-profile", true, wandOn, parameters.toString());
                 }
                 break;
-            case "rollback":
             case "rb":
+            case "rollback":
                 if (checkNoPermissions(call.getSender(), "prism.rollback", "prism.wand.rollback")) {
                     return;
                 }
@@ -174,8 +174,8 @@ public class WandCommand extends AbstractCommand {
                     sendWandStatus(call.getPlayer(), "wand-rollback", true, wandOn, parameters.toString());
                 }
                 break;
-            case "restore":
             case "rs":
+            case "restore":
                 if (checkNoPermissions(call.getPlayer(), "prism.restor", "prism.wand.restore")) {
                     return;
                 }

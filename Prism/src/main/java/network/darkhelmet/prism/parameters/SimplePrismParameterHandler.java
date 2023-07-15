@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public abstract class SimplePrismParameterHandler implements PrismParameterHandler {
-
     private final String name;
     private final Pattern inputMatcher;
     private final Set<String> aliases;
@@ -107,7 +106,6 @@ public abstract class SimplePrismParameterHandler implements PrismParameterHandl
         if (inputMatcher != null && !inputMatcher.matcher(input).matches()) {
             throw new IllegalArgumentException("Invalid syntax for parameter " + input);
         }
-
         process(query, alias, input, sender);
     }
 
@@ -117,7 +115,6 @@ public abstract class SimplePrismParameterHandler implements PrismParameterHandl
     @Override
     public final boolean applicable(String parameter, CommandSender sender) {
         final String[] split = parameter.split(":", 2);
-
         if (split.length != 2) {
             return false;
         }
@@ -143,7 +140,6 @@ public abstract class SimplePrismParameterHandler implements PrismParameterHandl
         final String alias = split[0];
         final String input = split[1];
         final List<String> completions = tabComplete(alias, input, sender);
-
         if (completions == null) {
             return Collections.emptyList();
         }
@@ -153,7 +149,6 @@ public abstract class SimplePrismParameterHandler implements PrismParameterHandl
         for (final String completion : completions) {
             edited.add(alias + ":" + completion);
         }
-
         return edited;
     }
 
@@ -177,7 +172,6 @@ public abstract class SimplePrismParameterHandler implements PrismParameterHandl
         if (permissible == null) {
             return true;
         }
-
         return permissible.hasPermission(permission);
     }
 }

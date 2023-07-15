@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
  * saved in the Wand for every time they use it until it is disabled.
  */
 public abstract class QueryWandBase extends WandBase {
-
     /**
      * Keep an instance of {@link Prism Prism} to use.
      */

@@ -7,7 +7,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public abstract class WandBase implements Wand {
-
     protected boolean itemGiven = false;
 
     protected String wandMode;
@@ -27,6 +26,7 @@ public abstract class WandBase implements Wand {
 
     /**
      * True if it was given.
+     * 
      * @return boolean.
      */
     public boolean itemWasGiven() {
@@ -35,6 +35,7 @@ public abstract class WandBase implements Wand {
 
     /**
      * Get the wand mode.
+     * 
      * @return String.
      */
     public String getWandMode() {
@@ -77,6 +78,7 @@ public abstract class WandBase implements Wand {
 
     /**
      * Set original item.
+     * 
      * @param item ItemStack
      */
     public void setOriginallyHeldItem(ItemStack item) {

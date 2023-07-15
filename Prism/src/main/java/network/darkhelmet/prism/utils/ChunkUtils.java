@@ -10,7 +10,6 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 
 public class ChunkUtils {
-
     /**
      * Resets the preview border blocks.
      *
@@ -66,11 +65,10 @@ public class ChunkUtils {
      * Returns an array of boundary blocks at a single Y for the current chunk.
      *
      * @param chunk chunk
-     * @param y height
+     * @param y     height
      * @return List of Blocks
      */
     public static ArrayList<Block> getBoundingBlocksAtY(Chunk chunk, int y) {
-
         int blockMinX = chunk.getX() * 16;
         int blockMinZ = chunk.getZ() * 16;
         int blockMaxX = blockMinX + 15;
@@ -94,8 +92,6 @@ public class ChunkUtils {
         for (int z = blockMinZ; z < blockMaxZ; z++) {
             blocks.add(chunk.getWorld().getBlockAt(blockMaxX, y, z));
         }
-
         return blocks;
-
     }
 }

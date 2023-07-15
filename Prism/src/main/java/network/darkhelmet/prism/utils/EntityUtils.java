@@ -22,6 +22,7 @@ public class EntityUtils {
 
     /**
      * Get Offline player. Should run Async.
+     * 
      * @param uuidOrName String
      * @return OfflinePlayer
      */
@@ -44,6 +45,7 @@ public class EntityUtils {
 
     /**
      * Get Uuid - should be handled Async as this may do a remote call.
+     * 
      * @param uuidOrName String
      * @return Uuid.
      */
@@ -52,7 +54,7 @@ public class EntityUtils {
             try {
                 return UUID.fromString(uuidOrName);
             } catch (IllegalArgumentException ignored) {
-                //ignored
+                // ignored
             }
 
             @SuppressWarnings("deprecation")
@@ -65,6 +67,7 @@ public class EntityUtils {
 
     /**
      * Projectile Description.
+     * 
      * @param source Projectile
      * @return String.
      */
@@ -136,9 +139,9 @@ public class EntityUtils {
     /**
      * Whether or not an entity is within a cube radius.
      *
-     * @param loc1 Location
+     * @param loc1   Location
      * @param radius int
-     * @param loc2 Location
+     * @param loc2   Location
      * @return in Cube.
      */
     public static boolean inCube(Location loc1, int radius, Location loc2) {

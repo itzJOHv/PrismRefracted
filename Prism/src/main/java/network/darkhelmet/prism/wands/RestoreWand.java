@@ -14,9 +14,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class RestoreWand extends QueryWandBase {
-
     /**
      * Constructor.
+     * 
      * @param plugin Prism
      */
     public RestoreWand(Prism plugin) {
@@ -54,7 +54,7 @@ public class RestoreWand extends QueryWandBase {
         } else {
             final String space_name = (block.getType().equals(Material.AIR) ? "space"
                     : block.getType().toString().replaceAll("_", " ").toLowerCase()
-                    + (block.getType().toString().endsWith("BLOCK") ? "" : " block"));
+                            + (block.getType().toString().endsWith("BLOCK") ? "" : " block"));
             Prism.messenger.sendMessage(player,
                     Prism.messenger.playerError("Nothing to restore for this " + space_name + " found."));
         }

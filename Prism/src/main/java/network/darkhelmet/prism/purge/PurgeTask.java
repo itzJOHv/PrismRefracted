@@ -11,7 +11,6 @@ public class PurgeTask implements Runnable {
     private final CopyOnWriteArrayList<QueryParameters> paramList;
     private final int purgeTickDelay;
     private final PurgeCallback callback;
-    @SuppressWarnings("FieldCanBeLocal")
     private int cycleRowsAffected = 0;
     private long minId = 0;
     private long maxId = 0;
@@ -53,9 +52,7 @@ public class PurgeTask implements Runnable {
         if (paramList.isEmpty()) {
             return;
         }
-
         final ActionsQuery aq = new ActionsQuery(plugin);
-
         // Pull the next-in-line purge param
         final QueryParameters param = paramList.get(0);
 

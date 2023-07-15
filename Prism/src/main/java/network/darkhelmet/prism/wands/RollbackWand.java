@@ -13,9 +13,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class RollbackWand extends QueryWandBase {
-
     /**
      * Constructor.
+     * 
      * @param plugin Prism
      */
     public RollbackWand(Prism plugin) {
@@ -43,7 +43,7 @@ public class RollbackWand extends QueryWandBase {
     protected void rollback(Player player, Location loc) {
 
         final Block block = loc.getBlock();
-        QueryParameters params = checkQueryParams(block,parameters,player);
+        QueryParameters params = checkQueryParams(block, parameters, player);
         params.setProcessType(PrismProcessType.ROLLBACK);
         final QueryResult results = getResult(params, player);
         if (!results.getActionResults().isEmpty()) {
@@ -53,7 +53,7 @@ public class RollbackWand extends QueryWandBase {
         } else {
             final String space_name = (block.getType().equals(Material.AIR) ? "space"
                     : block.getType().toString().replaceAll("_", " ").toLowerCase()
-                    + (block.getType().toString().endsWith("BLOCK") ? "" : " block"));
+                            + (block.getType().toString().endsWith("BLOCK") ? "" : " block"));
             Prism.messenger.sendMessage(player,
                     Prism.messenger.playerError("Nothing to rollback for this " + space_name + " found."));
         }

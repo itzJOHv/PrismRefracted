@@ -129,12 +129,10 @@ public class PlayerIdentification {
         if (prismPlayer == null) {
             return null;
         }
-
         if (!name.equals(prismPlayer.getName())) {
             // ok but now names can be used so lets check if an existing player uses that
             // name
             PrismPlayer test = SqlPlayerIdentificationHelper.lookupByName(name);
-
             if (test != null && test.getUuid() != prismPlayer.getUuid()) {
                 Prism.warn("Player UUID for " + name + " conflicts with another player: " + test.getUuid()
                         + " we are attempting to update that UUID with a new name before allowing this cache.");
@@ -147,14 +145,11 @@ public class PlayerIdentification {
                     Prism.warn("Players appear to have the same name "
                             + "- generally this is impossible with online servers.");
                 }
-
                 SqlPlayerIdentificationHelper.updatePlayer(test);
             }
-
             prismPlayer.setName(name);
             SqlPlayerIdentificationHelper.updatePlayer(prismPlayer);
         }
-
         if (!uuid.equals(prismPlayer.getUuid())) {
             Prism.warn("Player UUID for " + name + " does not match our cache! " + uuid
                     + " versus cache of " + prismPlayer.getName() + " / " + prismPlayer.getUuid());
@@ -163,7 +158,6 @@ public class PlayerIdentification {
             prismPlayer.setUuid(uuid);
             SqlPlayerIdentificationHelper.updatePlayer(prismPlayer);
         }
-
         return prismPlayer;
     }
 

@@ -28,7 +28,6 @@ import java.util.EnumMap;
 import java.util.Locale;
 
 public class Utilities {
-
     /**
      * There are several items that are officially different ItemStacks, but for the
      * purposes of what we're doing are really considered one core item. This
@@ -42,22 +41,22 @@ public class Utilities {
     static {
         baseMaterials.put(Material.GRASS_BLOCK, Material.DIRT);
         baseMaterials.put(Material.MYCELIUM, Material.DIRT);
-        baseMaterials.put(Material.LIGHT_BLUE_CONCRETE_POWDER,Material.LIGHT_BLUE_CONCRETE);
-        baseMaterials.put(Material.LIGHT_GRAY_CONCRETE_POWDER,Material.LIGHT_GRAY_CONCRETE);
-        baseMaterials.put(Material.BLUE_CONCRETE_POWDER,Material.BLUE_CONCRETE);
-        baseMaterials.put(Material.RED_CONCRETE_POWDER,Material.RED_CONCRETE);
-        baseMaterials.put(Material.BLACK_CONCRETE_POWDER,Material.BLACK_CONCRETE);
-        baseMaterials.put(Material.MAGENTA_CONCRETE_POWDER,Material.MAGENTA_CONCRETE);
-        baseMaterials.put(Material.PURPLE_CONCRETE_POWDER,Material.PURPLE_CONCRETE);
-        baseMaterials.put(Material.GREEN_CONCRETE_POWDER,Material.GREEN_CONCRETE);
-        baseMaterials.put(Material.LIME_CONCRETE_POWDER,Material.LIME_CONCRETE);
-        baseMaterials.put(Material.WHITE_CONCRETE_POWDER,Material.WHITE_CONCRETE);
-        baseMaterials.put(Material.YELLOW_CONCRETE_POWDER,Material.YELLOW_CONCRETE);
-        baseMaterials.put(Material.BROWN_CONCRETE_POWDER,Material.BROWN_CONCRETE);
-        baseMaterials.put(Material.GRAY_CONCRETE_POWDER,Material.GRAY_CONCRETE);
-        baseMaterials.put(Material.ORANGE_CONCRETE_POWDER,Material.ORANGE_CONCRETE);
-        baseMaterials.put(Material.CYAN_CONCRETE_POWDER,Material.CYAN_CONCRETE);
-        baseMaterials.put(Material.PINK_CONCRETE_POWDER,Material.PINK_CONCRETE);
+        baseMaterials.put(Material.LIGHT_BLUE_CONCRETE_POWDER, Material.LIGHT_BLUE_CONCRETE);
+        baseMaterials.put(Material.LIGHT_GRAY_CONCRETE_POWDER, Material.LIGHT_GRAY_CONCRETE);
+        baseMaterials.put(Material.BLUE_CONCRETE_POWDER, Material.BLUE_CONCRETE);
+        baseMaterials.put(Material.RED_CONCRETE_POWDER, Material.RED_CONCRETE);
+        baseMaterials.put(Material.BLACK_CONCRETE_POWDER, Material.BLACK_CONCRETE);
+        baseMaterials.put(Material.MAGENTA_CONCRETE_POWDER, Material.MAGENTA_CONCRETE);
+        baseMaterials.put(Material.PURPLE_CONCRETE_POWDER, Material.PURPLE_CONCRETE);
+        baseMaterials.put(Material.GREEN_CONCRETE_POWDER, Material.GREEN_CONCRETE);
+        baseMaterials.put(Material.LIME_CONCRETE_POWDER, Material.LIME_CONCRETE);
+        baseMaterials.put(Material.WHITE_CONCRETE_POWDER, Material.WHITE_CONCRETE);
+        baseMaterials.put(Material.YELLOW_CONCRETE_POWDER, Material.YELLOW_CONCRETE);
+        baseMaterials.put(Material.BROWN_CONCRETE_POWDER, Material.BROWN_CONCRETE);
+        baseMaterials.put(Material.GRAY_CONCRETE_POWDER, Material.GRAY_CONCRETE);
+        baseMaterials.put(Material.ORANGE_CONCRETE_POWDER, Material.ORANGE_CONCRETE);
+        baseMaterials.put(Material.CYAN_CONCRETE_POWDER, Material.CYAN_CONCRETE);
+        baseMaterials.put(Material.PINK_CONCRETE_POWDER, Material.PINK_CONCRETE);
     }
 
     /**
@@ -71,7 +70,6 @@ public class Utilities {
             return data.getAsString().replace("minecraft:"
                     + data.getMaterial().name().toLowerCase(Locale.ENGLISH), "");
         }
-
         return "";
     }
 
@@ -84,7 +82,7 @@ public class Utilities {
      */
     @SuppressWarnings("WeakerAccess")
     public static ArrayList<BlockStateChange> removeMaterialFromRadius(Material mat, Location loc, int radius) {
-        final Material[] materials = {mat};
+        final Material[] materials = { mat };
         return removeMaterialsFromRadius(materials, loc, radius);
     }
 
@@ -107,7 +105,7 @@ public class Utilities {
                         if (data instanceof Waterlogged) {
                             final BlockState originalBlock = testLocation.getBlock().getState();
                             BlockData modified = testLocation.getBlock().getBlockData();
-                            ((Waterlogged)modified).setWaterlogged(false);
+                            ((Waterlogged) modified).setWaterlogged(false);
                             testLocation.getBlock().setBlockData(modified);
                             final BlockState newBlock = testLocation.getBlock().getState();
                             blockStateChanges.add(new BlockStateChangeImpl(originalBlock, newBlock));
@@ -128,7 +126,7 @@ public class Utilities {
      */
     @SuppressWarnings("WeakerAccess")
     public static ArrayList<BlockStateChange> removeMaterialsFromRadius(Material[] materials, final Location loc,
-                                                                            int radius) {
+            int radius) {
         final ArrayList<BlockStateChange> blockStateChanges = new ArrayList<>();
         if (loc != null && radius > 0 && materials != null && materials.length > 0) {
             final int x1 = loc.getBlockX();
@@ -173,10 +171,10 @@ public class Utilities {
      * @param radius Radius
      */
     public static ArrayList<BlockStateChange> drain(Location loc, int radius) {
-        final Material[] materials = {Material.LAVA, Material.WATER};
+        final Material[] materials = { Material.LAVA, Material.WATER };
 
-        ArrayList<BlockStateChange> result =  removeMaterialsFromRadius(materials, loc, radius);
-        result.addAll(checkForWaterlogged(loc,radius));
+        ArrayList<BlockStateChange> result = removeMaterialsFromRadius(materials, loc, radius);
+        result.addAll(checkForWaterlogged(loc, radius));
         return result;
     }
 
@@ -187,7 +185,7 @@ public class Utilities {
      * @param radius Radius
      */
     public static ArrayList<BlockStateChange> drainLava(Location loc, int radius) {
-        final Material[] materials = {Material.LAVA};
+        final Material[] materials = { Material.LAVA };
         return removeMaterialsFromRadius(materials, loc, radius);
     }
 
@@ -198,7 +196,7 @@ public class Utilities {
      * @param radius integer
      */
     public static ArrayList<BlockStateChange> drainWater(Location loc, int radius) {
-        final Material[] materials = {Material.WATER};
+        final Material[] materials = { Material.WATER };
         return removeMaterialsFromRadius(materials, loc, radius);
     }
 
@@ -210,7 +208,7 @@ public class Utilities {
      * @return if the material is acceptable to replace
      */
     public static boolean isAcceptableForBlockPlace(Material m) {
-        return  TabLibraryHelper.replaceableMaterials.isTagged(m);
+        return TabLibraryHelper.replaceableMaterials.isTagged(m);
     }
 
     /**
@@ -253,7 +251,6 @@ public class Utilities {
      * @return the list of detachable block on the sides of the block
      */
     public static ArrayList<Block> findSideFaceAttachedBlocks(final Block block) {
-
         ArrayList<Block> detachingBlocks = new ArrayList<>();
 
         // Check each of the four sides
@@ -273,9 +270,7 @@ public class Utilities {
         if (Utilities.isSideFaceDetachableMaterial(blockToCheck.getType())) {
             detachingBlocks.add(blockToCheck);
         }
-
         return detachingBlocks;
-
     }
 
     /**
@@ -285,7 +280,6 @@ public class Utilities {
      * @param m     the material of the surrounding block to look for
      * @return the first surrounding block of the given material found
      */
-    @SuppressWarnings("unused")
     public static Block findFirstSurroundingBlockOfType(Block block, Material m) {
         Block blockToCheck = block.getRelative(BlockFace.EAST);
         if (blockToCheck.getType().equals(m)) {
@@ -311,11 +305,12 @@ public class Utilities {
      * from the side of a block.
      *
      * @param m the material to check for detaching
-     * @return boolean - whether a block with a given material will detach from the side of a block.
+     * @return boolean - whether a block with a given material will detach from the
+     *         side of a block.
      */
     @SuppressWarnings("WeakerAccess")
     public static boolean isSideFaceDetachableMaterial(Material m) {
-        return  TabLibraryHelper.fallsOffWall.isTagged(m);
+        return TabLibraryHelper.fallsOffWall.isTagged(m);
     }
 
     /**
@@ -339,20 +334,19 @@ public class Utilities {
                 }
             }
         }
-
         return detachingBlocks;
-
     }
 
     /**
      * Determine whether or not a block is going to detach from the top of a block.
      *
      * @param m the material to check for detaching
-     * @return boolean - whether a block with a given material will detach from the top of a block.
+     * @return boolean - whether a block with a given material will detach from the
+     *         top of a block.
      **/
     @SuppressWarnings("WeakerAccess")
     public static boolean isTopFaceDetachableMaterial(Material m) {
-        return  TabLibraryHelper.fallsOffTop.isTagged(m);
+        return TabLibraryHelper.fallsOffTop.isTagged(m);
     }
 
     /**
@@ -363,17 +357,17 @@ public class Utilities {
      * @return boolean
      */
     public static boolean materialMeansBlockDetachment(Material m) {
-        return  TabLibraryHelper.detachingBlocks.contains(m);
+        return TabLibraryHelper.detachingBlocks.contains(m);
     }
 
     /**
-     * Searches for detachable entities in a chunk that are near enough to get affected by a block update.
+     * Searches for detachable entities in a chunk that are near enough to get
+     * affected by a block update.
      *
      * @param block Block
      * @return Array of entities
      */
     public static ArrayList<Entity> findHangingEntities(final Block block) {
-
         ArrayList<Entity> entities = new ArrayList<>();
 
         Entity[] foundEntities = block.getChunk().getEntities();
@@ -392,9 +386,7 @@ public class Utilities {
                 }
             }
         }
-
         return entities;
-
     }
 
     /**
@@ -420,22 +412,18 @@ public class Utilities {
      * Get the Left face from the given face.
      *
      * @param in BlockFace.
-     * @return BlockFace  the new block face
+     * @return BlockFace the new block face
      */
     public static BlockFace getRelativeFaceLeft(BlockFace in) {
         switch (in) {
             case NORTH:
                 return BlockFace.WEST;
-
             case EAST:
                 return BlockFace.NORTH;
-
             case SOUTH:
                 return BlockFace.EAST;
-
             case WEST:
                 return BlockFace.SOUTH;
-
             default:
                 throw new IllegalArgumentException("Only cardinal directions are supported");
         }
@@ -451,16 +439,12 @@ public class Utilities {
         switch (in) {
             case NORTH:
                 return BlockFace.EAST;
-
             case EAST:
                 return BlockFace.SOUTH;
-
             case SOUTH:
                 return BlockFace.WEST;
-
             case WEST:
                 return BlockFace.NORTH;
-
             default:
                 throw new IllegalArgumentException("Only cardinal directions are supported");
         }
@@ -482,31 +466,26 @@ public class Utilities {
      * @return Block
      */
     public static Block getSiblingForDoubleLengthBlock(BlockState block) {
-
         BlockData data = block.getBlockData();
 
         if (data instanceof Chest) {
             Chest chest = (Chest) data;
-            return handleChest(chest,block);
+            return handleChest(chest, block);
         } else if (data instanceof Bed) {
-            return handleBed((Bed) data,block);
+            return handleBed((Bed) data, block);
         } else if (data instanceof Bisected && !(data instanceof Stairs) && !(data instanceof TrapDoor)) {
-            return handleBisected((Bisected) data,block);
+            return handleBisected((Bisected) data, block);
         }
-
         return null;
     }
 
     private static Block handleChest(Chest data, BlockState block) {
-
         BlockFace facing = data.getFacing();
         switch (data.getType()) {
             case LEFT:
                 return block.getBlock().getRelative(getRelativeFaceRight(facing));
-
             case RIGHT:
                 return block.getBlock().getRelative(getRelativeFaceLeft(facing));
-
             case SINGLE:
                 return null;
             default:
@@ -515,7 +494,6 @@ public class Utilities {
     }
 
     private static Block handleBisected(Bisected data, BlockState block) {
-
         if (data.getHalf() == Half.BOTTOM) {
             return block.getBlock().getRelative(BlockFace.UP);
         } else {
@@ -541,18 +519,15 @@ public class Utilities {
         BlockData data = block.getBlockData();
         if (data instanceof Bed) {
             Bed bed = (Bed) data;
-
             if (bed.getPart() == Part.HEAD) {
                 return block.getRelative(bed.getFacing().getOppositeFace());
             }
         } else if (data instanceof Bisected && !(data instanceof Stairs) && !(data instanceof TrapDoor)) {
             Bisected bisected = (Bisected) data;
-
             if (bisected.getHalf() == Half.TOP) {
                 return block.getRelative(BlockFace.DOWN);
             }
         }
-
         return block;
     }
 
@@ -563,7 +538,7 @@ public class Utilities {
      * @return bool
      */
     public static boolean canFlowBreakMaterial(Material m) {
-        return  TabLibraryHelper.flowBreaks.isTagged(m);
+        return TabLibraryHelper.flowBreaks.isTagged(m);
     }
 
     /**
@@ -585,8 +560,7 @@ public class Utilities {
      * @return List
      */
     public static ArrayList<Block> findConnectedBlocksOfType(Material type, Block currBlock,
-                                                             final ArrayList<Location> foundLocations) {
-
+            final ArrayList<Location> foundLocations) {
         ArrayList<Block> foundBlocks = new ArrayList<>();
         ArrayList<Location> locations;
         if (foundLocations == null) {
@@ -612,9 +586,7 @@ public class Utilities {
                 }
             }
         }
-
         return foundBlocks;
-
     }
 
     /**
@@ -641,7 +613,7 @@ public class Utilities {
      * @return bool
      */
     public static boolean isGrowableStructure(Material m) {
-        return  TabLibraryHelper.growableStructure.isTagged(m);
+        return TabLibraryHelper.growableStructure.isTagged(m);
     }
 
     /**
@@ -652,7 +624,6 @@ public class Utilities {
      * @return bool
      */
     public static boolean areBlockIdsSameCoreItem(Material mat1, Material mat2) {
-
         // Get the obvious one out of the way.
         if (mat1.equals(mat2)) {
             return true;
@@ -660,7 +631,7 @@ public class Utilities {
         Material coreMat1 = getMaterial(mat1);
         Material coreMat2 = getMaterial(mat2);
 
-        return  coreMat1.equals(coreMat2);
+        return coreMat1.equals(coreMat2);
     }
 
     @Nonnull

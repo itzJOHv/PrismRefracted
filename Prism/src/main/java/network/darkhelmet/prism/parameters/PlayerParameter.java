@@ -34,7 +34,6 @@ public class PlayerParameter extends SimplePrismParameterHandler {
         }
 
         final String[] playerNames = input.split(",");
-
         if (playerNames.length > 0) {
             for (String playerName : playerNames) {
                 query.addPlayerName(playerName, match);
@@ -53,7 +52,6 @@ public class PlayerParameter extends SimplePrismParameterHandler {
         }
 
         final int end = partialName.lastIndexOf(',');
-
         if (end != -1) {
             prefix = prefix + partialName.substring(0, end) + ",";
             partialName = partialName.substring(end + 1);
@@ -67,7 +65,6 @@ public class PlayerParameter extends SimplePrismParameterHandler {
                 completions.add(prefix + player.getName());
             }
         }
-
         return completions;
     }
 }

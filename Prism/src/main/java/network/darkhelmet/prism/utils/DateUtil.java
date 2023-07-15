@@ -5,27 +5,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DateUtil {
-
     /**
      * Translates a String to a timestamp showing ms since 0.
+     * 
      * @return Long
      */
     public static Long translateTimeStringToDate(String argValue) {
-
         long dateFrom = 0L;
-
         final Pattern p = Pattern.compile("([0-9]+)(s|h|m|d|w)");
         final Calendar cal = Calendar.getInstance();
-
         final String[] matches = TypeUtils.preg_match_all(p, argValue);
         if (matches.length > 0) {
             for (final String match : matches) {
-
                 final Matcher m = p.matcher(match);
                 if (m.matches()) {
-
                     if (m.groupCount() == 2) {
-
                         final int tfValue = Integer.parseInt(m.group(1));
                         final String tfFormat = m.group(2);
 
@@ -53,8 +47,6 @@ public class DateUtil {
             }
             dateFrom = cal.getTime().getTime();
         }
-
         return dateFrom;
-
     }
 }

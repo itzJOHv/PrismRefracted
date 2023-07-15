@@ -55,7 +55,6 @@ public final class PurgeManager implements Runnable {
 
             if (paramList.size() > 0) {
                 int purgeTickDelay = plugin.getConfig().getInt("prism.purge.batch-tick-delay");
-
                 if (purgeTickDelay < 0) {
                     purgeTickDelay = 20;
                 }

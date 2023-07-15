@@ -29,13 +29,13 @@ public class TabLibraryHelper {
             Material.SOUL_SAND,
             Material.NETHERRACK);
 
-    // Material that has gravity (will fall, not break, when placed on the side of a wall or breaking
+    // Material that has gravity (will fall, not break, when placed on the side of a
+    // wall or breaking
     // the block under it)
     protected static final MaterialTag fallingMaterials = new MaterialTag(
             Material.GRAVEL,
             Material.ANVIL,
-            Material.DRAGON_EGG
-    )
+            Material.DRAGON_EGG)
             .append("_CONCRETE_POWDER", MatchMode.SUFFIX)
             .append(Tag.SAND);
 
@@ -97,67 +97,60 @@ public class TabLibraryHelper {
             Material.BEACON,
             Material.ITEM_FRAME,
             Material.CONDUIT,
-            Material.BELL
-    )
+            Material.BELL)
             .append(Tag.DOORS,
                     Tag.RAILS,
                     Tag.SAPLINGS,
                     MaterialTag.BANNERS,
-                    Tag.STANDING_SIGNS
-            )
+                    Tag.STANDING_SIGNS)
             .append(
                     Tag.WOODEN_PRESSURE_PLATES,
                     Tag.BUTTONS,
-                    Tag.CARPETS,
+                    Tag.WOOL_CARPETS,
                     Tag.FLOWER_POTS)
             .append(MaterialTag.ALL_PLANTS);
 
     // Material that will be detached by flowing water/lava
-    protected static final MaterialTag flowBreaks =
-            new MaterialTag(
-                    MaterialTag.ALL_PLANTS,
-                    MaterialTag.CROPS,
-                    MaterialTag.SKULLS
-            )
-                    .append(
-                            Material.CACTUS,
-                            Material.REPEATER,
-                            Material.COMPARATOR,
-                            Material.REDSTONE_WIRE,
-                            Material.LEVER
-                    )
-                    .append(
-                            Material.REDSTONE_TORCH,
-                            Material.SUGAR_CANE,
-                            Material.TORCH,
-                            Material.SOUL_TORCH,
-                            Material.WALL_TORCH,
-                            Material.SOUL_WALL_TORCH,
-                            Material.REDSTONE_WALL_TORCH,
-                            Material.TRIPWIRE)
-                    .append(
-                            Material.TRIPWIRE_HOOK,
-                            Material.VINE,
-                            Material.END_ROD
-                    )
-                    .append(
-                            Tag.BUTTONS,
-                            Tag.SAPLINGS,
-                            Tag.RAILS,
-                            Tag.FLOWER_POTS);
+    protected static final MaterialTag flowBreaks = new MaterialTag(
+            MaterialTag.ALL_PLANTS,
+            MaterialTag.CROPS,
+            MaterialTag.SKULLS)
+            .append(
+                    Material.CACTUS,
+                    Material.REPEATER,
+                    Material.COMPARATOR,
+                    Material.REDSTONE_WIRE,
+                    Material.LEVER)
+            .append(
+                    Material.REDSTONE_TORCH,
+                    Material.SUGAR_CANE,
+                    Material.TORCH,
+                    Material.SOUL_TORCH,
+                    Material.WALL_TORCH,
+                    Material.SOUL_WALL_TORCH,
+                    Material.REDSTONE_WALL_TORCH,
+                    Material.TRIPWIRE)
+            .append(
+                    Material.TRIPWIRE_HOOK,
+                    Material.VINE,
+                    Material.END_ROD)
+            .append(
+                    Tag.BUTTONS,
+                    Tag.SAPLINGS,
+                    Tag.RAILS,
+                    Tag.FLOWER_POTS);
 
     // Material that can grow/spread to another location
-    protected static final MaterialTag growableStructure =
-            new MaterialTag(Tag.LEAVES, Tag.LOGS)
-                    .append(
-                            Material.RED_MUSHROOM_BLOCK,
-                            Material.BROWN_MUSHROOM_BLOCK,
-                            Material.MUSHROOM_STEM,
-                            Material.CHORUS_FLOWER)
-                    .append(MaterialTag.HYPHAE);
+    protected static final MaterialTag growableStructure = new MaterialTag(Tag.LEAVES, Tag.LOGS)
+            .append(
+                    Material.RED_MUSHROOM_BLOCK,
+                    Material.BROWN_MUSHROOM_BLOCK,
+                    Material.MUSHROOM_STEM,
+                    Material.CHORUS_FLOWER)
+            .append(MaterialTag.HYPHAE);
 
-
-    // Material that could possibly cause other material to detach from another block
+    // Material that could possibly cause other material to detach from another
+    // block
     protected static final EnumSet<Material> detachingBlocks = EnumSet.of(
             Material.AIR,
             Material.FIRE,
@@ -178,7 +171,7 @@ public class TabLibraryHelper {
         baseMaterials.put(Material.MYCELIUM, Material.DIRT);
         baseMaterials.put(Material.PODZOL, Material.DIRT);
         baseMaterials.put(Material.FARMLAND, Material.DIRT);
-//        baseMaterials.put(Material.GRASS_PATH, Material.DIRT);
+        // baseMaterials.put(Material.GRASS_PATH, Material.DIRT);
     }
 
     /**
@@ -192,7 +185,6 @@ public class TabLibraryHelper {
             return data.getAsString().replace("minecraft:"
                     + data.getMaterial().name().toLowerCase(Locale.ENGLISH), "");
         }
-
         return "";
     }
 }

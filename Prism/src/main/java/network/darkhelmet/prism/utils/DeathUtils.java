@@ -20,16 +20,13 @@ import org.bukkit.projectiles.ProjectileSource;
 import java.util.Objects;
 
 public class DeathUtils {
-
     /**
      * Returns the name of what caused an entity to die.
      *
      * @return String
      */
     public static String getCauseNiceName(Entity entity) {
-
         EntityDamageEvent e = entity.getLastDamageCause();
-
         if (e == null) {
             return "unknown";
         }
@@ -55,9 +52,7 @@ public class DeathUtils {
         }
 
         if (entity instanceof Player) {
-
             Player player = (Player) entity;
-
             // Detect additional suicide. For example, when you potion
             // yourself with instant damage it doesn't show as suicide.
             if (killer instanceof Player) {
@@ -97,19 +92,15 @@ public class DeathUtils {
      * @return String
      */
     public static String getAttackerName(Entity victim) {
-
         // Determine base cause
         String cause = getCauseNiceName(victim);
-
         if (victim instanceof Player) {
             Player killer = ((Player) victim).getKiller();
             if (killer != null) {
                 return killer.getName();
             }
         }
-
         if (cause.equals("mob")) {
-
             Entity killer = ((EntityDamageByEntityEvent) Objects.requireNonNull(
                     victim.getLastDamageCause())).getDamager();
             return getEntityName(killer);
@@ -149,7 +140,6 @@ public class DeathUtils {
      *
      * @return String.
      */
-    @SuppressWarnings("unused")
     public static String getVictimName(Entity victim) {
         return getEntityName(victim);
     }
@@ -157,13 +147,12 @@ public class DeathUtils {
     /**
      * Determines the owner of a tamed wolf.
      *
-     * @param event  EntityDeathEvent
+     * @param event EntityDeathEvent
      * @return String
      */
     public static String getTameWolfOwner(EntityDeathEvent event) {
         String owner = "";
-        EntityDamageByEntityEvent e =
-                ((EntityDamageByEntityEvent) event.getEntity().getLastDamageCause());
+        EntityDamageByEntityEvent e = ((EntityDamageByEntityEvent) event.getEntity().getLastDamageCause());
         if (e != null) {
             Entity killer = e.getDamager();
             if (killer instanceof Wolf) {
@@ -186,7 +175,6 @@ public class DeathUtils {
      *
      * @return String
      */
-    @SuppressWarnings("unused")
     public static String getWeapon(LivingEntity entity) {
         String deathWeapon = "";
         if (entity.getKiller() != null) {

@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public interface Wand {
-
     void playerLeftClick(Player player, Location loc);
 
     void playerRightClick(Player player, Location loc);

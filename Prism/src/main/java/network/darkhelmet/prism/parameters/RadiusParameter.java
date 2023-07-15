@@ -41,32 +41,26 @@ public class RadiusParameter extends SimplePrismParameterHandler {
             if (inputValue.contains(":")) {
                 desiredRadius = Integer.parseInt(inputValue.split(":")[1]);
                 final String radiusLocOrPlayer = inputValue.split(":")[0];
-
                 if (radiusLocOrPlayer.contains(",") && player != null) {
                     final String[] coordinates = radiusLocOrPlayer.split(",");
-
                     if (coordinates.length != 3) {
                         throw new IllegalArgumentException("Couldn't parse the coordinates '" + radiusLocOrPlayer
                                 + "'. Perhaps you have more than two commas?");
                     }
-
                     for (final String s : coordinates) {
                         if (!TypeUtils.isNumeric(s)) {
                             throw new IllegalArgumentException("The coordinate '" + s + "' is not a number.");
                         }
                     }
-
                     coordsLoc = (new Location(player.getWorld(), Integer.parseInt(coordinates[0]),
                             Integer.parseInt(coordinates[1]), Integer.parseInt(coordinates[2])));
                 } else {
                     // Try to find an online player
                     Player p2 = Bukkit.getServer().getPlayer(radiusLocOrPlayer);
-
                     if (p2 == null) {
                         throw new IllegalArgumentException("Couldn't find the player named '" + radiusLocOrPlayer
                                 + "'. Perhaps they are not online or you misspelled their name?");
                     }
-
                     player = p2;
                 }
             } else {
@@ -87,7 +81,6 @@ public class RadiusParameter extends SimplePrismParameterHandler {
 
             // Clamp radius based on perms, configs
             int radius = MiscUtils.clampRadius(player, desiredRadius, query.getProcessType(), config);
-
             if (desiredRadius != radius) {
                 if (sender != null) {
                     Prism.messenger.sendMessage(sender,
@@ -138,7 +131,6 @@ public class RadiusParameter extends SimplePrismParameterHandler {
                     query.setMaxLocation(ChunkUtils.getChunkMaxVector(ch));
 
                     break;
-
                 // User wants no radius, but contained within the current world
                 case "world":
                     // Do they have permission to override the global lookup radius
@@ -164,7 +156,6 @@ public class RadiusParameter extends SimplePrismParameterHandler {
                     query.setAllowNoRadius(true);
 
                     break;
-
                 // User has asked for a global radius
                 case "global":
                     // Do they have permission to override the global lookup radius
@@ -196,7 +187,6 @@ public class RadiusParameter extends SimplePrismParameterHandler {
         if (query.getProcessType().equals(PrismProcessType.DELETE)) {
             return;
         }
-
         if (sender instanceof Player) {
             if (!query.allowsNoRadius()) {
                 query.setRadius(Prism.config.getInt("prism.queries.default-radius"));

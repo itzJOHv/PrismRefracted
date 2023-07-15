@@ -4,7 +4,6 @@ import network.darkhelmet.prism.Prism;
 import org.bukkit.entity.Player;
 
 public class Settings {
-
     /**
      * Delete the setting.
      *
